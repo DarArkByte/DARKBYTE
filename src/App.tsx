@@ -13,7 +13,7 @@ import SuperAdminLogin from './pages/super-admin/SuperAdminLogin';
 import DashboardLayout from './components/layout/DashboardLayout';
 import SchoolAdminDashboard from './pages/school-admin/Dashboard';
 import TeacherDashboard from './pages/teacher/Dashboard';
-import ResultEntryPage from './pages/teacher/ResultEntry';
+import TeacherResultEntry from './pages/teacher/ResultEntry';
 import SuperAdminDashboard from './pages/super-admin/Dashboard';
 import ParentDashboard from './pages/parent/Dashboard';
 import ResultView from './pages/results/ResultView';
@@ -94,7 +94,7 @@ function AppContent() {
           
           {/* Teacher */}
           <Route path="/teacher/*" element={<TeacherDashboard />} />
-          <Route path="/teacher/results/entry/:classId/:subjectId" element={<ResultEntryPage />} />
+          <Route path="/teacher/results/entry/:classId/:subjectId" element={<TeacherResultEntry />} />
           
           {/* Parent */}
           <Route path="/parent/*" element={<ParentDashboard />} />

@@ -1,25 +1,12 @@
 @echo off
 cd /d "C:\Users\DDL JUNIORATE\Desktop\Dar-Ark Byte"
 
-echo.
-echo === DAR-ARK BYTE - Git Diagnostics ===
-echo.
+git remote set-url origin https://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@github.com/DarArkByte/DARKBYTE.git
 
-echo --- Current Remotes ---
-git remote -v
-echo.
-
-echo --- Staging all files ---
 git add .
-
-echo --- Committing ---
-git commit -m "feat: Dar-Ark Byte school management platform" 2>&1
-
-echo.
-echo --- Pushing with upstream ---
-git push --set-upstream origin main 2>&1
+git commit -m "fix: add missing SecurityTransportHub page and resolve duplicate import"
+git push
 
 echo.
-echo === DONE. Check above for any errors. ===
-echo.
+echo === Done! Vercel will auto-redeploy ===
 pause

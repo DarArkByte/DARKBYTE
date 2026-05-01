@@ -11,7 +11,7 @@ echo [1/3] Staged all changes.
 git commit -m "feat: Dar-Ark Byte — school management platform update"
 echo [2/3] Committed.
 
-git push
+git push --set-upstream origin main
 echo [3/3] Pushed to remote!
 
 echo.

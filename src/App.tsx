@@ -53,16 +53,17 @@ function AppContent() {
   return (
     <Router>
       <Routes>
-        {/* Legacy generic login - could redirect to a portal finder later */}
-        <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
+        {/* Public Landing Page */}
+        <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
+
+        {/* Login */}
+        <Route path="/login" element={user ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
         
         {/* Independent School Portals */}
         <Route path="/portal/:schoolDomain/login" element={user ? <Navigate to="/dashboard" replace /> : <SchoolPortalLogin />} />
         
         {/* Secret Master Admin Login */}
         <Route path="/master-command/login" element={user ? <Navigate to="/dashboard" replace /> : <SuperAdminLogin />} />
-        
-        <Route path="/about" element={<LandingPage />} />
         
         {/* Protected Dashboard Routes */}
         <Route element={<DashboardLayout />}>

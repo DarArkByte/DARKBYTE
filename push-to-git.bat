@@ -2,18 +2,24 @@
 cd /d "C:\Users\DDL JUNIORATE\Desktop\Dar-Ark Byte"
 
 echo.
-echo === DAR-ARK BYTE — Git Push ===
+echo === DAR-ARK BYTE - Git Diagnostics ===
 echo.
 
+echo --- Current Remotes ---
+git remote -v
+echo.
+
+echo --- Staging all files ---
 git add .
-echo [1/3] Staged all changes.
 
-git commit -m "feat: Dar-Ark Byte — school management platform update"
-echo [2/3] Committed.
-
-git push --set-upstream origin main
-echo [3/3] Pushed to remote!
+echo --- Committing ---
+git commit -m "feat: Dar-Ark Byte school management platform" 2>&1
 
 echo.
-echo Done! Press any key to close.
+echo --- Pushing with upstream ---
+git push --set-upstream origin main 2>&1
+
+echo.
+echo === DONE. Check above for any errors. ===
+echo.
 pause

@@ -1,0 +1,117 @@
+{
+  "entities": {
+    "School": {
+      "title": "School",
+      "description": "Represents a school (tenant) in the system.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "logoUrl": { "type": "string" },
+        "branding": {
+          "type": "object",
+          "properties": {
+            "primaryColor": { "type": "string" },
+            "secondaryColor": { "type": "string" }
+          }
+        },
+        "settings": {
+          "type": "object",
+          "properties": {
+            "usePositions": { "type": "boolean" },
+            "reportCardTheme": { "enum": ["modern", "elite", "dynamic"] },
+            "gradingSystem": {
+              "type": "array",
+              "items": { "type": "object" }
+            }
+          }
+        },
+        "domain": { "type": "string" }
+      },
+      "required": ["name"]
+    },
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Extended user information stored in Firestore.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "role": { "enum": ["super-admin", "school-admin", "teacher", "parent", "student"] },
+        "schoolId": { "type": "string" },
+        "metadata": { "type": "object" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Class": {
+      "title": "Class",
+      "description": "Represents a class in a school.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "schoolId": { "type": "string" },
+        "name": { "type": "string" },
+        "formTeacherId": { "type": "string" }
+      },
+      "required": ["schoolId", "name"]
+    },
+    "Subject": {
+      "title": "Subject",
+      "description": "Represents a subject in a school.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "schoolId": { "type": "string" },
+        "name": { "type": "string" }
+      },
+      "required": ["schoolId", "name"]
+    },
+    "Result": {
+      "title": "Result",
+      "description": "Represents a student's score for a subject in a term.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "schoolId": { "type": "string" },
+        "studentId": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "classId": { "type": "string" },
+        "sessionId": { "type": "string" },
+        "termId": { "type": "string" },
+        "ca1": { "type": "number" },
+        "ca2": { "type": "number" },
+        "assignment": { "type": "number" },
+        "exam": { "type": "number" },
+        "total": { "type": "number" },
+        "grade": { "type": "string" },
+        "status": { "enum": ["draft", "reviewed", "approved", "published"] },
+        "teacherId": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["schoolId", "studentId", "subjectId", "sessionId", "termId"]
+    }
+  },
+  "firestore": {
+    "/schools/{schoolId}": {
+      "schema": "School",
+      "description": "Global school configurations."
+    },
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profiles and roles."
+    },
+    "/schools/{schoolId}/classes/{classId}": {
+      "schema": "Class",
+      "description": "Classes within a school."
+    },
+    "/schools/{schoolId}/subjects/{subjectId}": {
+      "schema": "Subject",
+      "description": "Subjects within a school."
+    },
+    "/schools/{schoolId}/results/{resultId}": {
+      "schema": "Result",
+      "description": "Student results."
+    }
+  }
+}

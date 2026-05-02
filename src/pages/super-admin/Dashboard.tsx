@@ -1,4 +1,6 @@
-import { Database, ShieldAlert, Activity, Users, Settings2, Globe, Search, PowerOff, Power, Layout } from 'lucide-react';
+import React, { useState } from 'react';
+import { useAuth } from '../../hooks/useAuth';
+import { Database, ShieldAlert, Activity, Users, Settings2, Globe, Search, PowerOff, Power, Layout, CheckCircle2, KeyRound } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface TenantSchool {
@@ -11,6 +13,9 @@ interface TenantSchool {
   landingPageTheme: string;
 }
 
+export default function SuperAdminDashboard() {
+  const [search, setSearch] = useState('');
+  const [editingTheme, setEditingTheme] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'schools' | 'users'>('schools');
   const { resetPassword } = useAuth();
   const [success, setSuccess] = useState<string | null>(null);

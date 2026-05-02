@@ -33,7 +33,7 @@ import SubjectAllocationPage from './pages/academics/SubjectAllocationPage';
 import FeeManager from './pages/finance/FeeManager';
 import StorePage from './pages/inventory/StorePage';
 import StaffManagement from './pages/staff/StaffManagement';
-import SecurityTransportHub from './pages/security/SecurityTransportHub';
+import SecurityTransportHub from './pages/security-module/SecurityTransportHub';
 import { SchoolProvider } from './hooks/useSchool';
 
 function AppContent() {

@@ -35,11 +35,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           if (profileDoc.exists()) {
             setUserProfile(profileDoc.data() as UserProfile);
           } else {
+            const isMasterAdmin = ['VyWco6tQmGQDM5xq7N0SbOntJmv1', 'emBwTzHyq2WAqqVzQe3s5HfIWmr1'].includes(user.uid);
             const newProfile: UserProfile = {
               uid: user.uid,
               email: user.email || '',
               displayName: user.displayName || 'User',
-              role: ['VyWco6tQmGQDM5xq7N0SbOntJmv1', 'emBwTzHyq2WAqqVzQe3s5HfIWmr1'].includes(user.uid) ? 'super-admin' : 'teacher', 
+              role: isMasterAdmin ? 'super-admin' : 'teacher', 
               metadata: { firstLogin: new Date().toISOString() }
             };
             await setDoc(doc(db, 'users', user.uid), newProfile);

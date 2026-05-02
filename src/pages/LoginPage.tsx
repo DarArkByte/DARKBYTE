@@ -73,17 +73,19 @@ export default function LoginPage() {
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#facc15] to-yellow-200 underline decoration-yellow-500/30 underline-offset-8">YOUR SCHOOL.</span>
           </h2>
           
-          <div className="space-y-6 max-w-md">
+          <div className="space-y-5 max-w-md">
             {[
-              { icon: Zap, text: 'Real-time Result Processing & Vetting' },
-              { icon: ShieldCheck, text: 'Enterprise-Grade Data Isolation' },
-              { icon: Globe, text: 'Branded Portals for Every School' }
+              { icon: Zap, text: 'Real-time Result Processing' },
+              { icon: Layout, text: 'Mobile, Web & Desktop App Dev' },
+              { icon: ShieldCheck, text: 'Robotics & Coding Academy' },
+              { icon: Globe, text: 'Professional CBT Training & Exams' },
+              { icon: ShieldCheck, text: 'Enterprise Data Isolation' }
             ].map((item, i) => (
               <div key={i} className="flex items-center gap-4 group">
-                <div className="bg-white/5 p-3 rounded-xl border border-white/10 group-hover:bg-[#d946ef] transition-all">
-                  <item.icon className="w-5 h-5 text-white" />
+                <div className="bg-white/5 p-2.5 rounded-xl border border-white/10 group-hover:bg-[#d946ef] transition-all">
+                  <item.icon className="w-4 h-4 text-white" />
                 </div>
-                <p className="text-slate-300 font-bold tracking-tight">{item.text}</p>
+                <p className="text-slate-300 font-bold tracking-tight text-sm">{item.text}</p>
               </div>
             ))}
           </div>

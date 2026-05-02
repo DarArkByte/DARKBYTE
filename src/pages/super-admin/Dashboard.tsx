@@ -19,7 +19,6 @@ import {
   Activity
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
-import { motion, AnimatePresence } from 'framer-motion';
 
 interface TenantSchool {
   id: string;
@@ -41,7 +40,6 @@ const stats = [
 export default function SuperAdminDashboard() {
   const [activeTab, setActiveTab] = useState<'schools' | 'users'>('schools');
   const [search, setSearch] = useState('');
-  const [editingTheme, setEditingTheme] = useState<string | null>(null);
   const { resetPassword } = useAuth();
   const [success, setSuccess] = useState<string | null>(null);
 
@@ -76,25 +74,14 @@ export default function SuperAdminDashboard() {
   return (
     <div className="space-y-10 pb-24 font-sans">
       {/* Premium Hero Section */}
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.98 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="relative overflow-hidden rounded-[48px] bg-gradient-to-br from-[#1e1b4b] via-[#1e1b4b] to-indigo-900 p-10 md:p-16 text-white shadow-2xl shadow-indigo-950/20"
-      >
+      <div className="relative overflow-hidden rounded-[48px] bg-gradient-to-br from-[#1e1b4b] via-[#1e1b4b] to-indigo-900 p-10 md:p-16 text-white shadow-2xl">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#d946ef]/10 rounded-full blur-[120px] -mr-40 -mt-40" />
-        <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-blue-500/10 rounded-full blur-[100px] -ml-20 -mb-20" />
-        
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-10">
           <div className="max-w-2xl">
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full mb-6 backdrop-blur-md border border-white/5"
-            >
+            <div className="inline-flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full mb-6 border border-white/5">
               <ShieldCheck className="w-4 h-4 text-[#d946ef]" />
               <span className="text-[10px] font-black uppercase tracking-widest">Global Master Security Active</span>
-            </motion.div>
+            </div>
             <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-6 leading-[0.9]">
               WELCOME TO THE <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d946ef] to-indigo-400 italic">COMMAND CENTER.</span>
@@ -107,7 +94,7 @@ export default function SuperAdminDashboard() {
           <div className="flex gap-4">
             <button 
               onClick={() => setActiveTab('schools')}
-              className={`px-10 py-5 rounded-3xl font-black text-sm uppercase tracking-widest transition-all ${activeTab === 'schools' ? 'bg-[#d946ef] text-white shadow-xl shadow-magenta-500/20' : 'bg-white/5 hover:bg-white/10 border border-white/10'}`}
+              className={`px-10 py-5 rounded-3xl font-black text-sm uppercase tracking-widest transition-all ${activeTab === 'schools' ? 'bg-[#d946ef] text-white' : 'bg-white/5 hover:bg-white/10 border border-white/10'}`}
             >
               Node Manager
             </button>
@@ -119,52 +106,37 @@ export default function SuperAdminDashboard() {
             </button>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {success && (
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="bg-emerald-500 text-white p-6 rounded-[32px] font-black text-center shadow-xl shadow-emerald-500/20">
+        <div className="bg-emerald-500 text-white p-6 rounded-[32px] font-black text-center shadow-xl">
           {success}
-        </motion.div>
+        </div>
       )}
 
       {/* Stats Cluster */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {stats.map((stat, i) => (
-          <motion.div 
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 + 0.3 }}
-            className="bg-white p-10 rounded-[48px] shadow-sm border border-slate-100 hover:shadow-2xl hover:-translate-y-2 transition-all group relative overflow-hidden"
-          >
+          <div key={i} className="bg-white p-10 rounded-[48px] shadow-sm border border-slate-100 relative overflow-hidden group">
             <div className={`absolute top-0 left-0 w-2 h-full ${stat.color}`} />
             <div className="flex items-center justify-between mb-8">
-              <div className={`${stat.color} p-4 rounded-2xl shadow-lg shadow-black/5`}>
+              <div className={`${stat.color} p-4 rounded-2xl`}>
                 <stat.icon className="w-6 h-6 text-white" />
               </div>
-              <div className="h-10 w-10 bg-slate-50 rounded-full flex items-center justify-center group-hover:bg-indigo-50 transition-colors">
-                <ArrowUpRight className="w-5 h-5 text-slate-300 group-hover:text-indigo-600" />
-              </div>
+              <ArrowUpRight className="w-5 h-5 text-slate-300" />
             </div>
             <h3 className="text-slate-400 font-black text-[10px] uppercase tracking-widest mb-1">{stat.label}</h3>
             <p className="text-4xl font-black text-slate-900 mb-2">{stat.value}</p>
             <div className="flex items-center gap-2">
               <span className="text-xs font-black text-emerald-500">{stat.trend}</span>
-              <div className="h-1 flex-1 bg-slate-100 rounded-full overflow-hidden">
-                <motion.div 
-                  initial={{ width: 0 }}
-                  whileInView={{ width: '70%' }}
-                  className={`h-full ${stat.color}`} 
-                />
-              </div>
+              <div className="h-1 flex-1 bg-slate-100 rounded-full" />
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
 
       {activeTab === 'schools' ? (
         <div className="grid lg:grid-cols-3 gap-10">
-          {/* Main Schools Grid */}
           <div className="lg:col-span-2 space-y-8">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 px-4">
               <h3 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-3">
@@ -178,20 +150,14 @@ export default function SuperAdminDashboard() {
                   placeholder="Search node..." 
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="pl-12 pr-6 py-3.5 bg-white border border-slate-200 rounded-full focus:ring-2 focus:ring-[#1e1b4b] w-64 font-bold text-sm"
+                  className="pl-12 pr-6 py-3.5 bg-white border border-slate-200 rounded-full w-64 font-bold text-sm"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {filteredTenants.map((tenant, idx) => (
-                <motion.div 
-                  key={tenant.id}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  className={`bg-white rounded-[56px] p-10 shadow-sm border border-slate-100 hover:shadow-xl transition-all group ${!tenant.isActive && 'opacity-60 grayscale'}`}
-                >
+              {filteredTenants.map((tenant) => (
+                <div key={tenant.id} className={`bg-white rounded-[56px] p-10 shadow-sm border border-slate-100 transition-all ${!tenant.isActive && 'opacity-60 grayscale'}`}>
                   <div className="flex items-center gap-5 mb-10">
                     <div className="w-16 h-16 rounded-[24px] shadow-lg flex items-center justify-center text-white font-black text-2xl" style={{ backgroundColor: tenant.color }}>
                       {tenant.name.charAt(0)}
@@ -222,11 +188,11 @@ export default function SuperAdminDashboard() {
                       {tenant.isActive ? <PowerOff className="w-5 h-5" /> : <Power className="w-5 h-5 text-emerald-500" />}
                     </button>
                   </div>
-                </motion.div>
+                </div>
               ))}
               
-              <button className="bg-slate-50 border-4 border-dashed border-slate-200 rounded-[56px] p-10 flex flex-col items-center justify-center gap-4 hover:bg-slate-100 hover:border-[#d946ef]/20 transition-all group">
-                <div className="w-16 h-16 bg-white rounded-full shadow-md flex items-center justify-center text-slate-300 group-hover:text-[#d946ef] transition-colors">
+              <button className="bg-slate-50 border-4 border-dashed border-slate-200 rounded-[56px] p-10 flex flex-col items-center justify-center gap-4 hover:bg-slate-100 transition-all">
+                <div className="w-16 h-16 bg-white rounded-full shadow-md flex items-center justify-center text-slate-300">
                   <Plus className="w-8 h-8" />
                 </div>
                 <p className="font-black text-slate-400 uppercase tracking-widest text-sm">Onboard School</p>
@@ -234,7 +200,7 @@ export default function SuperAdminDashboard() {
             </div>
           </div>
 
-          {/* Platform Intelligence Sidebar */}
+          {/* Sidebar Intelligence */}
           <div className="space-y-10">
              <div className="bg-white rounded-[56px] p-10 shadow-sm border border-slate-100">
                 <h3 className="text-xl font-black text-slate-900 mb-8 flex items-center gap-3">
@@ -252,19 +218,13 @@ export default function SuperAdminDashboard() {
                          <p className="text-xs font-black text-slate-500 uppercase tracking-widest">{item.label}</p>
                          <p className="text-sm font-black text-slate-900">{item.val}</p>
                        </div>
-                       <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                          <motion.div 
-                            initial={{ width: 0 }}
-                            whileInView={{ width: '85%' }}
-                            className={`h-full ${item.color}`} 
-                          />
-                       </div>
+                       <div className="h-2 bg-slate-100 rounded-full" />
                      </div>
                    ))}
                 </div>
              </div>
 
-             <div className="bg-[#1e1b4b] rounded-[56px] p-10 text-white shadow-2xl shadow-indigo-900/20">
+             <div className="bg-[#1e1b4b] rounded-[56px] p-10 text-white shadow-2xl">
                 <h3 className="text-xl font-black mb-8 flex items-center gap-3">
                   <Activity className="w-5 h-5 text-[#d946ef]" />
                   Global Activity

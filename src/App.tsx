@@ -69,7 +69,7 @@ function AppContent() {
         
         {/* Protected Dashboard Routes */}
         <Route element={<DashboardLayout />}>
-          <Route path="/dashboard" element={<DashboardRedirect />} />
+          <Route path="/dashboard" element={<DashboardHome />} />
           <Route path="/classes" element={<ClassesPage />} />
           <Route path="/timetables" element={<TimetablesPage />} />
           <Route path="/exams/schedule" element={<ExamSchedulePage />} />
@@ -89,19 +89,11 @@ function AppContent() {
           <Route path="/security" element={<SecurityTransportHub />} />
           <Route path="/transport" element={<SecurityTransportHub />} />
           
-          {/* Super Admin */}
+          {/* Direct Role Routes */}
           <Route path="/super-admin/*" element={<SuperAdminDashboard />} />
-          
-          {/* School Admin */}
           <Route path="/school-admin/*" element={<SchoolAdminDashboard />} />
-          
-          {/* Teacher */}
           <Route path="/teacher/*" element={<TeacherDashboard />} />
-          <Route path="/teacher/results/entry/:classId/:subjectId" element={<TeacherResultEntry />} />
-          
-          {/* Parent */}
           <Route path="/parent/*" element={<ParentDashboard />} />
-          <Route path="/parent/results/view/:studentId" element={<ResultView />} />
         </Route>
         
         <Route path="*" element={<Navigate to="/" replace />} />
@@ -110,17 +102,16 @@ function AppContent() {
   );
 }
 
-function DashboardRedirect() {
+function DashboardHome() {
   const { userProfile } = useAuth();
   
   if (!userProfile) return <Navigate to="/login" replace />;
   
   switch (userProfile.role) {
-    case 'super-admin': return <Navigate to="/super-admin" replace />;
-    case 'school-admin': return <Navigate to="/school-admin" replace />;
-    case 'teacher': return <Navigate to="/teacher" replace />;
-    case 'parent': return <Navigate to="/parent" replace />;
-    case 'student': return <Navigate to="/student" replace />; // Implement later
+    case 'super-admin': return <SuperAdminDashboard />;
+    case 'school-admin': return <SchoolAdminDashboard />;
+    case 'teacher': return <TeacherDashboard />;
+    case 'parent': return <ParentDashboard />;
     default: return <Navigate to="/" replace />;
   }
 }

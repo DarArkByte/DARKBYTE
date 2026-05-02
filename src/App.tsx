@@ -42,10 +42,11 @@ function AppContent() {
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-gray-50">
+      <div className="flex h-screen items-center justify-center bg-[#1e1b4b]">
         <div className="text-center">
-          <div className="h-12 w-12 animate-spin rounded-full border-t-2 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600 font-medium font-sans">Loading Dar-Ark Byte...</p>
+          <div className="h-16 w-16 animate-spin rounded-full border-t-4 border-b-4 border-[#d946ef] mx-auto mb-6"></div>
+          <h2 className="text-white text-2xl font-black tracking-tighter uppercase mb-2">Dar-Ark Bytes</h2>
+          <p className="text-slate-400 font-bold uppercase tracking-[0.3em] text-[10px]">Initializing Secure Core...</p>
         </div>
       </div>
     );

@@ -30,22 +30,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
       if (user) {
-        // Fetch or create profile
-        const profileDoc = await getDoc(doc(db, 'users', user.uid));
-        if (profileDoc.exists()) {
-          setUserProfile(profileDoc.data() as UserProfile);
-        } else {
-          // If first login, decide role (default to teacher for demo if not already handled)
-          // In a real app, this would be invited or signed up via school admin
-          const newProfile: UserProfile = {
-            uid: user.uid,
-            email: user.email || '',
-            displayName: user.displayName || 'User',
-            role: ['VyWco6tQmGQDM5xq7N0SbOntJmv1', 'emBwTzHyq2WAqqVzQe3s5HfIWmr1'].includes(user.uid) ? 'super-admin' : 'teacher', 
-            metadata: { firstLogin: new Date().toISOString() }
-          };
-          await setDoc(doc(db, 'users', user.uid), newProfile);
-          setUserProfile(newProfile);
+        try {
+          const profileDoc = await getDoc(doc(db, 'users', user.uid));
+          if (profileDoc.exists()) {
+            setUserProfile(profileDoc.data() as UserProfile);
+          } else {
+            const newProfile: UserProfile = {
+              uid: user.uid,
+              email: user.email || '',
+              displayName: user.displayName || 'User',
+              role: ['VyWco6tQmGQDM5xq7N0SbOntJmv1', 'emBwTzHyq2WAqqVzQe3s5HfIWmr1'].includes(user.uid) ? 'super-admin' : 'teacher', 
+              metadata: { firstLogin: new Date().toISOString() }
+            };
+            await setDoc(doc(db, 'users', user.uid), newProfile);
+            setUserProfile(newProfile);
+          }
+        } catch (error) {
+          console.error("Auth profile fetch error:", error);
         }
       } else {
         setUserProfile(null);
@@ -53,7 +54,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    // Safety timeout: Ensure app never hangs on loading screen
+    const safetyTimer = setTimeout(() => setLoading(false), 5000);
+
+    return () => {
+      unsubscribe();
+      clearTimeout(safetyTimer);
+    };
   }, []);
 
   const signIn = async () => {

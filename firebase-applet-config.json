@@ -1,10 +1,10 @@
 {
-  "projectId": "gen-lang-client-0983074712",
-  "appId": "1:574035317036:web:89b3b598f6ce436e861c89",
-  "apiKey": "AIzaSyDujNcE-HZaUJyCxyAWsMf9RTlZGvQDJBo",
-  "authDomain": "gen-lang-client-0983074712.firebaseapp.com",
-  "firestoreDatabaseId": "ai-studio-90579325-60a6-4164-a70e-6c7626d1d7b7",
-  "storageBucket": "gen-lang-client-0983074712.firebasestorage.app",
-  "messagingSenderId": "574035317036",
-  "measurementId": ""
+  "projectId": "dar-ark-byte",
+  "appId": "1:648499583605:web:c71b2039013a005a0d363c",
+  "apiKey": "AIzaSyAvy-syLTPrma_qcsV8Das3hcTLR3TUN1w",
+  "authDomain": "dar-ark-byte.firebaseapp.com",
+  "firestoreDatabaseId": "(default)",
+  "storageBucket": "dar-ark-byte.firebasestorage.app",
+  "messagingSenderId": "648499583605",
+  "measurementId": "G-YY5SR6ZGMR"
 }

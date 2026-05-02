@@ -103,8 +103,9 @@ function AppContent() {
 }
 
 function DashboardHome() {
-  const { userProfile } = useAuth();
+  const { userProfile, loading } = useAuth();
   
+  if (loading) return null;
   if (!userProfile) return <Navigate to="/login" replace />;
   
   switch (userProfile.role) {
@@ -112,7 +113,13 @@ function DashboardHome() {
     case 'school-admin': return <SchoolAdminDashboard />;
     case 'teacher': return <TeacherDashboard />;
     case 'parent': return <ParentDashboard />;
-    default: return <Navigate to="/" replace />;
+    default: return (
+      <div className="p-10 text-center">
+        <h2 className="text-2xl font-black text-slate-900">Unknown Role Detected</h2>
+        <p className="text-slate-500">Your account role ({userProfile.role}) does not have a mapped dashboard.</p>
+        <button onClick={() => window.location.href = '/'} className="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-xl">Go Home</button>
+      </div>
+    );
   }
 }
 

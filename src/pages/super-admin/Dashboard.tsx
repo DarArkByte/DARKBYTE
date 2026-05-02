@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
 import { 
   Building2, 
   Users, 
@@ -20,6 +19,7 @@ import {
   Activity
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface TenantSchool {
   id: string;

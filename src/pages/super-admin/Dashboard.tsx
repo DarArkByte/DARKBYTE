@@ -320,6 +320,4 @@ export default function SuperAdminDashboard() {
       )}
     </div>
   );
-}    </div>
-  );
 }

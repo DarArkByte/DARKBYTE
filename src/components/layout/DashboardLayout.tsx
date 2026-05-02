@@ -28,7 +28,6 @@ import {
   FileSpreadsheet,
   MessageSquareQuote,
   ClipboardCheck,
-  BookOpen,
   Wallet,
   Package,
   UserCheck,
@@ -42,10 +41,10 @@ export default function DashboardLayout() {
   const { school } = useSchool();
   const location = useLocation();
   const navigate = useNavigate();
-  const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const [isSidebarOpen, setSidebarOpen] = useState(false); // Default to closed on mobile
 
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+    { name: 'Command Center', href: userProfile?.role === 'super-admin' ? '/super-admin' : '/dashboard', icon: LayoutDashboard },
     { name: 'Classes', href: '/classes', icon: Users, roles: ['school-admin', 'teacher'] },
     { name: 'Timetables', href: '/timetables', icon: Calendar, roles: ['school-admin', 'teacher', 'student'] },
     { name: 'Exam Schedule', href: '/exams/schedule', icon: FileText, roles: ['school-admin', 'teacher', 'student'] },
@@ -62,10 +61,9 @@ export default function DashboardLayout() {
     { name: 'Staff & Payroll', href: '/staff', icon: UserCheck, roles: ['school-admin'] },
     { name: 'Security', href: '/security', icon: Shield, roles: ['school-admin'] },
     { name: 'Transport', href: '/transport', icon: Bus, roles: ['school-admin'] },
-    { name: 'Lesson Notes', href: '/notes', icon: BookOpen, roles: ['teacher', 'student'] },
     { name: 'Communication', href: '/messages', icon: MessageSquare },
-    { name: 'Media', href: '/media', icon: Folder, roles: ['school-admin', 'teacher'] },
-    { name: 'Academic Config', href: '/settings/academic', icon: Settings, roles: ['school-admin', 'super-admin'] },
+    { name: 'Media Center', href: '/media', icon: Folder, roles: ['school-admin', 'teacher'] },
+    { name: 'System Config', href: '/settings/academic', icon: Settings, roles: ['school-admin', 'super-admin'] },
   ].filter(item => !item.roles || (userProfile?.role && item.roles.includes(userProfile.role)));
 
   const handleLogout = async () => {
@@ -74,94 +72,105 @@ export default function DashboardLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <AnimatePresence mode="wait">
+    <div className="min-h-screen bg-[#f8fafc] flex font-sans">
+      {/* Mobile Sidebar Overlay */}
+      <AnimatePresence>
         {isSidebarOpen && (
-          <motion.aside
-            initial={{ w: 0, opacity: 0 }}
-            animate={{ w: 280, opacity: 1 }}
-            exit={{ w: 0, opacity: 0 }}
-            className="w-72 bg-white border-r border-gray-100 flex flex-col shrink-0 overflow-hidden"
-          >
-            <div className="p-6">
-              <div className="flex items-center gap-3 mb-10">
-                <div className="bg-indigo-600 p-2 rounded-lg shrink-0">
-                  <GraduationCap className="text-white w-5 h-5" />
-                </div>
-                <span className="font-sans font-bold text-lg tracking-tight text-gray-900 truncate">
-                  {school?.name || 'Dar-Ark Byte'}
-                </span>
-              </div>
-
-              <nav className="space-y-1">
-                {navigation.map((item) => {
-                  const isActive = location.pathname.startsWith(item.href);
-                  return (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-xl font-sans font-medium transition-all group ${
-                        isActive 
-                          ? 'bg-indigo-50 text-indigo-600' 
-                          : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
-                      }`}
-                    >
-                      <item.icon className={`w-5 h-5 ${isActive ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-600'}`} />
-                      {item.name}
-                    </Link>
-                  );
-                })}
-              </nav>
-            </div>
-
-            <div className="mt-auto p-6 border-t border-gray-50">
-              <button 
-                onClick={handleLogout}
-                className="flex items-center gap-3 px-4 py-3 w-full rounded-xl font-sans font-medium text-gray-500 hover:bg-red-50 hover:text-red-600 transition-all group"
-              >
-                <LogOut className="w-5 h-5 text-gray-400 group-hover:text-red-600" />
-                Logout
-              </button>
-            </div>
-          </motion.aside>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSidebarOpen(false)}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] lg:hidden"
+          />
         )}
       </AnimatePresence>
 
+      {/* Sidebar */}
+      <aside className={`
+        fixed inset-y-0 left-0 z-[70] w-[280px] bg-[#1e1b4b] transition-transform duration-300 lg:static lg:translate-x-0
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+        flex flex-col border-r border-white/5
+      `}>
+        <div className="p-8">
+          <div className="flex items-center gap-3 mb-12">
+            <div className="bg-[#d946ef] p-2.5 rounded-2xl shadow-xl shadow-magenta-500/20">
+               <GraduationCap className="text-white w-6 h-6" />
+            </div>
+            <span className="font-black text-xl tracking-tighter text-white uppercase truncate">
+              {school?.name || 'Dar-Ark Byte'}
+            </span>
+          </div>
+
+          <nav className="space-y-1.5 overflow-y-auto max-h-[calc(100vh-250px)] pr-2 scrollbar-hide">
+            {navigation.map((item) => {
+              const isActive = location.pathname.startsWith(item.href);
+              return (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  onClick={() => setSidebarOpen(false)}
+                  className={`flex items-center gap-3 px-5 py-3.5 rounded-2xl font-bold text-[13px] transition-all group ${
+                    isActive 
+                      ? 'bg-white text-[#1e1b4b] shadow-xl shadow-white/5' 
+                      : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <item.icon className={`w-5 h-5 ${isActive ? 'text-[#d946ef]' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                  <span className="tracking-tight">{item.name}</span>
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+
+        <div className="mt-auto p-8 border-t border-white/5">
+          <button 
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-5 py-4 w-full rounded-2xl font-bold text-[13px] text-slate-500 hover:bg-red-500/10 hover:text-red-400 transition-all group"
+          >
+            <LogOut className="w-5 h-5 text-slate-600 group-hover:text-red-400" />
+            Logout Securely
+          </button>
+        </div>
+      </aside>
+
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-8 sticky top-0 z-10 shadow-sm shadow-gray-100/50">
+      <div className="flex-1 flex flex-col min-w-0 relative">
+        <header className="h-20 bg-white/80 backdrop-blur-xl border-b border-slate-200 flex items-center justify-between px-6 lg:px-10 sticky top-0 z-[50]">
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setSidebarOpen(!isSidebarOpen)}
-              className="p-2 hover:bg-gray-100 rounded-lg text-gray-500 transition-colors"
+              className="lg:hidden p-2.5 bg-slate-100 hover:bg-slate-200 rounded-xl text-slate-600 transition-colors"
             >
-              {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              <Menu className="w-5 h-5" />
             </button>
-            <h2 className="font-sans font-bold text-gray-900 text-lg uppercase tracking-wider">
-              {navigation.find(item => location.pathname.startsWith(item.href))?.name || 'Overview'}
-            </h2>
+            <div>
+              <h2 className="font-black text-slate-900 text-lg uppercase tracking-tight">
+                {navigation.find(item => location.pathname === item.href)?.name || 'Command Center'}
+              </h2>
+            </div>
           </div>
 
-          <div className="flex items-center gap-6">
-            <button className="relative p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-xl transition-all">
+          <div className="flex items-center gap-4 lg:gap-8">
+            <button className="relative p-2.5 text-slate-400 hover:text-slate-600 bg-slate-50 hover:bg-slate-100 rounded-2xl transition-all hidden sm:block">
               <Bell className="w-5 h-5" />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-indigo-600 rounded-full border-2 border-white" />
+              <span className="absolute top-3 right-3 w-2 h-2 bg-[#d946ef] rounded-full border-2 border-white" />
             </button>
             
-            <div className="flex items-center gap-3">
-              <div className="text-right hidden sm:block">
-                <p className="text-sm font-sans font-bold text-gray-900">{userProfile?.displayName}</p>
-                <p className="text-[10px] font-sans font-bold text-indigo-500 uppercase tracking-widest">{userProfile?.role}</p>
+            <div className="flex items-center gap-3 pl-4 border-l border-slate-100">
+              <div className="text-right hidden md:block">
+                <p className="text-sm font-black text-slate-900">{userProfile?.displayName}</p>
+                <p className="text-[10px] font-black text-[#d946ef] uppercase tracking-widest">{userProfile?.role}</p>
               </div>
-              <div className="h-10 w-10 bg-indigo-100 border-2 border-white rounded-xl shadow-sm flex items-center justify-center text-indigo-600 font-bold">
+              <div className="h-11 w-11 bg-indigo-600 rounded-2xl shadow-lg shadow-indigo-500/30 flex items-center justify-center text-white font-black text-lg">
                 {userProfile?.displayName ? userProfile.displayName[0] : 'U'}
               </div>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-8 max-w-7xl w-full mx-auto">
+        <main className="flex-1 overflow-y-auto p-6 lg:p-10 max-w-7xl w-full mx-auto">
           <Outlet />
         </main>
       </div>

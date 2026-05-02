@@ -39,7 +39,8 @@ export default function DashboardLayout() {
 
   const navigation = [
     { name: 'Command Center', href: userProfile?.role === 'super-admin' ? '/super-admin' : '/dashboard', icon: LayoutDashboard },
-    { name: 'Classes', href: '/classes', icon: Users, roles: ['school-admin', 'teacher'] },
+    { name: 'Students', href: '/students', icon: Users, roles: ['school-admin', 'teacher'] },
+    { name: 'Classes', href: '/classes', icon: Layers, roles: ['school-admin', 'teacher'] },
     { name: 'Timetables', href: '/timetables', icon: Calendar, roles: ['school-admin', 'teacher', 'student'] },
     { name: 'Exam Schedule', href: '/exams/schedule', icon: FileText, roles: ['school-admin', 'teacher', 'student'] },
     { name: 'Results', href: '/results/entry', icon: FileSpreadsheet, roles: ['school-admin', 'teacher'] },

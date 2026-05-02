@@ -1,24 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Building2, 
   Users, 
   Wallet, 
-  TrendingUp, 
   ShieldCheck, 
   Zap, 
   ArrowUpRight,
-  Globe,
   Plus,
-  Database,
   Search,
   Power,
   PowerOff,
-  Layout,
   KeyRound,
-  CheckCircle2,
-  Activity
+  Activity,
+  Loader2,
+  Globe
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
+import { db } from '../../lib/firebase';
+import { collection, query, getDocs, addDoc, doc, updateDoc, onSnapshot } from 'firebase/firestore';
 
 interface TenantSchool {
   id: string;
@@ -27,49 +26,63 @@ interface TenantSchool {
   studentsCount: number;
   isActive: boolean;
   color: string;
-  landingPageTheme: string;
 }
-
-const stats = [
-  { label: 'Registered Schools', value: '142', icon: Building2, color: 'bg-indigo-600', trend: '+12% this month' },
-  { label: 'Active Students', value: '12,840', icon: Users, color: 'bg-[#d946ef]', trend: '+8% growth' },
-  { label: 'Platform Revenue', value: '₦4.2M', icon: Wallet, color: 'bg-emerald-500', trend: '+15.2% yield' },
-  { label: 'System Uptime', value: '99.9%', icon: Zap, color: 'bg-[#facc15]', trend: 'All Nodes Live' },
-];
 
 export default function SuperAdminDashboard() {
   const [activeTab, setActiveTab] = useState<'schools' | 'users'>('schools');
   const [search, setSearch] = useState('');
   const { resetPassword } = useAuth();
+  const [tenants, setTenants] = useState<TenantSchool[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isOnboarding, setIsOnboarding] = useState(false);
+  const [newSchool, setNewSchool] = useState({ name: '', domain: '', color: '#4f46e5' });
   const [success, setSuccess] = useState<string | null>(null);
 
-  const [tenants, setTenants] = useState<TenantSchool[]>([
-    { id: '1', domain: 'excel-royal', name: 'Excel Royal Academy', studentsCount: 1540, isActive: true, color: '#4f46e5', landingPageTheme: 'theme-1' },
-    { id: '2', domain: 'springfield', name: 'Springfield High School', studentsCount: 850, isActive: false, color: '#059669', landingPageTheme: 'theme-2' },
-    { id: '3', domain: 'dar-ark', name: 'Dar-Ark Demo Academy', studentsCount: 120, isActive: true, color: '#dc2626', landingPageTheme: 'theme-3' },
-  ]);
+  useEffect(() => {
+    setLoading(true);
+    const unsubscribe = onSnapshot(collection(db, 'schools'), (snapshot) => {
+      const schoolsData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        name: doc.data().name,
+        domain: doc.data().domain || doc.id,
+        studentsCount: doc.data().studentsCount || 0,
+        isActive: doc.data().isActive !== false,
+        color: doc.data().branding?.primaryColor || '#4f46e5'
+      } as TenantSchool));
+      setTenants(schoolsData);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
 
-  const [users] = useState([
-    { id: 'u1', email: 'admin@excel.com', role: 'school-admin', school: 'Excel Royal' },
-    { id: 'u2', email: 'principal@spring.com', role: 'school-admin', school: 'Springfield' },
-    { id: 'u3', email: 'owner@darark.com', role: 'school-admin', school: 'Dar-Ark' },
-  ]);
-
-  const handleManualReset = async (email: string) => {
+  const handleOnboard = async () => {
+    if (!newSchool.name || !newSchool.domain) return;
     try {
-      await resetPassword(email);
-      setSuccess(`Reset link sent to ${email}`);
+      await addDoc(collection(db, 'schools'), {
+        name: newSchool.name,
+        domain: newSchool.domain.toLowerCase(),
+        isActive: true,
+        branding: { primaryColor: newSchool.color },
+        createdAt: new Date().toISOString()
+      });
+      setSuccess(`School Node [${newSchool.name}] Successfully Hosted`);
+      setIsOnboarding(false);
+      setNewSchool({ name: '', domain: '', color: '#4f46e5' });
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
-      alert('Error triggering reset');
+      alert('Hosting failed');
     }
   };
 
-  const toggleTenantStatus = (id: string) => {
-    setTenants(tenants.map(t => t.id === id ? { ...t, isActive: !t.isActive } : t));
+  const toggleStatus = async (id: string, current: boolean) => {
+    try {
+      await updateDoc(doc(db, 'schools', id), { isActive: !current });
+    } catch (err) {
+      alert('Status update failed');
+    }
   };
 
-  const filteredTenants = tenants.filter(t => t.name.toLowerCase().includes(search.toLowerCase()) || t.domain.toLowerCase().includes(search.toLowerCase()));
+  const filteredTenants = tenants.filter(t => t.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div className="space-y-10 pb-24 font-sans">
@@ -83,201 +96,124 @@ export default function SuperAdminDashboard() {
               <span className="text-[10px] font-black uppercase tracking-widest">Global Master Security Active</span>
             </div>
             <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-6 leading-[0.9]">
-              WELCOME TO THE <br />
+              DAR-ARK BYTE <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d946ef] to-indigo-400 italic">COMMAND CENTER.</span>
             </h1>
             <p className="text-slate-400 font-bold text-xl tracking-tight max-w-xl">
-              You are currently managing 142 school nodes across the global Dar-Ark Byte ecosystem.
+              You are currently managing {tenants.length} active school nodes across the platform.
             </p>
           </div>
           
           <div className="flex gap-4">
-            <button 
-              onClick={() => setActiveTab('schools')}
-              className={`px-10 py-5 rounded-3xl font-black text-sm uppercase tracking-widest transition-all ${activeTab === 'schools' ? 'bg-[#d946ef] text-white' : 'bg-white/5 hover:bg-white/10 border border-white/10'}`}
-            >
-              Node Manager
-            </button>
-            <button 
-              onClick={() => setActiveTab('users')}
-              className={`px-10 py-5 rounded-3xl font-black text-sm uppercase tracking-widest transition-all ${activeTab === 'users' ? 'bg-white text-[#1e1b4b]' : 'bg-white/5 hover:bg-white/10 border border-white/10'}`}
-            >
-              Access Keys
-            </button>
+            <button onClick={() => setActiveTab('schools')} className={`px-10 py-5 rounded-3xl font-black text-sm uppercase tracking-widest transition-all ${activeTab === 'schools' ? 'bg-[#d946ef] text-white shadow-xl shadow-magenta-500/20' : 'bg-white/5 hover:bg-white/10 border border-white/10'}`}>Schools</button>
+            <button onClick={() => setActiveTab('users')} className={`px-10 py-5 rounded-3xl font-black text-sm uppercase tracking-widest transition-all ${activeTab === 'users' ? 'bg-white text-[#1e1b4b]' : 'bg-white/5 hover:bg-white/10 border border-white/10'}`}>Security</button>
           </div>
         </div>
       </div>
 
       {success && (
-        <div className="bg-emerald-500 text-white p-6 rounded-[32px] font-black text-center shadow-xl">
+        <div className="bg-emerald-500 text-white p-6 rounded-[32px] font-black text-center shadow-xl animate-bounce">
           {success}
         </div>
       )}
 
-      {/* Stats Cluster */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        {stats.map((stat, i) => (
+      {isOnboarding && (
+        <div className="bg-white p-10 rounded-[56px] shadow-2xl border border-indigo-100 space-y-8">
+           <h3 className="text-2xl font-black text-slate-900 tracking-tight uppercase">Host New School Node</h3>
+           <div className="grid md:grid-cols-3 gap-6">
+              <input 
+                placeholder="School Legal Name"
+                value={newSchool.name}
+                onChange={(e) => setNewSchool({...newSchool, name: e.target.value})}
+                className="px-8 py-5 bg-slate-50 rounded-3xl font-bold border-none focus:ring-2 focus:ring-[#d946ef]"
+              />
+              <input 
+                placeholder="Desired Domain (e.g. excel)"
+                value={newSchool.domain}
+                onChange={(e) => setNewSchool({...newSchool, domain: e.target.value})}
+                className="px-8 py-5 bg-slate-50 rounded-3xl font-bold border-none focus:ring-2 focus:ring-[#d946ef]"
+              />
+              <button onClick={handleOnboard} className="bg-[#1e1b4b] text-white rounded-3xl font-black uppercase tracking-widest hover:bg-[#d946ef] transition-all">Launch Node</button>
+           </div>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {[
+          { label: 'Total Nodes', value: tenants.length, icon: Building2, color: 'bg-indigo-600' },
+          { label: 'Platform Users', value: '12.8k', icon: Users, color: 'bg-[#d946ef]' },
+          { label: 'Revenue Pool', value: '₦4.2M', icon: Wallet, color: 'bg-emerald-500' },
+          { label: 'System Health', value: 'Stable', icon: Zap, color: 'bg-[#facc15]' },
+        ].map((stat, i) => (
           <div key={i} className="bg-white p-10 rounded-[48px] shadow-sm border border-slate-100 relative overflow-hidden group">
             <div className={`absolute top-0 left-0 w-2 h-full ${stat.color}`} />
-            <div className="flex items-center justify-between mb-8">
-              <div className={`${stat.color} p-4 rounded-2xl`}>
-                <stat.icon className="w-6 h-6 text-white" />
-              </div>
-              <ArrowUpRight className="w-5 h-5 text-slate-300" />
-            </div>
             <h3 className="text-slate-400 font-black text-[10px] uppercase tracking-widest mb-1">{stat.label}</h3>
-            <p className="text-4xl font-black text-slate-900 mb-2">{stat.value}</p>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-black text-emerald-500">{stat.trend}</span>
-              <div className="h-1 flex-1 bg-slate-100 rounded-full" />
-            </div>
+            <p className="text-4xl font-black text-slate-900">{stat.value}</p>
           </div>
         ))}
       </div>
 
-      {activeTab === 'schools' ? (
-        <div className="grid lg:grid-cols-3 gap-10">
-          <div className="lg:col-span-2 space-y-8">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 px-4">
-              <h3 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-3">
-                <Building2 className="w-6 h-6 text-[#d946ef]" />
-                Registered School Nodes
-              </h3>
-              <div className="relative">
-                <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input 
-                  type="text" 
-                  placeholder="Search node..." 
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="pl-12 pr-6 py-3.5 bg-white border border-slate-200 rounded-full w-64 font-bold text-sm"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {filteredTenants.map((tenant) => (
-                <div key={tenant.id} className={`bg-white rounded-[56px] p-10 shadow-sm border border-slate-100 transition-all ${!tenant.isActive && 'opacity-60 grayscale'}`}>
-                  <div className="flex items-center gap-5 mb-10">
-                    <div className="w-16 h-16 rounded-[24px] shadow-lg flex items-center justify-center text-white font-black text-2xl" style={{ backgroundColor: tenant.color }}>
-                      {tenant.name.charAt(0)}
-                    </div>
-                    <div>
-                      <h4 className="text-xl font-black text-slate-900 leading-tight">{tenant.name}</h4>
-                      <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">{tenant.domain}.darark.com</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center justify-between p-6 bg-slate-50 rounded-[32px] mb-8">
-                    <div className="text-center">
-                      <p className="text-[10px] font-black text-slate-400 uppercase mb-1">Students</p>
-                      <p className="font-black text-slate-900">{tenant.studentsCount}</p>
-                    </div>
-                    <div className="w-px h-8 bg-slate-200" />
-                    <div className="text-center">
-                      <p className="text-[10px] font-black text-slate-400 uppercase mb-1">Status</p>
-                      <p className={`font-black uppercase text-[10px] ${tenant.isActive ? 'text-emerald-500' : 'text-rose-500'}`}>
-                        {tenant.isActive ? 'Active' : 'Suspended'}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-4">
-                    <button className="flex-1 py-4 bg-[#1e1b4b] text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-black transition-all">Portal</button>
-                    <button onClick={() => toggleTenantStatus(tenant.id)} className="p-4 bg-slate-100 rounded-2xl hover:bg-slate-200 transition-all text-slate-600">
-                      {tenant.isActive ? <PowerOff className="w-5 h-5" /> : <Power className="w-5 h-5 text-emerald-500" />}
-                    </button>
-                  </div>
-                </div>
-              ))}
-              
-              <button className="bg-slate-50 border-4 border-dashed border-slate-200 rounded-[56px] p-10 flex flex-col items-center justify-center gap-4 hover:bg-slate-100 transition-all">
-                <div className="w-16 h-16 bg-white rounded-full shadow-md flex items-center justify-center text-slate-300">
-                  <Plus className="w-8 h-8" />
-                </div>
-                <p className="font-black text-slate-400 uppercase tracking-widest text-sm">Onboard School</p>
-              </button>
-            </div>
+      <div className="bg-white rounded-[56px] shadow-sm border border-slate-100 overflow-hidden">
+        <div className="p-10 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
+          <div className="flex items-center gap-4">
+            <Search className="w-5 h-5 text-slate-400" />
+            <input 
+              placeholder="Search schools..." 
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="bg-transparent border-none font-bold text-slate-600 focus:ring-0 w-64"
+            />
           </div>
+          <button onClick={() => setIsOnboarding(true)} className="flex items-center gap-3 bg-[#1e1b4b] text-white px-8 py-4 rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-black transition-all">
+            <Plus className="w-4 h-4" /> Host School
+          </button>
+        </div>
 
-          {/* Sidebar Intelligence */}
-          <div className="space-y-10">
-             <div className="bg-white rounded-[56px] p-10 shadow-sm border border-slate-100">
-                <h3 className="text-xl font-black text-slate-900 mb-8 flex items-center gap-3">
-                  <Zap className="w-5 h-5 text-[#facc15]" />
-                  Platform Health
-                </h3>
-                <div className="space-y-10">
-                   {[
-                     { label: 'Database Latency', val: '12ms', color: 'bg-emerald-500' },
-                     { label: 'Compute Power', val: '42%', color: 'bg-indigo-500' },
-                     { label: 'Isolation Layer', val: 'Secured', color: 'bg-[#d946ef]' },
-                   ].map((item, i) => (
-                     <div key={i}>
-                       <div className="flex justify-between items-end mb-3">
-                         <p className="text-xs font-black text-slate-500 uppercase tracking-widest">{item.label}</p>
-                         <p className="text-sm font-black text-slate-900">{item.val}</p>
-                       </div>
-                       <div className="h-2 bg-slate-100 rounded-full" />
-                     </div>
-                   ))}
-                </div>
-             </div>
-
-             <div className="bg-[#1e1b4b] rounded-[56px] p-10 text-white shadow-2xl">
-                <h3 className="text-xl font-black mb-8 flex items-center gap-3">
-                  <Activity className="w-5 h-5 text-[#d946ef]" />
-                  Global Activity
-                </h3>
-                <div className="space-y-8">
-                   {[
-                     { user: 'Admin @ Excel', action: 'Result Batch Processed', time: '2m ago' },
-                     { user: 'Principal @ Spring', action: 'Staff Payroll Finalized', time: '14m ago' },
-                     { user: 'System Bot', action: 'Nightly Backup Completed', time: '1h ago' },
-                   ].map((act, i) => (
-                     <div key={i} className="flex gap-4">
-                        <div className="w-1 bg-white/10 rounded-full" />
+        <div className="overflow-x-auto">
+          {loading ? (
+             <div className="p-20 text-center"><Loader2 className="w-10 h-10 animate-spin mx-auto text-indigo-600" /></div>
+          ) : (
+            <table className="w-full text-left">
+              <thead>
+                <tr className="text-slate-400 text-[10px] font-black uppercase tracking-widest border-b border-slate-50">
+                  <th className="p-10">School Identity</th>
+                  <th className="p-10 text-center">Node Domain</th>
+                  <th className="p-10 text-center">Status</th>
+                  <th className="p-10 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {filteredTenants.map(tenant => (
+                  <tr key={tenant.id} className="hover:bg-slate-50 transition-all">
+                    <td className="p-10">
+                      <div className="flex items-center gap-6">
+                        <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-lg" style={{ backgroundColor: tenant.color }}>{tenant.name[0]}</div>
                         <div>
-                          <p className="text-sm font-bold text-white">{act.action}</p>
-                          <p className="text-[10px] font-black text-slate-500 uppercase mt-1">{act.user} • {act.time}</p>
+                          <p className="font-black text-slate-900 text-lg">{tenant.name}</p>
+                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Global ID: {tenant.id}</p>
                         </div>
-                     </div>
-                   ))}
-                </div>
-             </div>
-          </div>
+                      </div>
+                    </td>
+                    <td className="p-10 text-center">
+                      <span className="bg-slate-100 text-slate-600 px-4 py-2 rounded-xl font-bold text-xs">{tenant.domain}.darark.com</span>
+                    </td>
+                    <td className="p-10 text-center">
+                      <span className={`px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest ${tenant.isActive ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'}`}>
+                        {tenant.isActive ? 'Online' : 'Offline'}
+                      </span>
+                    </td>
+                    <td className="p-10 text-right">
+                       <button onClick={() => toggleStatus(tenant.id, tenant.isActive)} className="p-4 bg-slate-100 rounded-2xl hover:bg-slate-200 transition-all">
+                         {tenant.isActive ? <PowerOff className="w-5 h-5 text-rose-500" /> : <Power className="w-5 h-5 text-emerald-500" />}
+                       </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
-      ) : (
-        <div className="bg-white rounded-[56px] shadow-sm border border-slate-100 overflow-hidden">
-           <div className="p-10 border-b border-slate-100 flex items-center justify-between bg-slate-50/30">
-              <div>
-                <h2 className="text-3xl font-black text-slate-900 tracking-tight">Security Access Keys</h2>
-                <p className="text-slate-500 font-bold tracking-tight mt-1">Manage global school administrator credentials.</p>
-              </div>
-           </div>
-           <div className="divide-y divide-slate-50">
-             {users.map((u) => (
-               <div key={u.id} className="p-10 flex flex-col md:flex-row md:items-center justify-between gap-8 hover:bg-slate-50 transition-all">
-                 <div className="flex items-center gap-6">
-                    <div className="w-16 h-16 bg-slate-100 text-slate-400 rounded-2xl flex items-center justify-center">
-                       <Users className="w-7 h-7" />
-                    </div>
-                    <div>
-                       <p className="text-xl font-black text-slate-900">{u.email}</p>
-                       <p className="text-[10px] font-black text-[#d946ef] uppercase tracking-widest mt-1">{u.role} • {u.school}</p>
-                    </div>
-                 </div>
-                 <button 
-                  onClick={() => handleManualReset(u.email)}
-                  className="bg-[#1e1b4b] text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-[#d946ef] transition-all flex items-center gap-3 shadow-xl"
-                 >
-                   <KeyRound className="w-4 h-4" /> Reset Security Key
-                 </button>
-               </div>
-             ))}
-           </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 }

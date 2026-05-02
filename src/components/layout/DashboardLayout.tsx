@@ -72,28 +72,23 @@ export default function DashboardLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex font-sans">
-      {/* Mobile Sidebar Overlay */}
-      <AnimatePresence>
-        {isSidebarOpen && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setSidebarOpen(false)}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] lg:hidden"
-          />
-        )}
-      </AnimatePresence>
+    <div className="min-h-screen bg-[#f8fafc] flex font-sans overflow-hidden">
+      {/* Mobile Sidebar Overlay - Only shows on mobile when open */}
+      {isSidebarOpen && (
+        <div 
+          onClick={() => setSidebarOpen(false)}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] lg:hidden cursor-pointer"
+        />
+      )}
 
       {/* Sidebar */}
       <aside className={`
-        fixed inset-y-0 left-0 z-[70] w-[280px] bg-[#1e1b4b] transition-transform duration-300 lg:static lg:translate-x-0
+        fixed inset-y-0 left-0 z-[70] w-[280px] bg-[#1e1b4b] transition-transform duration-300 lg:relative lg:translate-x-0
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         flex flex-col border-r border-white/5
       `}>
-        <div className="p-8">
-          <div className="flex items-center gap-3 mb-12">
+        <div className="p-8 flex flex-col h-full">
+          <div className="flex items-center gap-3 mb-12 shrink-0">
             <div className="bg-[#d946ef] p-2.5 rounded-2xl shadow-xl shadow-magenta-500/20">
                <GraduationCap className="text-white w-6 h-6" />
             </div>
@@ -102,7 +97,7 @@ export default function DashboardLayout() {
             </span>
           </div>
 
-          <nav className="space-y-1.5 overflow-y-auto max-h-[calc(100vh-250px)] pr-2 scrollbar-hide">
+          <nav className="space-y-1.5 overflow-y-auto pr-2 custom-scrollbar flex-1">
             {navigation.map((item) => {
               const isActive = location.pathname.startsWith(item.href);
               return (
@@ -110,38 +105,38 @@ export default function DashboardLayout() {
                   key={item.name}
                   to={item.href}
                   onClick={() => setSidebarOpen(false)}
-                  className={`flex items-center gap-3 px-5 py-3.5 rounded-2xl font-bold text-[13px] transition-all group ${
+                  className={`flex items-center gap-3 px-5 py-3.5 rounded-2xl font-bold text-[13px] transition-all group pointer-events-auto ${
                     isActive 
                       ? 'bg-white text-[#1e1b4b] shadow-xl shadow-white/5' 
                       : 'text-slate-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  <item.icon className={`w-5 h-5 ${isActive ? 'text-[#d946ef]' : 'text-slate-500 group-hover:text-slate-300'}`} />
-                  <span className="tracking-tight">{item.name}</span>
+                  <item.icon className={`w-5 h-5 shrink-0 ${isActive ? 'text-[#d946ef]' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                  <span className="tracking-tight whitespace-nowrap">{item.name}</span>
                 </Link>
               );
             })}
           </nav>
-        </div>
 
-        <div className="mt-auto p-8 border-t border-white/5">
-          <button 
-            onClick={handleLogout}
-            className="flex items-center gap-3 px-5 py-4 w-full rounded-2xl font-bold text-[13px] text-slate-500 hover:bg-red-500/10 hover:text-red-400 transition-all group"
-          >
-            <LogOut className="w-5 h-5 text-slate-600 group-hover:text-red-400" />
-            Logout Securely
-          </button>
+          <div className="mt-8 pt-8 border-t border-white/5 shrink-0">
+            <button 
+              onClick={handleLogout}
+              className="flex items-center gap-3 px-5 py-4 w-full rounded-2xl font-bold text-[13px] text-slate-500 hover:bg-red-500/10 hover:text-red-400 transition-all group pointer-events-auto"
+            >
+              <LogOut className="w-5 h-5 text-slate-600 group-hover:text-red-400" />
+              Logout Securely
+            </button>
+          </div>
         </div>
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0 relative">
-        <header className="h-20 bg-white/80 backdrop-blur-xl border-b border-slate-200 flex items-center justify-between px-6 lg:px-10 sticky top-0 z-[50]">
+      <div className="flex-1 flex flex-col min-w-0 relative h-screen">
+        <header className="h-20 bg-white/80 backdrop-blur-xl border-b border-slate-200 flex items-center justify-between px-6 lg:px-10 sticky top-0 z-[50] shrink-0">
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setSidebarOpen(!isSidebarOpen)}
-              className="lg:hidden p-2.5 bg-slate-100 hover:bg-slate-200 rounded-xl text-slate-600 transition-colors"
+              className="lg:hidden p-2.5 bg-slate-100 hover:bg-slate-200 rounded-xl text-slate-600 transition-colors pointer-events-auto"
             >
               <Menu className="w-5 h-5" />
             </button>
@@ -153,7 +148,7 @@ export default function DashboardLayout() {
           </div>
 
           <div className="flex items-center gap-4 lg:gap-8">
-            <button className="relative p-2.5 text-slate-400 hover:text-slate-600 bg-slate-50 hover:bg-slate-100 rounded-2xl transition-all hidden sm:block">
+            <button className="relative p-2.5 text-slate-400 hover:text-slate-600 bg-slate-50 hover:bg-slate-100 rounded-2xl transition-all hidden sm:block pointer-events-auto">
               <Bell className="w-5 h-5" />
               <span className="absolute top-3 right-3 w-2 h-2 bg-[#d946ef] rounded-full border-2 border-white" />
             </button>
@@ -170,8 +165,10 @@ export default function DashboardLayout() {
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-6 lg:p-10 max-w-7xl w-full mx-auto">
-          <Outlet />
+        <main className="flex-1 overflow-y-auto p-6 lg:p-10">
+          <div className="max-w-7xl mx-auto">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

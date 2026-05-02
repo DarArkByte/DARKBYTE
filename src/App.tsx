@@ -1,6 +1,7 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
+ * Build Trigger: Case-Sensitivity Fix v2
  */
 
 import React from 'react';

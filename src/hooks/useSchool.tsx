@@ -13,6 +13,7 @@ interface SchoolContextType {
   school: School | null;
   loading: boolean;
   refreshSchool: () => Promise<void>;
+  updateSchool: (updates: Partial<School>) => Promise<void>;
 }
 
 const SchoolContext = createContext<SchoolContextType | undefined>(undefined);
@@ -29,37 +30,73 @@ const DEFAULT_SCHOOL_SETTINGS: SchoolSettings = {
   ],
   caWeight: 40,
   examWeight: 60,
-  reportCardTheme: 'modern'
+  reportCardTheme: 'nigerian-standard'
 };
 
 export function SchoolProvider({ children }: { children: React.ReactNode }) {
   const { userProfile } = useAuth();
   const [school, setSchool] = useState<School | null>(null);
   const [loading, setLoading] = useState(true);
+  const fetchSchool = React.useCallback(async () => {
+    // Priority 1: Subdomain/Domain matching
+    const hostname = window.location.hostname;
+    const isMainDomain = ['localhost', 'dar-ark-byte.vercel.app', 'dararkbyte.com', 'dararkbyte-erp.vercel.app'].includes(hostname);
+    
+    if (!isMainDomain) {
+      try {
+        const domain = hostname.split('.')[0];
+        const schoolDoc = await getDoc(doc(db, 'schools', domain));
+        if (schoolDoc.exists()) {
+          setSchool(schoolDoc.data() as School);
+          setLoading(false);
+          return;
+        }
+      } catch (e) {
+        console.warn("Domain fetch failed");
+      }
+    }
 
-  const fetchSchool = async () => {
-    if (!userProfile?.schoolId) {
-      setSchool(null);
-      setLoading(false);
+    // Priority 2: Authenticated User's School (with persistence fallback)
+    const storedSchoolId = localStorage.getItem('last_school_id');
+    const schoolId = userProfile?.schoolId || storedSchoolId;
+
+    if (!schoolId) {
+      if (userProfile === null) {
+        setSchool(null);
+        setLoading(false);
+      }
       return;
     }
 
     try {
-      const schoolDoc = await getDoc(doc(db, 'schools', userProfile.schoolId));
+      const schoolDoc = await getDoc(doc(db, 'schools', schoolId));
       if (schoolDoc.exists()) {
-        setSchool(schoolDoc.data() as School);
+        const data = schoolDoc.data() as School;
+        setSchool(data);
+        localStorage.setItem('last_school_id', data.id);
       } else {
         // Create demo school if none exists and user has a schoolId
         const demoSchool: School = {
-          id: userProfile.schoolId,
-          name: 'Demo International School',
+          id: schoolId,
+          name: 'Dar-Ark Byte Academy',
           branding: {
             primaryColor: '#4f46e5',
             secondaryColor: '#818cf8',
+            landingPageTheme: 'theme-1',
+            gallery: [],
+            identity: {
+              motto: 'Knowledge is Power',
+              phone: '+234 000 000 0000',
+              email: 'admin@dararkbyte.com',
+              address: 'Abuja, Nigeria',
+              website: 'www.dararkbyte.com',
+              socials: { facebook: '', instagram: '', twitter: '' }
+            }
           },
-          settings: DEFAULT_SCHOOL_SETTINGS
+          settings: DEFAULT_SCHOOL_SETTINGS,
+          isActive: true
         };
-        await setDoc(doc(db, 'schools', userProfile.schoolId), demoSchool);
+        await setDoc(doc(db, 'schools', schoolId), demoSchool);
         setSchool(demoSchool);
       }
     } catch (error) {
@@ -67,14 +104,29 @@ export function SchoolProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setLoading(false);
     }
+  }, [userProfile?.schoolId]);
+
+  const updateSchool = async (updates: Partial<School>) => {
+    const schoolId = userProfile?.schoolId || school?.id;
+    if (!schoolId || !school) return;
+    
+    try {
+      const schoolRef = doc(db, 'schools', schoolId);
+      const updatedSchool = { ...school, ...updates };
+      await setDoc(schoolRef, updatedSchool, { merge: true });
+      setSchool(updatedSchool);
+    } catch (error) {
+      console.error('Error updating school:', error);
+      throw error;
+    }
   };
 
   useEffect(() => {
     fetchSchool();
-  }, [userProfile?.schoolId]);
+  }, [fetchSchool]);
 
   return (
-    <SchoolContext.Provider value={{ school, loading, refreshSchool: fetchSchool }}>
+    <SchoolContext.Provider value={{ school, loading, refreshSchool: fetchSchool, updateSchool }}>
       {children}
     </SchoolContext.Provider>
   );

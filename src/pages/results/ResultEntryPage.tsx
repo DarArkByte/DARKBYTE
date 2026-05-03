@@ -88,6 +88,7 @@ export default function ResultEntryPage() {
           ca2: entry.ca2,
           exam: entry.exam,
           total: Number(entry.ca1 || 0) + Number(entry.ca2 || 0) + Number(entry.exam || 0),
+          status: 'ready',
           updatedAt: new Date().toISOString()
         }, { merge: true });
       }

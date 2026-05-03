@@ -38,7 +38,17 @@ import PromotionPage from './pages/academics/PromotionPage';
 import TranscriptPage from './pages/students/TranscriptPage';
 import ExamSchedulePage from './pages/exams/ExamSchedulePage';
 import CommentsEntryPage from './pages/results/CommentsEntryPage';
-import ObservationalEntryPage from './pages/results/ObservationalEntryPage';
+import AttendancePage from './pages/academics/AttendancePage';
+import DigitalLibrary from './pages/library/DigitalLibrary';
+import NewsletterCenter from './pages/communication/NewsletterCenter';
+import AdmissionsForm from './pages/portal/AdmissionsForm';
+import EntranceExam from './pages/portal/EntranceExam';
+
+// LAZY LOADED MODULES (To prevent esbuild transform errors)
+const BrandingSettings = React.lazy(() => import('./pages/settings/BrandingSettings'));
+const ObservationalEntryPage = React.lazy(() => import('./pages/results/ObservationalEntryPage'));
+const ResultAnalysisPage = React.lazy(() => import('./pages/results/ResultAnalysisPage'));
+
 
 // STABLE DASHBOARD SWITCHER
 function DashboardHome() {
@@ -95,6 +105,8 @@ function AppContent() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/portal/:schoolDomain/login" element={<SchoolPortalLogin />} />
+          <Route path="/portal/:domain/admissions" element={<AdmissionsForm />} />
+          <Route path="/portal/:domain/entrance-exam" element={<EntranceExam />} />
           <Route path="/master-command/login" element={<SuperAdminLogin />} />
           
           <Route element={<DashboardLayout />}>
@@ -122,7 +134,12 @@ function AppContent() {
             <Route path="/students/transcript" element={<TranscriptPage />} />
             <Route path="/results/comments" element={<CommentsEntryPage />} />
             <Route path="/results/observation" element={<ObservationalEntryPage />} />
+            <Route path="/results/analysis" element={<ResultAnalysisPage />} />
             <Route path="/results/view/:studentId" element={<ResultView />} />
+            <Route path="/academics/attendance" element={<AttendancePage />} />
+            <Route path="/library/digital" element={<DigitalLibrary />} />
+            <Route path="/communication/newsletter" element={<NewsletterCenter />} />
+            <Route path="/settings/branding" element={<BrandingSettings />} />
           </Route>
           
           <Route path="*" element={<Navigate to="/" replace />} />

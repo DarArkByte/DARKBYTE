@@ -22,8 +22,25 @@ export interface UserProfile {
 export interface Branding {
   primaryColor: string; // Tailwind color or hex
   secondaryColor: string;
+  accentColor?: string;
+  backgroundColor?: string;
   logoUrl?: string;
+  bannerUrl?: string;
   landingPageTheme: string; // theme-1 to theme-10
+  selectedThemeId?: string; // Links to the 5 predefined themes
+  gallery?: string[]; // Array of media URLs
+  identity?: {
+    motto: string;
+    phone: string;
+    email: string;
+    address: string;
+    website: string;
+    socials: {
+      facebook: string;
+      instagram: string;
+      twitter: string;
+    };
+  };
 }
 
 export interface GradeRange {
@@ -37,6 +54,7 @@ export type ReportCardTheme = 'nigerian-standard' | 'international-modern' | 'el
 
 export interface SchoolSettings {
   usePositions: boolean;
+  showAverage: boolean;
   gradingSystem: GradeRange[];
   caWeight: number; // e.g. 40
   examWeight: number; // e.g. 60
@@ -106,6 +124,8 @@ export interface Result {
   grade: string;
   status: ResultStatus;
   teacherId: string;
+  term1Score?: number;
+  term2Score?: number;
   updatedAt: string;
 }
 
@@ -312,3 +332,45 @@ export interface MediaItem {
   createdAt: string;
 }
 
+
+// --- RESULT PIN SYSTEM ---
+
+export interface ResultPin {
+  id: string;
+  pin: string;
+  serialNumber: string;
+  schoolId: string;
+  studentId?: string; // Optional: Can be tied to a specific student or generic
+  termId: string;
+  sessionId: string;
+  maxUsage: number; // default 5
+  usageCount: number;
+  status: 'active' | 'exhausted' | 'expired';
+  generatedBy: string; // admin ID
+  createdAt: string;
+}
+// --- ADMISSIONS ENGINE TYPES ---
+
+export interface AdmissionApplication {
+  id: string;
+  schoolId: string;
+  studentName: string;
+  parentName: string;
+  parentPhone: string;
+  email: string;
+  targetClass: string;
+  previousSchool?: string;
+  status: 'pending' | 'exam-scheduled' | 'interview' | 'accepted' | 'rejected';
+  examScore?: number;
+  examStatus: 'pending' | 'completed' | 'not-required';
+  createdAt: string;
+}
+
+export interface EntranceExamQuestion {
+  id: string;
+  schoolId: string;
+  subject: string;
+  question: string;
+  options: string[];
+  correctAnswer: number;
+}

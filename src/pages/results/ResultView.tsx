@@ -33,27 +33,48 @@ export default function ResultView() {
         setStudent({ uid: studentSnap.id, ...studentSnap.data() } as UserProfile);
       }
 
-      // Load Results
-      const resultsRef = collection(db, 'schools', school.id, 'results');
-      const q = query(resultsRef, where('studentId', '==', studentId), where('status', '==', 'published'));
+      // Load Results for the entire session
+      const resultsRef = collection(db, 'results');
+      const q = query(resultsRef, 
+        where('schoolId', '==', school.id),
+        where('studentId', '==', studentId), 
+        where('status', '==', 'published')
+      );
       const resultsSnap = await getDocs(q);
       
-      // Load Subjects and Combine
+      // Load Subjects
       const subjectsSnap = await getDocs(collection(db, 'schools', school.id, 'subjects'));
       const subjectMap = subjectsSnap.docs.reduce((acc, d) => {
         acc[d.id] = { id: d.id, ...d.data() } as Subject;
         return acc;
       }, {} as Record<string, Subject>);
 
-      const combinedResults = resultsSnap.docs.map(d => {
-        const data = d.data() as Result;
-        return {
-          ...data,
-          subject: subjectMap[data.subjectId] || { id: data.subjectId, name: 'Unknown Subject', schoolId: school.id }
-        };
+      // Map and group results by subject to aggregate term scores
+      const rawResults = resultsSnap.docs.map(d => d.data() as Result);
+      const subjectResults: Record<string, any> = {};
+
+      rawResults.forEach(res => {
+        if (!subjectResults[res.subjectId]) {
+          subjectResults[res.subjectId] = {
+            ...res,
+            subject: subjectMap[res.subjectId] || { id: res.subjectId, name: 'Unknown Subject', schoolId: school.id },
+            term1Score: 0,
+            term2Score: 0,
+            term3Score: 0
+          };
+        }
+
+        // Identify term (simplified check, in real app use termId/metadata)
+        const termName = res.termId.toLowerCase();
+        if (termName.includes('first')) subjectResults[res.subjectId].term1Score = res.total;
+        else if (termName.includes('second')) subjectResults[res.subjectId].term2Score = res.total;
+        else if (termName.includes('third')) {
+          subjectResults[res.subjectId].total = res.total; // Use 3rd term as current total
+          subjectResults[res.subjectId].grade = res.grade;
+        }
       });
 
-      setResults(combinedResults);
+      setResults(Object.values(subjectResults));
     } catch (error) {
       console.error('Error loading result view:', error);
     } finally {

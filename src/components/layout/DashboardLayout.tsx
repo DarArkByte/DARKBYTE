@@ -28,7 +28,8 @@ import {
   Package,
   UserCheck,
   Shield,
-  Bus
+  Bus,
+  Palette
 } from 'lucide-react';
 
 export default function DashboardLayout() {
@@ -54,6 +55,7 @@ export default function DashboardLayout() {
     { name: 'Exam Hub', href: '/cbt/questions', icon: FileText, roles: ['school-admin', 'teacher'] },
     { name: 'Exam Schedule', href: '/exams/schedule', icon: Calendar, roles: ['school-admin', 'teacher', 'student'] },
     { name: 'Results', href: '/results/entry', icon: FileSpreadsheet, roles: ['school-admin', 'teacher'] },
+    { name: 'Result Analysis', href: '/results/analysis', icon: BarChart3, roles: ['school-admin'] },
     { name: 'Promotion', href: '/exams/promotion', icon: TrendingUp, roles: ['school-admin'] },
     { name: 'Transcripts', href: '/students/transcript', icon: FileText, roles: ['school-admin'] },
     { name: 'Finance', href: '/finance', icon: Wallet, roles: ['school-admin', 'parent'] },
@@ -62,6 +64,7 @@ export default function DashboardLayout() {
     { name: 'Communication', href: '/messages', icon: MessageSquare, roles: ['school-admin', 'teacher', 'parent'] },
     { name: 'Gate System', href: '/security', icon: Shield, roles: ['school-admin', 'security-officer'] },
     { name: 'Transport', href: '/security', icon: Bus, roles: ['school-admin', 'transport-manager'] },
+    { name: 'Branding', href: '/settings/branding', icon: Palette, roles: ['school-admin'] },
   ].filter(item => 
     item.roles && userProfile?.role && item.roles.includes(userProfile.role)
   );

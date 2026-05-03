@@ -18,3 +18,10 @@
     @apply bg-gray-50 text-gray-900 antialiased;
   }
 }
+@layer utilities {
+  @keyframes scan {
+    0% { top: 0%; opacity: 0; }
+    50% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+}

@@ -42,10 +42,40 @@ export default function TranscriptPage() {
     setSelectedStudent(student);
     setLoading(true);
     try {
-      // Fetch all historical results for this student
+      // 1. Fetch all historical results for this student
       const q = query(collection(db, 'results'), where('studentId', '==', student.id));
       const snapshot = await getDocs(q);
-      setResults(snapshot.docs.map(doc => doc.data()));
+      const resultsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+      // 2. Fetch all subjects to get names
+      const subSnapshot = await getDocs(query(collection(db, 'subjects'), where('schoolId', '==', school?.id)));
+      const subjectsMap = Object.fromEntries(subSnapshot.docs.map(doc => [doc.id, doc.data().name]));
+
+      // 3. Fetch sessions and terms
+      const sesSnapshot = await getDocs(query(collection(db, 'sessions'), where('schoolId', '==', school?.id)));
+      const sessionsMap = Object.fromEntries(sesSnapshot.docs.map(doc => [doc.id, doc.data().name]));
+
+      const termSnapshot = await getDocs(query(collection(db, 'terms'), where('schoolId', '==', school?.id)));
+      const termsMap = Object.fromEntries(termSnapshot.docs.map(doc => [doc.id, doc.data().name]));
+
+      // 4. Group results by session and term
+      const grouped: any = {};
+      resultsData.forEach((res: any) => {
+        const key = `${res.sessionId}_${res.termId}`;
+        if (!grouped[key]) {
+          grouped[key] = {
+            session: sessionsMap[res.sessionId] || 'Unknown Session',
+            term: termsMap[res.termId] || 'Unknown Term',
+            results: []
+          };
+        }
+        grouped[key].results.push({
+          ...res,
+          subjectName: subjectsMap[res.subjectId] || 'Unknown Subject'
+        });
+      });
+
+      setResults(Object.values(grouped).sort((a: any, b: any) => a.session.localeCompare(b.session)));
     } catch (err) {
       console.error(err);
     } finally {
@@ -114,7 +144,7 @@ export default function TranscriptPage() {
                  <h2 className="text-2xl font-black text-gray-900 mb-1">{selectedStudent.name}</h2>
                  <p className="text-xs font-black text-blue-600 uppercase tracking-widest mb-6">{selectedStudent.regNumber}</p>
                  <div className="flex flex-col gap-2">
-                    <button className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2">
+                    <button onClick={() => window.print()} className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2">
                        <Printer className="w-4 h-4" /> Print Transcript
                     </button>
                     <button className="w-full py-4 bg-gray-100 text-gray-600 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2">
@@ -124,9 +154,9 @@ export default function TranscriptPage() {
               </div>
 
               <div className="bg-indigo-600 p-8 rounded-[40px] text-white">
-                 <Award className="w-8 h-8 mb-4 text-indigo-200" />
+                 < Award className="w-8 h-8 mb-4 text-indigo-200" />
                  <h3 className="text-lg font-black mb-2">Performance Summary</h3>
-                 <p className="text-sm text-indigo-100 font-medium leading-relaxed">Student has completed <strong className="text-white">{results.length} terms</strong> of academic study at this institution.</p>
+                 <p className="text-sm text-indigo-100 font-medium leading-relaxed">Student has completed <strong className="text-white">{results.length} sessions/terms</strong> of academic study.</p>
               </div>
            </div>
 
@@ -137,38 +167,53 @@ export default function TranscriptPage() {
                     <BookOpen className="text-gray-300" />
                  </div>
 
-                 <div className="p-8 space-y-8 flex-1">
+                 <div className="p-8 space-y-12 flex-1">
                     {loading ? (
                       <div className="h-full flex items-center justify-center"><Loader2 className="animate-spin w-10 h-10 text-blue-600" /></div>
                     ) : results.length > 0 ? (
                       <div className="space-y-12">
-                         {/* This would be grouped by Session/Term */}
-                         <div className="space-y-6">
-                            <div className="flex items-center gap-4">
-                               <div className="h-px bg-gray-100 flex-1" />
-                               <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Historical Data Found</span>
-                               <div className="h-px bg-gray-100 flex-1" />
-                            </div>
-                            <div className="overflow-x-auto">
-                               <table className="w-full text-left">
-                                  <thead>
-                                     <tr className="text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-50">
-                                        <th className="pb-4">Subject</th>
-                                        <th className="pb-4 text-center">Score</th>
-                                        <th className="pb-4 text-center">Grade</th>
-                                        <th className="pb-4 text-right">Remark</th>
-                                     </tr>
-                                  </thead>
-                                  <tbody className="divide-y divide-gray-50">
-                                     {/* Map results here */}
-                                     <tr className="text-gray-300 italic"><td colSpan={4} className="py-10 text-center font-bold">Data mapping in progress...</td></tr>
-                                  </tbody>
-                               </table>
-                            </div>
-                         </div>
+                         {results.map((group, gIdx) => (
+                           <div key={gIdx} className="space-y-6">
+                              <div className="flex items-center gap-4">
+                                 <div className="h-px bg-gray-100 flex-1" />
+                                 <span className="text-[10px] font-black text-gray-900 uppercase tracking-widest bg-gray-50 px-4 py-2 rounded-full border border-gray-100">
+                                    {group.session} • {group.term}
+                                 </span>
+                                 <div className="h-px bg-gray-100 flex-1" />
+                              </div>
+                              <div className="overflow-x-auto">
+                                 <table className="w-full text-left">
+                                    <thead>
+                                       <tr className="text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-50">
+                                          <th className="pb-4">Subject</th>
+                                          <th className="pb-4 text-center">CA 1</th>
+                                          <th className="pb-4 text-center">CA 2</th>
+                                          <th className="pb-4 text-center">Exam</th>
+                                          <th className="pb-4 text-center">Total</th>
+                                          <th className="pb-4 text-center">Grade</th>
+                                       </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-50">
+                                       {group.results.map((res: any, rIdx: number) => (
+                                         <tr key={rIdx} className="text-sm">
+                                            <td className="py-4 font-bold text-gray-900">{res.subjectName}</td>
+                                            <td className="py-4 text-center text-gray-500">{res.ca1}</td>
+                                            <td className="py-4 text-center text-gray-500">{res.ca2}</td>
+                                            <td className="py-4 text-center text-gray-500">{res.exam}</td>
+                                            <td className="py-4 text-center font-black text-gray-900">{res.total}</td>
+                                            <td className="py-4 text-center">
+                                               <span className="px-3 py-1 rounded-lg bg-slate-100 font-black text-xs">{res.grade}</span>
+                                            </td>
+                                         </tr>
+                                       ))}
+                                    </tbody>
+                                 </table>
+                              </div>
+                           </div>
+                         ))}
                       </div>
                     ) : (
-                      <div className="h-full flex flex-col items-center justify-center text-center text-gray-300">
+                      <div className="h-full flex flex-col items-center justify-center text-center text-gray-300 py-20">
                          <FileText className="w-16 h-16 mb-4 opacity-20" />
                          <p className="font-bold uppercase tracking-widest text-xs">No historical records found for this ID</p>
                       </div>

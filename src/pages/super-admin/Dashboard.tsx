@@ -19,11 +19,13 @@ import {
   FileText,
   Download,
   Database,
-  TrendingUp
+  TrendingUp,
+  Hash,
+  Ticket
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { db } from '../../lib/firebase';
-import { collection, query, getDocs, addDoc, doc, updateDoc, onSnapshot, where, setDoc, deleteDoc } from 'firebase/firestore';
+import { collection, query, getDocs, addDoc, doc, updateDoc, onSnapshot, where, setDoc, deleteDoc, writeBatch } from 'firebase/firestore';
 
 // Import Assets for reliable serving
 import resultTemplateImg from '../../assets/branding/result_template.png';
@@ -40,14 +42,46 @@ interface TenantSchool {
 }
 
 export default function SuperAdminDashboard() {
-  const [activeTab, setActiveTab] = useState<'schools' | 'users' | 'media'>('schools');
+  const [activeTab, setActiveTab] = useState<'schools' | 'users' | 'media' | 'pins' | 'results'>('schools');
   const [search, setSearch] = useState('');
   const { resetPassword } = useAuth();
   const [tenants, setTenants] = useState<TenantSchool[]>([]);
   const [admins, setAdmins] = useState<any[]>([]);
+  const [pins, setPins] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isOnboarding, setIsOnboarding] = useState(false);
   const [isAuthorizing, setIsAuthorizing] = useState(false);
+  const [isGeneratingPins, setIsGeneratingPins] = useState(false);
+  const [isPublishing, setIsPublishing] = useState<string | null>(null);
+
+  const publishAllResults = async (schoolId: string) => {
+    setIsPublishing(schoolId);
+    try {
+      const q = query(collection(db, 'results'), where('schoolId', '==', schoolId));
+      const snapshot = await getDocs(q);
+      const batch = writeBatch(db);
+      
+      snapshot.docs.forEach(doc => {
+        batch.update(doc.ref, { status: 'published' });
+      });
+      
+      await batch.commit();
+      setSuccess(`ALL RESULTS PUBLISHED ONLINE FOR ${tenants.find(t => t.id === schoolId)?.name}`);
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (err) {
+      console.error(err);
+      alert('Publication failed');
+    } finally {
+      setIsPublishing(null);
+    }
+  };
+
+  const [pinRequest, setPinRequest] = useState({ 
+    schoolId: '', 
+    termId: '1st Term', 
+    sessionId: '2023/2024', 
+    count: 50 
+  });
   const [newSchool, setNewSchool] = useState({ 
     name: '', 
     domain: '', 
@@ -63,6 +97,7 @@ export default function SuperAdminDashboard() {
   });
   const [newAdmin, setNewAdmin] = useState({ email: '', name: '' });
   const [success, setSuccess] = useState<string | null>(null);
+  const [resultStats, setResultStats] = useState<Record<string, { ready: number, published: number }>>({});
 
   useEffect(() => {
     setLoading(true);
@@ -82,6 +117,18 @@ export default function SuperAdminDashboard() {
       setLoading(false);
     });
 
+    const unsubscribeResults = onSnapshot(collection(db, 'results'), (snapshot) => {
+      const stats: Record<string, { ready: number, published: number }> = {};
+      snapshot.docs.forEach(doc => {
+        const data = doc.data();
+        const sId = data.schoolId;
+        if (!stats[sId]) stats[sId] = { ready: 0, published: 0 };
+        if (data.status === 'ready') stats[sId].ready++;
+        if (data.status === 'published') stats[sId].published++;
+      });
+      setResultStats(stats);
+    });
+
     const unsubscribeAdmins = onSnapshot(query(collection(db, 'users'), where('role', '==', 'super-admin')), (snapshot) => {
       const adminsData = snapshot.docs.map(doc => ({
         id: doc.id,
@@ -92,11 +139,46 @@ export default function SuperAdminDashboard() {
       console.warn("Admin fetch restricted:", error.message);
     });
 
+    const unsubscribePins = onSnapshot(collection(db, 'result_pins'), (snapshot) => {
+      setPins(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    });
+
     return () => {
       unsubscribeSchools();
       unsubscribeAdmins();
+      unsubscribePins();
     };
   }, []);
+
+  const generateBulkPins = async () => {
+    if (!pinRequest.schoolId || pinRequest.count <= 0) return;
+    try {
+      const batch = writeBatch(db);
+      for (let i = 0; i < pinRequest.count; i++) {
+        const pinCode = Math.floor(100000 + Math.random() * 900000).toString();
+        const serialNum = `SN-${Date.now().toString().slice(-6)}-${i+1}`;
+        const pinRef = doc(collection(db, 'result_pins'));
+        batch.set(pinRef, {
+          pin: pinCode,
+          serialNumber: serialNum,
+          schoolId: pinRequest.schoolId,
+          termId: pinRequest.termId,
+          sessionId: pinRequest.sessionId,
+          maxUsage: 5,
+          usageCount: 0,
+          status: 'active',
+          createdAt: new Date().toISOString()
+        });
+      }
+      await batch.commit();
+      setSuccess(`Generated ${pinRequest.count} Security PINs for the school.`);
+      setIsGeneratingPins(false);
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (err) {
+      console.error(err);
+      alert('PIN Generation failed');
+    }
+  };
 
   const handleOnboard = async () => {
     if (!newSchool.name || !newSchool.domain) return;
@@ -210,9 +292,11 @@ export default function SuperAdminDashboard() {
             </p>
           </div>
           
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-4">
             <button onClick={() => setActiveTab('schools')} className={`px-10 py-5 rounded-3xl font-black text-sm uppercase tracking-widest transition-all ${activeTab === 'schools' ? 'bg-[#d946ef] text-white shadow-xl shadow-magenta-500/20' : 'bg-white/5 hover:bg-white/10 border border-white/10'}`}>Schools</button>
+            <button onClick={() => setActiveTab('results')} className={`px-10 py-5 rounded-3xl font-black text-sm uppercase tracking-widest transition-all ${activeTab === 'results' ? 'bg-[#d946ef] text-white shadow-xl shadow-magenta-500/20' : 'bg-white/5 hover:bg-white/10 border border-white/10'}`}>Result Mastery</button>
             <button onClick={() => setActiveTab('users')} className={`px-10 py-5 rounded-3xl font-black text-sm uppercase tracking-widest transition-all ${activeTab === 'users' ? 'bg-white text-[#1e1b4b]' : 'bg-white/5 hover:bg-white/10 border border-white/10'}`}>Security</button>
+            <button onClick={() => setActiveTab('pins')} className={`px-10 py-5 rounded-3xl font-black text-sm uppercase tracking-widest transition-all ${activeTab === 'pins' ? 'bg-[#1e1b4b] text-indigo-400 border border-indigo-500/30' : 'bg-white/5 hover:bg-white/10 border border-white/10'}`}>PIN Vault</button>
           </div>
         </div>
       </div>
@@ -343,11 +427,45 @@ export default function SuperAdminDashboard() {
         </div>
       )}
 
+      {isGeneratingPins && (
+        <div className="bg-white p-12 rounded-[56px] shadow-2xl border border-indigo-100 space-y-12 animate-in slide-in-from-top-10 duration-500">
+           <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Security PIN Generator</h3>
+           <div className="grid md:grid-cols-4 gap-6">
+              <select 
+                value={pinRequest.schoolId}
+                onChange={(e) => setPinRequest({...pinRequest, schoolId: e.target.value})}
+                className="px-8 py-5 bg-slate-50 rounded-3xl font-bold border-none"
+              >
+                <option value="">Target School</option>
+                {tenants.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+              </select>
+              <input 
+                type="number"
+                placeholder="Quantity"
+                value={pinRequest.count}
+                onChange={(e) => setPinRequest({...pinRequest, count: parseInt(e.target.value)})}
+                className="px-8 py-5 bg-slate-50 rounded-3xl font-bold border-none"
+              />
+              <select 
+                value={pinRequest.termId}
+                onChange={(e) => setPinRequest({...pinRequest, termId: e.target.value})}
+                className="px-8 py-5 bg-slate-50 rounded-3xl font-bold border-none"
+              >
+                <option value="1st Term">1st Term</option>
+                <option value="2nd Term">2nd Term</option>
+                <option value="3rd Term">3rd Term</option>
+              </select>
+              <button onClick={generateBulkPins} className="bg-indigo-600 text-white rounded-3xl font-black uppercase tracking-widest hover:bg-[#d946ef] transition-all">Generate Batch</button>
+           </div>
+           <button onClick={() => setIsGeneratingPins(false)} className="w-full text-slate-400 font-bold uppercase text-[10px] tracking-widest">Cancel</button>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {[
           { label: 'Total Nodes', value: tenants.length, icon: Building2, color: 'bg-indigo-600' },
           { label: 'Admin Fleet', value: admins.length, icon: ShieldCheck, color: 'bg-[#d946ef]' },
-          { label: 'Revenue Pool', value: '₦4.2M', icon: Wallet, color: 'bg-emerald-500' },
+          { label: 'Total PINs', value: pins.length, icon: Hash, color: 'bg-indigo-400' },
           { label: 'System Health', value: 'Stable', icon: Zap, color: 'bg-[#facc15]' },
         ].map((stat, i) => (
           <div key={i} className="bg-white p-10 rounded-[48px] shadow-sm border border-slate-100 relative overflow-hidden group">
@@ -517,6 +635,148 @@ export default function SuperAdminDashboard() {
                       </td>
                     </tr>
                   ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        ) : activeTab === 'pins' ? (
+          <>
+            <div className="p-10 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
+              <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">PIN Security Vault</h2>
+              <button onClick={() => setIsGeneratingPins(true)} className="flex items-center gap-3 bg-indigo-600 text-white px-8 py-4 rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-black transition-all">
+                <Hash className="w-4 h-4" /> Bulk Generate PINs
+              </button>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="text-slate-400 text-[10px] font-black uppercase tracking-widest border-b border-slate-50">
+                    <th className="p-10">PIN Details</th>
+                    <th className="p-10 text-center">School Node</th>
+                    <th className="p-10 text-center">Term/Session</th>
+                    <th className="p-10 text-center">Usage Tracking</th>
+                    <th className="p-10 text-right">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {pins.length === 0 ? (
+                    <tr><td colSpan={5} className="p-20 text-center text-slate-400 font-bold uppercase tracking-widest text-[10px]">No security pins discovered in this matrix.</td></tr>
+                  ) : (
+                    pins.map(pin => (
+                      <tr key={pin.id} className="hover:bg-slate-50 transition-all group">
+                        <td className="p-10">
+                          <div className="flex items-center gap-4">
+                             <div className="w-12 h-12 bg-indigo-50 text-indigo-600 flex items-center justify-center rounded-2xl group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                                <Ticket className="w-6 h-6" />
+                             </div>
+                             <div>
+                                <p className="font-black text-slate-900 text-lg tracking-[0.2em]">{pin.pin}</p>
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{pin.serialNumber}</p>
+                             </div>
+                          </div>
+                        </td>
+                        <td className="p-10 text-center">
+                          <span className="bg-slate-100 text-slate-600 px-4 py-2 rounded-xl font-bold text-xs">
+                            {tenants.find(t => t.id === pin.schoolId)?.name || pin.schoolId}
+                          </span>
+                        </td>
+                        <td className="p-10 text-center">
+                          <p className="text-xs font-black text-slate-900">{pin.termId}</p>
+                          <p className="text-[10px] font-bold text-slate-400">{pin.sessionId}</p>
+                        </td>
+                        <td className="p-10 text-center">
+                           <div className="space-y-2 w-32 mx-auto">
+                              <div className="flex justify-between text-[8px] font-black uppercase">
+                                 <span className="text-slate-400">Usage Matrix</span>
+                                 <span className="text-indigo-600">{pin.usageCount} / {pin.maxUsage}</span>
+                              </div>
+                              <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                 <div className="h-full bg-indigo-500 transition-all" style={{ width: `${(pin.usageCount / pin.maxUsage) * 100}%` }} />
+                              </div>
+                           </div>
+                        </td>
+                        <td className="p-10 text-right">
+                           <span className={`px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest ${pin.status === 'active' ? 'bg-emerald-100 text-emerald-600 shadow-sm shadow-emerald-500/10' : 'bg-rose-100 text-rose-600 shadow-sm shadow-rose-500/10'}`}>
+                             {pin.status}
+                           </span>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </>
+        ) : activeTab === 'results' ? (
+          <>
+            <div className="p-10 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
+              <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">Result Mastery Hub</h2>
+              <div className="text-[10px] font-black text-rose-500 uppercase tracking-widest flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4" /> Final Audit Authorization Required
+              </div>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="text-slate-400 text-[10px] font-black uppercase tracking-widest border-b border-slate-50">
+                    <th className="p-10">School Identity</th>
+                    <th className="p-10 text-center">Data Readiness</th>
+                    <th className="p-10 text-center">Visibility</th>
+                    <th className="p-10 text-right">Master Command</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {tenants.map(tenant => {
+                    const stats = resultStats[tenant.id] || { ready: 0, published: 0 };
+                    const isReady = stats.ready > 0;
+                    const isFullyPublished = stats.published > 0 && stats.ready === 0;
+
+                    return (
+                      <tr key={tenant.id} className="hover:bg-slate-50 transition-all">
+                        <td className="p-10">
+                          <div className="flex items-center gap-6">
+                            <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-lg" style={{ backgroundColor: tenant.color }}>{tenant.name[0]}</div>
+                            <div>
+                              <p className="font-black text-slate-900 text-lg">{tenant.name}</p>
+                              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{tenant.studentsCount} Active Students</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="p-10 text-center">
+                          <div className="flex flex-col items-center gap-2">
+                             <span className="text-xs font-bold text-slate-900">{stats.ready + stats.published} Scripts Logged</span>
+                             <div className="flex gap-1">
+                               <div className={`px-3 py-1 rounded-lg text-[8px] font-black uppercase ${stats.ready > 0 ? 'bg-amber-100 text-amber-600' : 'bg-slate-100 text-slate-400'}`}>
+                                 {stats.ready} Ready
+                               </div>
+                               <div className={`px-3 py-1 rounded-lg text-[8px] font-black uppercase ${stats.published > 0 ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-400'}`}>
+                                 {stats.published} Live
+                               </div>
+                             </div>
+                          </div>
+                        </td>
+                        <td className="p-10 text-center">
+                          <span className={`px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest ${
+                            isFullyPublished ? 'bg-emerald-100 text-emerald-600' : 
+                            isReady ? 'bg-amber-100 text-amber-600' : 'bg-slate-100 text-slate-400'
+                          }`}>
+                            {isFullyPublished ? 'ONLINE' : isReady ? 'AWAITING PUBLISH' : 'NO DATA'}
+                          </span>
+                        </td>
+                        <td className="p-10 text-right">
+                          <button 
+                            onClick={() => publishAllResults(tenant.id)}
+                            disabled={isPublishing === tenant.id || stats.ready === 0}
+                            className={`px-8 py-4 rounded-3xl font-black text-[10px] uppercase tracking-widest transition-all shadow-xl disabled:opacity-50 ${
+                              stats.ready > 0 ? 'bg-emerald-600 text-white hover:bg-emerald-700' : 'bg-slate-900 text-slate-500'
+                            }`}
+                          >
+                            {isPublishing === tenant.id ? <Loader2 className="w-4 h-4 animate-spin" /> : 'PUBLISH ALL RESULTS ONLINE'}
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

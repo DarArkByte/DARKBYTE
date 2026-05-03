@@ -1,11 +1,7 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import React from 'react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
+import { useSchool } from '../hooks/useSchool';
 import { 
   GraduationCap, 
   Globe, 
@@ -18,7 +14,9 @@ import {
   Monitor,
   CheckCircle2,
   Star,
-  MessageCircle
+  MessageCircle,
+  MapPin,
+  Mail
 } from 'lucide-react';
 
 const fadeInUp = {
@@ -42,6 +40,11 @@ const staggerContainer = {
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const { school } = useSchool();
+  
+  const isCustomSchool = !!school && school.id !== 'demo-school';
+  const schoolBranding = school?.branding;
+  const identity = schoolBranding?.identity;
 
   const services = [
     { icon: GraduationCap, title: 'School ERP Portal', desc: 'Complete result processing, finance, and staff management.' },
@@ -55,6 +58,8 @@ export default function LandingPage() {
     { name: 'Engr. Fatima B.', role: 'CEO, TechFlow Ltd', text: 'The mobile app they built for us is world-class. Fast, secure, and very professional.' },
     { name: 'Mrs. Adebayo', role: 'Proprietress', text: 'Their Robotics training for our students was the highlight of the session. Incredible expertise.' },
   ];
+
+  const primaryColor = schoolBranding?.primaryColor || '#1e1b4b';
 
   return (
     <div className="min-h-screen bg-[#1e1b4b] text-white font-sans overflow-x-hidden selection:bg-[#d946ef] selection:text-white">
@@ -85,14 +90,14 @@ export default function LandingPage() {
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         whileHover={{ scale: 1.1 }}
-        href="https://wa.me/2349169600724" 
+        href={`https://wa.me/${identity?.phone || '2349169600724'}`} 
         target="_blank" 
         rel="noopener noreferrer"
         className="fixed bottom-8 right-8 z-[100] bg-[#25D366] p-4 rounded-full shadow-2xl transition-all flex items-center justify-center group"
       >
         <MessageCircle className="w-8 h-8 text-white" />
         <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 text-white font-black whitespace-nowrap ml-0 group-hover:ml-2">
-          WhatsApp Us
+          Contact Us
         </span>
       </motion.a>
 
@@ -104,10 +109,14 @@ export default function LandingPage() {
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-3"
           >
-            <div className="bg-[#d946ef] p-2 rounded-xl shadow-lg shadow-magenta-500/20">
-               <GraduationCap className="w-7 h-7 text-white" />
-            </div>
-            <span className="text-xl font-black tracking-tighter uppercase">Dar-Ark Bytes</span>
+            {schoolBranding?.logoUrl ? (
+              <img src={schoolBranding.logoUrl} alt="Logo" className="w-10 h-10 object-contain rounded-lg" />
+            ) : (
+              <div className="bg-[#d946ef] p-2 rounded-xl shadow-lg shadow-magenta-500/20">
+                 <GraduationCap className="w-7 h-7 text-white" />
+              </div>
+            )}
+            <span className="text-xl font-black tracking-tighter uppercase">{school?.name || 'Dar-Ark Bytes'}</span>
           </motion.div>
           <div className="hidden md:flex items-center gap-8 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
             <a href="#services" className="hover:text-[#d946ef] transition-colors">Services</a>
@@ -125,7 +134,7 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* Hero Section with SLIDE ANIMATION */}
+      {/* Hero Section */}
       <section className="relative pt-60 pb-40 px-6 z-10">
         <div className="max-w-7xl mx-auto text-center">
           <motion.div 
@@ -139,33 +148,47 @@ export default function LandingPage() {
               transition={{ delay: 0.5, duration: 1 }}
               className="text-[#facc15] font-black uppercase tracking-[0.4em] mb-6 text-xs"
             >
-              Innovation Meets Education
+              {identity?.motto || 'Innovation Meets Education'}
             </motion.h2>
             
-            {/* THE SLIDING BEYOND TECHNOLOGY */}
             <motion.h1 
               initial={{ opacity: 0, scale: 0.8, x: 100 }}
               animate={{ opacity: 1, scale: 1, x: 0 }}
               transition={{ delay: 0.2, duration: 1.2, ease: "easeOut" }}
-              className="text-6xl md:text-[9rem] font-black leading-[0.85] mb-12 tracking-tighter"
+              className="text-6xl md:text-[8rem] font-black leading-[0.85] mb-12 tracking-tighter uppercase"
             >
-              BEYOND <br />
-              <motion.span 
-                animate={{ 
-                  color: ['#ffffff', '#d946ef', '#ffffff']
-                }}
-                transition={{ duration: 5, repeat: Infinity }}
-                className="text-white"
-              >
-                TECHNOLOGY.
-              </motion.span>
+              {isCustomSchool ? (
+                <>
+                  {school.name.split(' ')[0]} <br />
+                  <motion.span 
+                    animate={{ color: ['#ffffff', '#d946ef', '#ffffff'] }}
+                    transition={{ duration: 5, repeat: Infinity }}
+                    className="text-white"
+                  >
+                    {school.name.split(' ').slice(1).join(' ')}
+                  </motion.span>
+                </>
+              ) : (
+                <>
+                  BEYOND <br />
+                  <motion.span 
+                    animate={{ color: ['#ffffff', '#d946ef', '#ffffff'] }}
+                    transition={{ duration: 5, repeat: Infinity }}
+                    className="text-white"
+                  >
+                    TECHNOLOGY.
+                  </motion.span>
+                </>
+              )}
             </motion.h1>
 
             <motion.p 
               {...fadeInUp}
               className="text-xl md:text-2xl text-slate-400 mb-16 max-w-3xl mx-auto leading-relaxed font-medium"
             >
-              We specialize in School ERP systems, Robotics & Coding Academy, and Enterprise Application Development.
+              {isCustomSchool 
+                ? `Welcome to the official portal of ${school.name}. We are dedicated to providing the best academic experience powered by Dar-Ark Byte.`
+                : 'We specialize in School ERP systems, Robotics & Coding Academy, and Enterprise Application Development.'}
             </motion.p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <motion.button 
@@ -176,71 +199,96 @@ export default function LandingPage() {
               >
                 ACCESS PORTAL
               </motion.button>
-              <motion.a 
-                whileHover={{ scale: 1.05, y: -5 }}
-                whileTap={{ scale: 0.95 }}
-                href="#services"
-                className="bg-white/5 border border-white/10 text-white px-14 py-6 rounded-3xl font-black text-xl hover:bg-white/10 transition-all flex items-center justify-center gap-3 backdrop-blur-xl"
-              >
-                OUR SERVICES
-              </motion.a>
+              {!isCustomSchool && (
+                <motion.a 
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  whileTap={{ scale: 0.95 }}
+                  href="#services"
+                  className="bg-white/5 border border-white/10 text-white px-14 py-6 rounded-3xl font-black text-xl hover:bg-white/10 transition-all flex items-center justify-center gap-3 backdrop-blur-xl"
+                >
+                  OUR SERVICES
+                </motion.a>
+              )}
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Services Section with SLIDE ANIMATION */}
-      <section id="services" className="py-40 px-6 relative z-10 border-t border-white/5">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-32 items-center">
-            <motion.div {...slideInLeft}>
-              <h2 className="text-[#d946ef] font-black uppercase tracking-widest text-xs mb-4">Core Expertise</h2>
-              <h3 className="text-6xl font-black tracking-tighter mb-10 leading-tight">Advanced Digital <br /> Solutions for All.</h3>
-              <p className="text-slate-400 font-medium text-xl leading-relaxed mb-14">
-                At Dar-Ark Bytes, we build the infrastructure for the future of education across Nigeria.
-              </p>
-              <div className="space-y-8">
-                {['Custom School Management Systems', 'Professional Mobile App Development', 'CBT Examination Infrastructure', 'Robotics & STEAM Education'].map((item, i) => (
-                  <motion.div 
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.1 }}
-                    viewport={{ once: true }}
-                    key={i} 
-                    className="flex items-center gap-5 group"
-                  >
-                    <div className="bg-[#facc15]/20 p-2 rounded-lg group-hover:bg-[#facc15] transition-all">
-                       <CheckCircle2 className="w-6 h-6 text-[#facc15] group-hover:text-slate-900 transition-colors" />
-                    </div>
-                    <span className="font-bold text-slate-200 text-lg">{item}</span>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-            <motion.div 
-              variants={staggerContainer}
-              initial="initial"
-              whileInView="whileInView"
-              viewport={{ once: true }}
-              className="grid sm:grid-cols-2 gap-8"
-            >
-              {services.map((s, i) => (
+      {/* Gallery Section for Schools */}
+      {isCustomSchool && schoolBranding?.gallery && schoolBranding.gallery.length > 0 && (
+        <section className="py-20 px-6 relative z-10 overflow-hidden">
+          <div className="max-w-7xl mx-auto">
+            <h3 className="text-3xl font-black uppercase tracking-tight mb-12 text-center">Institutional Gallery</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {schoolBranding.gallery.map((url, i) => (
                 <motion.div 
-                  variants={fadeInUp}
-                  key={i} 
-                  className="bg-white/5 border border-white/10 p-10 rounded-[48px] hover:border-[#d946ef]/50 transition-all group backdrop-blur-3xl"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  key={i}
+                  className="rounded-[2.5rem] overflow-hidden aspect-video shadow-2xl border-4 border-white/5"
                 >
-                  <div className="bg-[#d946ef] w-16 h-16 rounded-2xl flex items-center justify-center mb-8 shadow-xl shadow-magenta-500/20 group-hover:rotate-6 transition-transform">
-                    <s.icon className="w-8 h-8 text-white" />
-                  </div>
-                  <h4 className="text-2xl font-black mb-4">{s.title}</h4>
-                  <p className="text-slate-400 font-medium text-sm leading-relaxed">{s.desc}</p>
+                  <img src={url} alt={`Gallery ${i}`} className="w-full h-full object-cover" />
                 </motion.div>
               ))}
-            </motion.div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
+
+      {/* Services Section */}
+      {!isCustomSchool && (
+        <section id="services" className="py-40 px-6 relative z-10 border-t border-white/5">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid lg:grid-cols-2 gap-32 items-center">
+              <motion.div {...slideInLeft}>
+                <h2 className="text-[#d946ef] font-black uppercase tracking-widest text-xs mb-4">Core Expertise</h2>
+                <h3 className="text-6xl font-black tracking-tighter mb-10 leading-tight">Advanced Digital <br /> Solutions for All.</h3>
+                <p className="text-slate-400 font-medium text-xl leading-relaxed mb-14">
+                  At Dar-Ark Bytes, we build the infrastructure for the future of education across Nigeria.
+                </p>
+                <div className="space-y-8">
+                  {['Custom School Management Systems', 'Professional Mobile App Development', 'CBT Examination Infrastructure', 'Robotics & STEAM Education'].map((item, i) => (
+                    <motion.div 
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.1 }}
+                      viewport={{ once: true }}
+                      key={i} 
+                      className="flex items-center gap-5 group"
+                    >
+                      <div className="bg-[#facc15]/20 p-2 rounded-lg group-hover:bg-[#facc15] transition-all">
+                         <CheckCircle2 className="w-6 h-6 text-[#facc15] group-hover:text-slate-900 transition-colors" />
+                      </div>
+                      <span className="font-bold text-slate-200 text-lg">{item}</span>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+              <motion.div 
+                variants={staggerContainer}
+                initial="initial"
+                whileInView="whileInView"
+                viewport={{ once: true }}
+                className="grid sm:grid-cols-2 gap-8"
+              >
+                {services.map((s, i) => (
+                  <motion.div 
+                    variants={fadeInUp}
+                    key={i} 
+                    className="bg-white/5 border border-white/10 p-10 rounded-[48px] hover:border-[#d946ef]/50 transition-all group backdrop-blur-3xl"
+                  >
+                    <div className="bg-[#d946ef] w-16 h-16 rounded-2xl flex items-center justify-center mb-8 shadow-xl shadow-magenta-500/20 group-hover:rotate-6 transition-transform">
+                      <s.icon className="w-8 h-8 text-white" />
+                    </div>
+                    <h4 className="text-2xl font-black mb-4">{s.title}</h4>
+                    <p className="text-slate-400 font-medium text-sm leading-relaxed">{s.desc}</p>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Reviews Section */}
       <section id="reviews" className="py-40 px-6 relative z-10 bg-white/[0.02] border-y border-white/5">
@@ -284,27 +332,32 @@ export default function LandingPage() {
           <div className="bg-[#d946ef] w-24 h-24 rounded-[36px] flex items-center justify-center mx-auto mb-12 shadow-2xl shadow-magenta-500/40 animate-bounce">
              <Phone className="w-12 h-12 text-white" />
           </div>
-          <h2 className="text-7xl font-black tracking-tighter mb-10 italic">Ready to Start?</h2>
+          <h2 className="text-7xl font-black tracking-tighter mb-10 italic">{isCustomSchool ? 'Get In Touch' : 'Ready to Start?'}</h2>
           <p className="text-2xl text-slate-400 mb-16 font-medium leading-relaxed">
-            Contact Dar-Ark Bytes Technology today for your School Portal, Website, or App Development project.
+            {isCustomSchool 
+              ? `Reach out to ${school.name} administration for inquiries or support.`
+              : 'Contact Dar-Ark Bytes Technology today for your School Portal, Website, or App Development project.'}
           </p>
           <div className="grid sm:grid-cols-2 gap-8 mb-16">
-            <motion.div whileHover={{ scale: 1.02 }} className="bg-white/5 p-10 rounded-[48px] border border-white/10 backdrop-blur-xl">
-               <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Main Office</p>
-               <p className="text-2xl font-black text-white">+234 916 960 0724</p>
+            <motion.div whileHover={{ scale: 1.02 }} className="bg-white/5 p-10 rounded-[48px] border border-white/10 backdrop-blur-xl flex flex-col items-center">
+               <Phone className="w-6 h-6 text-[#d946ef] mb-4" />
+               <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Call Us</p>
+               <p className="text-2xl font-black text-white">{identity?.phone || '+234 916 960 0724'}</p>
             </motion.div>
-            <motion.div whileHover={{ scale: 1.02 }} className="bg-white/5 p-10 rounded-[48px] border border-white/10 backdrop-blur-xl">
-               <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Technical Support</p>
-               <p className="text-2xl font-black text-white">+234 903 925 6458</p>
+            <motion.div whileHover={{ scale: 1.02 }} className="bg-white/5 p-10 rounded-[48px] border border-white/10 backdrop-blur-xl flex flex-col items-center">
+               <Mail className="w-6 h-6 text-[#d946ef] mb-4" />
+               <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Email Us</p>
+               <p className="text-2xl font-black text-white">{identity?.email || 'info@dararkbytes.com'}</p>
             </motion.div>
           </div>
-          <motion.button 
-            whileHover={{ letterSpacing: "0.5em" }}
-            onClick={() => window.location.href = 'mailto:info@dararkbytes.com'}
-            className="text-slate-400 font-black uppercase tracking-[0.3em] hover:text-white transition-all duration-300"
-          >
-            info@dararkbytes.com
-          </motion.button>
+          
+          {identity?.address && (
+            <div className="bg-white/5 p-10 rounded-[48px] border border-white/10 backdrop-blur-xl mb-16">
+              <MapPin className="w-6 h-6 text-[#d946ef] mx-auto mb-4" />
+              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Location</p>
+              <p className="text-xl font-bold text-white">{identity.address}</p>
+            </div>
+          )}
         </motion.div>
       </section>
 
@@ -315,10 +368,10 @@ export default function LandingPage() {
              <div className="bg-white/10 p-2 rounded-xl">
                 <GraduationCap className="w-6 h-6 text-[#d946ef]" />
              </div>
-             <span className="text-lg font-black tracking-tighter uppercase">Dar-Ark Bytes Tech</span>
+             <span className="text-lg font-black tracking-tighter uppercase">{school?.name || 'Dar-Ark Bytes Tech'}</span>
           </div>
           <p className="text-slate-600 text-[10px] font-black uppercase tracking-[0.5em]">
-            © 2026 DAR-ARK BYTES ENTERPRISE. ALL RIGHTS RESERVED.
+            © 2026 {isCustomSchool ? school.name.toUpperCase() : 'DAR-ARK BYTES ENTERPRISE'}. ALL RIGHTS RESERVED.
           </p>
         </div>
       </footer>

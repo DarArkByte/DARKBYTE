@@ -412,9 +412,11 @@ export default function SuperAdminDashboard() {
               </table>
             </div>
           </>
+        ) : (
+          <div className="p-20 text-center text-slate-400 font-bold uppercase tracking-widest text-xs">
+            Module loading or access restricted
+          </div>
         )}
-      </div>
       </div>
     </div>
   );
-}

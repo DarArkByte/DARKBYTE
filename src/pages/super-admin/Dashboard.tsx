@@ -278,23 +278,33 @@ export default function SuperAdminDashboard() {
                 </h4>
                 <div className="grid gap-4">
                   {[
-                    { name: 'Elite Midnight', color: '#1e1b4b' },
-                    { name: 'Emerald Academy', color: '#059669' },
-                    { name: 'Ruby Scholar', color: '#e11d48' },
-                    { name: 'Royal Gold', color: '#d97706' },
-                    { name: 'Sky Principal', color: '#0284c7' },
+                    { name: 'Elite Midnight', color: '#1e1b4b', preview: proposalPreviewImg },
+                    { name: 'Emerald Academy', color: '#059669', preview: financeMockupImg },
+                    { name: 'Ruby Scholar', color: '#e11d48', preview: resultTemplateImg },
+                    { name: 'Royal Gold', color: '#d97706', preview: proposalPreviewImg },
+                    { name: 'Sky Principal', color: '#0284c7', preview: financeMockupImg },
                   ].map((theme) => (
-                    <button 
-                      key={theme.name}
-                      onClick={() => setNewSchool({...newSchool, theme: theme.name, color: theme.color})}
-                      className={`p-6 rounded-3xl border-2 transition-all flex items-center gap-4 text-left ${newSchool.theme === theme.name ? 'border-[#d946ef] bg-slate-50' : 'border-slate-100 hover:border-slate-200'}`}
-                    >
-                      <div className="w-10 h-10 rounded-xl" style={{ backgroundColor: theme.color }} />
-                      <div>
-                        <p className="font-black text-slate-900 text-sm uppercase">{theme.name}</p>
-                        <p className="text-[10px] text-slate-400 font-bold tracking-widest">Premium Layout Active</p>
-                      </div>
-                    </button>
+                    <div key={theme.name} className="group relative">
+                      <button 
+                        onClick={() => setNewSchool({...newSchool, theme: theme.name, color: theme.color})}
+                        className={`p-6 rounded-3xl border-2 transition-all flex items-center gap-4 text-left w-full ${newSchool.theme === theme.name ? 'border-[#d946ef] bg-slate-50 shadow-lg' : 'border-slate-100 hover:border-slate-200'}`}
+                      >
+                        <div className="w-10 h-10 rounded-xl" style={{ backgroundColor: theme.color }} />
+                        <div>
+                          <p className="font-black text-slate-900 text-sm uppercase">{theme.name}</p>
+                          <p className="text-[10px] text-slate-400 font-bold tracking-widest">Premium Layout Active</p>
+                        </div>
+                      </button>
+                      
+                      {newSchool.theme === theme.name && (
+                        <div className="absolute left-full ml-8 top-0 w-80 h-48 rounded-[32px] overflow-hidden border-4 border-white shadow-2xl z-20 hidden lg:block animate-in slide-in-from-left-4 duration-300">
+                          <img src={theme.preview} alt="Theme Preview" className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4">
+                            <span className="text-[10px] font-black text-white uppercase tracking-widest">Live Preview: {theme.name}</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   ))}
                 </div>
              </div>
@@ -348,39 +358,46 @@ export default function SuperAdminDashboard() {
         ))}
       </div>
 
-      {/* Marketing Section - Always Visible on Home */}
-      <div className="bg-white rounded-[56px] shadow-sm border border-slate-100 p-12 space-y-12">
-        <header className="flex justify-between items-end">
+      {/* Marketing Section - Reorganized for Advertisement */}
+      <div className="bg-slate-900 rounded-[56px] shadow-2xl p-12 space-y-12 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[120px] -mr-40 -mt-40" />
+        <header className="flex justify-between items-end relative z-10">
           <div>
-            <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase">Proposal & Marketing Arsenal</h2>
-            <p className="text-slate-500 font-bold">Deploy these assets to secure new school partnerships.</p>
+            <h2 className="text-3xl font-black text-white tracking-tighter uppercase">Platform Advert & Result Mastery</h2>
+            <p className="text-slate-400 font-bold">Showcase high-fidelity results and portal aesthetics to clients.</p>
           </div>
           <Link 
             to="/super-admin/proposal-editor"
-            className="flex items-center gap-3 bg-[#1e1b4b] text-white px-10 py-5 rounded-[24px] font-black text-sm uppercase tracking-widest shadow-xl shadow-indigo-500/20 hover:scale-105 transition-all"
+            className="flex items-center gap-3 bg-[#d946ef] text-white px-10 py-5 rounded-[24px] font-black text-sm uppercase tracking-widest shadow-xl shadow-magenta-500/20 hover:scale-105 transition-all"
           >
             <FileText className="w-5 h-5" /> Customize & Export Proposal PDF
           </Link>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
           {[
-            { title: 'Result Template v1', type: 'Premium Mockup', img: resultTemplateImg },
-            { title: 'Digital Portal Proposal', type: 'Pitch Document', img: proposalPreviewImg },
-            { title: 'Finance Hub Interface', type: 'UI Screenshot', img: financeMockupImg },
+            { title: 'Official Result Slip v1', type: 'Production Template', img: resultTemplateImg, desc: 'This is the exact high-fidelity template used for physical result generation.' },
+            { title: 'Master Portal View', type: 'Live Interface', img: proposalPreviewImg, desc: 'Demonstrate the clean, animated login experience for students and staff.' },
+            { title: 'Global Finance Grid', type: 'Backend Intelligence', img: financeMockupImg, desc: 'Visual proof of the real-time revenue and split-payment architecture.' },
           ].map((item, i) => (
-            <div key={i} className="group relative rounded-[40px] overflow-hidden bg-slate-100 aspect-video border border-slate-200">
-               <img src={item.img} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-all duration-700" />
-               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8 opacity-0 group-hover:opacity-100 transition-all">
-                  <span className="text-[10px] font-black text-[#d946ef] uppercase tracking-widest mb-1">{item.type}</span>
-                  <h4 className="text-white font-black text-xl mb-4">{item.title}</h4>
-                  <button 
-                    onClick={() => handleDownload(item.img, `${item.title.replace(/\s+/g, '_')}.png`)}
-                    className="bg-white text-black font-black px-6 py-3 rounded-xl text-[10px] uppercase tracking-widest w-fit"
-                  >
-                    Download Resource
-                  </button>
-               </div>
+            <div key={i} className="group flex flex-col space-y-4">
+              <div className="relative rounded-[40px] overflow-hidden bg-white/5 aspect-video border border-white/10 shadow-2xl">
+                 <img src={item.img} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-all duration-700" />
+                 <div className="absolute inset-0 bg-gradient-to-t from-[#1e1b4b]/90 via-transparent to-transparent flex flex-col justify-end p-8 opacity-0 group-hover:opacity-100 transition-all">
+                    <span className="text-[10px] font-black text-[#d946ef] uppercase tracking-widest mb-1">{item.type}</span>
+                    <h4 className="text-white font-black text-xl mb-4">{item.title}</h4>
+                    <button 
+                      onClick={() => handleDownload(item.img, `${item.title.replace(/\s+/g, '_')}.png`)}
+                      className="bg-white text-[#1e1b4b] font-black px-6 py-3 rounded-xl text-[10px] uppercase tracking-widest w-fit shadow-xl"
+                    >
+                      Download For Advert
+                    </button>
+                 </div>
+              </div>
+              <div className="px-4">
+                <p className="text-white font-black text-sm mb-1">{item.title}</p>
+                <p className="text-slate-400 text-[10px] font-bold leading-relaxed">{item.desc}</p>
+              </div>
             </div>
           ))}
         </div>

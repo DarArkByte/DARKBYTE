@@ -17,7 +17,9 @@ import {
   Globe,
   Trash2,
   FileText,
-  Download
+  Download,
+  Database,
+  TrendingUp
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { db } from '../../lib/firebase';

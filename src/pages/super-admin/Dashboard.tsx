@@ -46,7 +46,19 @@ export default function SuperAdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [isOnboarding, setIsOnboarding] = useState(false);
   const [isAuthorizing, setIsAuthorizing] = useState(false);
-  const [newSchool, setNewSchool] = useState({ name: '', domain: '', color: '#4f46e5' });
+  const [newSchool, setNewSchool] = useState({ 
+    name: '', 
+    domain: '', 
+    color: '#4f46e5',
+    theme: 'Elite Midnight',
+    features: {
+      cbt: true,
+      finance: true,
+      inventory: true,
+      transport: true,
+      messages: true
+    }
+  });
   const [newAdmin, setNewAdmin] = useState({ email: '', name: '' });
   const [success, setSuccess] = useState<string | null>(null);
 
@@ -91,12 +103,22 @@ export default function SuperAdminDashboard() {
         name: newSchool.name,
         domain: newSchool.domain.toLowerCase(),
         isActive: true,
-        branding: { primaryColor: newSchool.color },
+        branding: { 
+          primaryColor: newSchool.color,
+          themeName: newSchool.theme 
+        },
+        features: newSchool.features,
         createdAt: new Date().toISOString()
       });
       setSuccess(`School Node [${newSchool.name}] Successfully Hosted`);
       setIsOnboarding(false);
-      setNewSchool({ name: '', domain: '', color: '#4f46e5' });
+      setNewSchool({ 
+        name: '', 
+        domain: '', 
+        color: '#4f46e5', 
+        theme: 'Elite Midnight',
+        features: { cbt: true, finance: true, inventory: true, transport: true, messages: true }
+      });
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       alert('Hosting failed');
@@ -200,22 +222,90 @@ export default function SuperAdminDashboard() {
       )}
 
       {isOnboarding && (
-        <div className="bg-white p-10 rounded-[56px] shadow-2xl border border-indigo-100 space-y-8">
-           <h3 className="text-2xl font-black text-slate-900 tracking-tight uppercase">Host New School Node</h3>
-           <div className="grid md:grid-cols-3 gap-6">
-              <input 
-                placeholder="School Legal Name"
-                value={newSchool.name}
-                onChange={(e) => setNewSchool({...newSchool, name: e.target.value})}
-                className="px-8 py-5 bg-slate-50 rounded-3xl font-bold border-none focus:ring-2 focus:ring-[#d946ef]"
-              />
-              <input 
-                placeholder="Desired Domain (e.g. excel)"
-                value={newSchool.domain}
-                onChange={(e) => setNewSchool({...newSchool, domain: e.target.value})}
-                className="px-8 py-5 bg-slate-50 rounded-3xl font-bold border-none focus:ring-2 focus:ring-[#d946ef]"
-              />
-              <button onClick={handleOnboard} className="bg-[#1e1b4b] text-white rounded-3xl font-black uppercase tracking-widest hover:bg-[#d946ef] transition-all">Launch Node</button>
+        <div className="bg-white p-12 rounded-[56px] shadow-2xl border border-indigo-100 space-y-12 animate-in fade-in zoom-in duration-500">
+           <div className="flex justify-between items-center border-b border-slate-100 pb-8">
+             <h3 className="text-3xl font-black text-slate-900 tracking-tight uppercase">Provisioning Wizard</h3>
+             <button onClick={() => setIsOnboarding(false)} className="text-slate-400 hover:text-slate-900 font-bold uppercase text-[10px] tracking-widest">Cancel Host</button>
+           </div>
+
+           <div className="grid lg:grid-cols-2 gap-12">
+             {/* Step 1: Identity */}
+             <div className="space-y-8">
+                <h4 className="text-xs font-black text-indigo-600 uppercase tracking-widest flex items-center gap-2">
+                  <Building2 className="w-4 h-4" /> 01. School Identity
+                </h4>
+                <div className="grid gap-4">
+                  <input 
+                    placeholder="School Legal Name"
+                    value={newSchool.name}
+                    onChange={(e) => setNewSchool({...newSchool, name: e.target.value})}
+                    className="px-8 py-5 bg-slate-50 rounded-3xl font-bold border-none focus:ring-2 focus:ring-[#d946ef] w-full"
+                  />
+                  <input 
+                    placeholder="Desired Domain (e.g. excel)"
+                    value={newSchool.domain}
+                    onChange={(e) => setNewSchool({...newSchool, domain: e.target.value})}
+                    className="px-8 py-5 bg-slate-50 rounded-3xl font-bold border-none focus:ring-2 focus:ring-[#d946ef] w-full"
+                  />
+                </div>
+
+                <h4 className="text-xs font-black text-indigo-600 uppercase tracking-widest flex items-center gap-2 pt-4">
+                  <Zap className="w-4 h-4" /> 02. Feature Activation
+                </h4>
+                <div className="grid grid-cols-2 gap-4">
+                  {Object.entries(newSchool.features).map(([key, val]) => (
+                    <button 
+                      key={key}
+                      onClick={() => setNewSchool({
+                        ...newSchool, 
+                        features: { ...newSchool.features, [key]: !val }
+                      })}
+                      className={`p-4 rounded-2xl border-2 transition-all flex items-center justify-between ${val ? 'border-[#d946ef] bg-magenta-50 text-[#d946ef]' : 'border-slate-100 text-slate-400 grayscale'}`}
+                    >
+                      <span className="text-[10px] font-black uppercase tracking-widest">{key}</span>
+                      {val && <Zap className="w-3 h-3 fill-current" />}
+                    </button>
+                  ))}
+                </div>
+             </div>
+
+             {/* Step 2: Aesthetics */}
+             <div className="space-y-8">
+                <h4 className="text-xs font-black text-indigo-600 uppercase tracking-widest flex items-center gap-2">
+                  <Globe className="w-4 h-4" /> 03. Design Theme
+                </h4>
+                <div className="grid gap-4">
+                  {[
+                    { name: 'Elite Midnight', color: '#1e1b4b' },
+                    { name: 'Emerald Academy', color: '#059669' },
+                    { name: 'Ruby Scholar', color: '#e11d48' },
+                    { name: 'Royal Gold', color: '#d97706' },
+                    { name: 'Sky Principal', color: '#0284c7' },
+                  ].map((theme) => (
+                    <button 
+                      key={theme.name}
+                      onClick={() => setNewSchool({...newSchool, theme: theme.name, color: theme.color})}
+                      className={`p-6 rounded-3xl border-2 transition-all flex items-center gap-4 text-left ${newSchool.theme === theme.name ? 'border-[#d946ef] bg-slate-50' : 'border-slate-100 hover:border-slate-200'}`}
+                    >
+                      <div className="w-10 h-10 rounded-xl" style={{ backgroundColor: theme.color }} />
+                      <div>
+                        <p className="font-black text-slate-900 text-sm uppercase">{theme.name}</p>
+                        <p className="text-[10px] text-slate-400 font-bold tracking-widest">Premium Layout Active</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+             </div>
+           </div>
+
+           <div className="pt-8 border-t border-slate-100 flex justify-end">
+              <button 
+                onClick={handleOnboard}
+                disabled={!newSchool.name || !newSchool.domain}
+                className="bg-[#1e1b4b] text-white px-16 py-6 rounded-3xl font-black uppercase tracking-widest hover:bg-[#d946ef] transition-all shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Launch Multi-Tenant Node
+              </button>
            </div>
         </div>
       )}

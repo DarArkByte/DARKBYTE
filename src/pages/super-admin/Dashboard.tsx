@@ -263,12 +263,12 @@ export default function SuperAdminDashboard() {
             <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase">Proposal & Marketing Arsenal</h2>
             <p className="text-slate-500 font-bold">Deploy these assets to secure new school partnerships.</p>
           </div>
-          <button 
-            onClick={() => handleDownload(proposalPreviewImg, 'DarArkByte_Portal_Proposal.png')}
+          <Link 
+            to="/super-admin/proposal-editor"
             className="flex items-center gap-3 bg-[#1e1b4b] text-white px-10 py-5 rounded-[24px] font-black text-sm uppercase tracking-widest shadow-xl shadow-indigo-500/20 hover:scale-105 transition-all"
           >
-            <Download className="w-5 h-5" /> Download Proposal PDF
-          </button>
+            <FileText className="w-5 h-5" /> Customize & Export Proposal PDF
+          </Link>
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

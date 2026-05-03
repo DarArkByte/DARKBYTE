@@ -17,6 +17,7 @@ import SuperAdminDashboard from './pages/super-admin/Dashboard';
 import ParentDashboard from './pages/parent/Dashboard';
 import ClassesPage from './pages/classes/ClassesPage';
 import StudentManagement from './pages/students/StudentManagement';
+import ProposalEditor from './pages/super-admin/ProposalEditor';
 import ResultEntryPage from './pages/results/ResultEntryPage';
 import ResultView from './pages/results/ResultView';
 import { SchoolProvider } from './hooks/useSchool';
@@ -99,6 +100,7 @@ function AppContent() {
           <Route element={<DashboardLayout />}>
             <Route path="/dashboard" element={<DashboardHome />} />
             <Route path="/super-admin" element={<SuperAdminDashboard />} />
+            <Route path="/super-admin/proposal-editor" element={<ProposalEditor />} />
             <Route path="/students" element={<StudentManagement />} />
             <Route path="/classes" element={<ClassesPage />} />
             <Route path="/results/entry" element={<ResultEntryPage />} />

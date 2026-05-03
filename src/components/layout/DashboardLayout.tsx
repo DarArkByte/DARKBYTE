@@ -16,7 +16,6 @@ import {
   GraduationCap,
   Calendar,
   Layers,
-  LayoutDashboard,
   FileText,
   TrendingUp,
   Folder,
@@ -44,7 +43,7 @@ export default function DashboardLayout() {
     { name: 'Students', href: '/students', icon: Users, roles: ['school-admin', 'teacher'] },
     { name: 'Classes', href: '/classes', icon: Layers, roles: ['school-admin', 'teacher'] },
     { name: 'Timetables', href: '/timetables', icon: Calendar, roles: ['school-admin', 'teacher', 'student'] },
-    { name: 'Exam Schedule', href: '/exams/schedule', icon: FileText, roles: ['school-admin', 'teacher', 'student'] },
+    { name: 'Exam Hub', href: '/cbt/questions', icon: FileText, roles: ['school-admin', 'teacher'] },
     { name: 'Results', href: '/results/entry', icon: FileSpreadsheet, roles: ['school-admin', 'teacher'] },
     { name: 'Finance', href: '/finance', icon: Wallet, roles: ['school-admin', 'parent'] },
     { name: 'Inventory', href: '/inventory', icon: Package, roles: ['school-admin'] },
@@ -52,7 +51,11 @@ export default function DashboardLayout() {
     { name: 'Communication', href: '/messages', icon: MessageSquare, roles: ['school-admin', 'teacher', 'parent'] },
     { name: 'Gate System', href: '/security', icon: Shield, roles: ['school-admin', 'security-officer'] },
     { name: 'Transport', href: '/transport', icon: Bus, roles: ['school-admin', 'transport-manager'] },
-  ].filter(item => !item.roles || (userProfile?.role && item.roles.includes(userProfile.role)));
+  ].filter(item => 
+    !item.roles || 
+    userProfile?.role === 'super-admin' || 
+    (userProfile?.role && item.roles.includes(userProfile.role))
+  );
 
   const handleLogout = async () => {
     await logout();

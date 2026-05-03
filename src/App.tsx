@@ -21,6 +21,21 @@ import ResultEntryPage from './pages/results/ResultEntryPage';
 import { SchoolProvider } from './hooks/useSchool';
 import { Loader2 } from 'lucide-react';
 
+// MODULE IMPORTS
+import TimetablesPage from './pages/timetables/TimetablesPage';
+import StaffManagement from './pages/staff/StaffManagement';
+import FeeManager from './pages/finance/FeeManager';
+import StorePage from './pages/inventory/StorePage';
+import SecurityTransportHub from './pages/gate_system/SecurityTransportHub';
+import MessagesPage from './pages/communication/MessagesPage';
+import QuestionBankPage from './pages/cbt/QuestionBankPage';
+import OnlineExamPage from './pages/cbt/OnlineExamPage';
+import SubjectAllocationPage from './pages/academics/SubjectAllocationPage';
+import AcademicSettingsPage from './pages/settings/AcademicSettingsPage';
+import PromotionPage from './pages/exams/PromotionPage';
+import CommentsEntryPage from './pages/results/CommentsEntryPage';
+import ObservationalEntryPage from './pages/results/ObservationalEntryPage';
+
 // STABLE DASHBOARD SWITCHER
 function DashboardHome() {
   const { user, userProfile, loading } = useAuth();
@@ -75,6 +90,21 @@ function AppContent() {
             <Route path="/students" element={<StudentManagement />} />
             <Route path="/classes" element={<ClassesPage />} />
             <Route path="/results/entry" element={<ResultEntryPage />} />
+            
+            {/* NEW MODULE ROUTES */}
+            <Route path="/timetables" element={<TimetablesPage />} />
+            <Route path="/staff" element={<StaffManagement />} />
+            <Route path="/finance" element={<FeeManager />} />
+            <Route path="/inventory" element={<StorePage />} />
+            <Route path="/security" element={<SecurityTransportHub />} />
+            <Route path="/messages" element={<MessagesPage />} />
+            <Route path="/cbt/questions" element={<QuestionBankPage />} />
+            <Route path="/cbt/exams" element={<OnlineExamPage />} />
+            <Route path="/academics/allocation" element={<SubjectAllocationPage />} />
+            <Route path="/academics/settings" element={<AcademicSettingsPage />} />
+            <Route path="/exams/promotion" element={<PromotionPage />} />
+            <Route path="/results/comments" element={<CommentsEntryPage />} />
+            <Route path="/results/observation" element={<ObservationalEntryPage />} />
           </Route>
           
           <Route path="*" element={<Navigate to="/" replace />} />

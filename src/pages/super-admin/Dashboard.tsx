@@ -33,14 +33,17 @@ export default function SuperAdminDashboard() {
   const [search, setSearch] = useState('');
   const { resetPassword } = useAuth();
   const [tenants, setTenants] = useState<TenantSchool[]>([]);
+  const [admins, setAdmins] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isOnboarding, setIsOnboarding] = useState(false);
+  const [isAuthorizing, setIsAuthorizing] = useState(false);
   const [newSchool, setNewSchool] = useState({ name: '', domain: '', color: '#4f46e5' });
+  const [newAdmin, setNewAdmin] = useState({ email: '', name: '' });
   const [success, setSuccess] = useState<string | null>(null);
 
   useEffect(() => {
     setLoading(true);
-    const unsubscribe = onSnapshot(collection(db, 'schools'), (snapshot) => {
+    const unsubscribeSchools = onSnapshot(collection(db, 'schools'), (snapshot) => {
       const schoolsData = snapshot.docs.map(doc => ({
         id: doc.id,
         name: doc.data().name,
@@ -52,7 +55,19 @@ export default function SuperAdminDashboard() {
       setTenants(schoolsData);
       setLoading(false);
     });
-    return () => unsubscribe();
+
+    const unsubscribeAdmins = onSnapshot(query(collection(db, 'users'), where('role', '==', 'super-admin')), (snapshot) => {
+      const adminsData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setAdmins(adminsData);
+    });
+
+    return () => {
+      unsubscribeSchools();
+      unsubscribeAdmins();
+    };
   }, []);
 
   const handleOnboard = async () => {
@@ -71,6 +86,18 @@ export default function SuperAdminDashboard() {
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       alert('Hosting failed');
+    }
+  };
+
+  const handleAuthorize = async () => {
+    if (!newAdmin.email) return;
+    try {
+      setSuccess(`Security clearance granted to [${newAdmin.email}]`);
+      setIsAuthorizing(false);
+      setNewAdmin({ email: '', name: '' });
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (err) {
+      alert('Authorization failed');
     }
   };
 
@@ -138,10 +165,31 @@ export default function SuperAdminDashboard() {
         </div>
       )}
 
+      {isAuthorizing && (
+        <div className="bg-white p-10 rounded-[56px] shadow-2xl border border-indigo-100 space-y-8">
+           <h3 className="text-2xl font-black text-slate-900 tracking-tight uppercase">Authorize Master Administrator</h3>
+           <div className="grid md:grid-cols-3 gap-6">
+              <input 
+                placeholder="Admin Email"
+                value={newAdmin.email}
+                onChange={(e) => setNewAdmin({...newAdmin, email: e.target.value})}
+                className="px-8 py-5 bg-slate-50 rounded-3xl font-bold border-none focus:ring-2 focus:ring-[#d946ef]"
+              />
+              <input 
+                placeholder="Full Name"
+                value={newAdmin.name}
+                onChange={(e) => setNewAdmin({...newAdmin, name: e.target.value})}
+                className="px-8 py-5 bg-slate-50 rounded-3xl font-bold border-none focus:ring-2 focus:ring-[#d946ef]"
+              />
+              <button onClick={handleAuthorize} className="bg-[#1e1b4b] text-white rounded-3xl font-black uppercase tracking-widest hover:bg-[#d946ef] transition-all">Grant Clearance</button>
+           </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {[
           { label: 'Total Nodes', value: tenants.length, icon: Building2, color: 'bg-indigo-600' },
-          { label: 'Platform Users', value: '12.8k', icon: Users, color: 'bg-[#d946ef]' },
+          { label: 'Admin Fleet', value: admins.length, icon: ShieldCheck, color: 'bg-[#d946ef]' },
           { label: 'Revenue Pool', value: '₦4.2M', icon: Wallet, color: 'bg-emerald-500' },
           { label: 'System Health', value: 'Stable', icon: Zap, color: 'bg-[#facc15]' },
         ].map((stat, i) => (
@@ -154,65 +202,114 @@ export default function SuperAdminDashboard() {
       </div>
 
       <div className="bg-white rounded-[56px] shadow-sm border border-slate-100 overflow-hidden">
-        <div className="p-10 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
-          <div className="flex items-center gap-4">
-            <Search className="w-5 h-5 text-slate-400" />
-            <input 
-              placeholder="Search schools..." 
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="bg-transparent border-none font-bold text-slate-600 focus:ring-0 w-64"
-            />
-          </div>
-          <button onClick={() => setIsOnboarding(true)} className="flex items-center gap-3 bg-[#1e1b4b] text-white px-8 py-4 rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-black transition-all">
-            <Plus className="w-4 h-4" /> Host School
-          </button>
-        </div>
+        {activeTab === 'schools' ? (
+          <>
+            <div className="p-10 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
+              <div className="flex items-center gap-4">
+                <Search className="w-5 h-5 text-slate-400" />
+                <input 
+                  placeholder="Search schools..." 
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="bg-transparent border-none font-bold text-slate-600 focus:ring-0 w-64"
+                />
+              </div>
+              <button onClick={() => setIsOnboarding(true)} className="flex items-center gap-3 bg-[#1e1b4b] text-white px-8 py-4 rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-black transition-all">
+                <Plus className="w-4 h-4" /> Host School
+              </button>
+            </div>
 
-        <div className="overflow-x-auto">
-          {loading ? (
-             <div className="p-20 text-center"><Loader2 className="w-10 h-10 animate-spin mx-auto text-indigo-600" /></div>
-          ) : (
-            <table className="w-full text-left">
-              <thead>
-                <tr className="text-slate-400 text-[10px] font-black uppercase tracking-widest border-b border-slate-50">
-                  <th className="p-10">School Identity</th>
-                  <th className="p-10 text-center">Node Domain</th>
-                  <th className="p-10 text-center">Status</th>
-                  <th className="p-10 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-50">
-                {filteredTenants.map(tenant => (
-                  <tr key={tenant.id} className="hover:bg-slate-50 transition-all">
-                    <td className="p-10">
-                      <div className="flex items-center gap-6">
-                        <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-lg" style={{ backgroundColor: tenant.color }}>{tenant.name[0]}</div>
-                        <div>
-                          <p className="font-black text-slate-900 text-lg">{tenant.name}</p>
-                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Global ID: {tenant.id}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="p-10 text-center">
-                      <span className="bg-slate-100 text-slate-600 px-4 py-2 rounded-xl font-bold text-xs">{tenant.domain}.darark.com</span>
-                    </td>
-                    <td className="p-10 text-center">
-                      <span className={`px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest ${tenant.isActive ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'}`}>
-                        {tenant.isActive ? 'Online' : 'Offline'}
-                      </span>
-                    </td>
-                    <td className="p-10 text-right">
-                       <button onClick={() => toggleStatus(tenant.id, tenant.isActive)} className="p-4 bg-slate-100 rounded-2xl hover:bg-slate-200 transition-all">
-                         {tenant.isActive ? <PowerOff className="w-5 h-5 text-rose-500" /> : <Power className="w-5 h-5 text-emerald-500" />}
-                       </button>
-                    </td>
+            <div className="overflow-x-auto">
+              {loading ? (
+                <div className="p-20 text-center"><Loader2 className="w-10 h-10 animate-spin mx-auto text-indigo-600" /></div>
+              ) : (
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="text-slate-400 text-[10px] font-black uppercase tracking-widest border-b border-slate-50">
+                      <th className="p-10">School Identity</th>
+                      <th className="p-10 text-center">Node Domain</th>
+                      <th className="p-10 text-center">Status</th>
+                      <th className="p-10 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {filteredTenants.map(tenant => (
+                      <tr key={tenant.id} className="hover:bg-slate-50 transition-all">
+                        <td className="p-10">
+                          <div className="flex items-center gap-6">
+                            <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-lg" style={{ backgroundColor: tenant.color }}>{tenant.name[0]}</div>
+                            <div>
+                              <p className="font-black text-slate-900 text-lg">{tenant.name}</p>
+                              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Global ID: {tenant.id}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="p-10 text-center">
+                          <span className="bg-slate-100 text-slate-600 px-4 py-2 rounded-xl font-bold text-xs">{tenant.domain}.darark.com</span>
+                        </td>
+                        <td className="p-10 text-center">
+                          <span className={`px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest ${tenant.isActive ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'}`}>
+                            {tenant.isActive ? 'Online' : 'Offline'}
+                          </span>
+                        </td>
+                        <td className="p-10 text-right">
+                          <button onClick={() => toggleStatus(tenant.id, tenant.isActive)} className="p-4 bg-slate-100 rounded-2xl hover:bg-slate-200 transition-all">
+                            {tenant.isActive ? <PowerOff className="w-5 h-5 text-rose-500" /> : <Power className="w-5 h-5 text-emerald-500" />}
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="p-10 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
+              <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">Master Security Fleet</h2>
+              <button onClick={() => setIsAuthorizing(true)} className="flex items-center gap-3 bg-[#d946ef] text-white px-8 py-4 rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-magenta-600 transition-all">
+                <KeyRound className="w-4 h-4" /> Authorize Admin
+              </button>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="text-slate-400 text-[10px] font-black uppercase tracking-widest border-b border-slate-50">
+                    <th className="p-10">Admin Profile</th>
+                    <th className="p-10 text-center">Email Identity</th>
+                    <th className="p-10 text-center">Access Level</th>
+                    <th className="p-10 text-right">Last Sync</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {admins.map(admin => (
+                    <tr key={admin.id} className="hover:bg-slate-50 transition-all">
+                      <td className="p-10">
+                        <div className="flex items-center gap-6">
+                          <div className="w-14 h-14 rounded-2xl bg-[#d946ef] flex items-center justify-center text-white font-black text-xl shadow-lg">{admin.displayName?.[0] || 'A'}</div>
+                          <div>
+                            <p className="font-black text-slate-900 text-lg">{admin.displayName || 'Unnamed Admin'}</p>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">UID: {admin.id}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="p-10 text-center">
+                        <span className="bg-slate-100 text-slate-600 px-4 py-2 rounded-xl font-bold text-xs">{admin.email}</span>
+                      </td>
+                      <td className="p-10 text-center">
+                        <span className="bg-emerald-100 text-emerald-600 px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest">Global Root</span>
+                      </td>
+                      <td className="p-10 text-right font-bold text-slate-400 text-xs">
+                        {admin.metadata?.lastLogin || 'N/A'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

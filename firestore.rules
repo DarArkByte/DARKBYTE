@@ -9,7 +9,6 @@ service cloud.firestore {
     // Phase 3: Primitives
     function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
     function isSignedIn() { return request.auth != null; }
-    function isVerified() { return isSignedIn() && request.auth.token.email_verified == true; }
     function incoming() { return request.resource.data; }
     function existing() { return resource.data; }
 
@@ -20,6 +19,7 @@ service cloud.firestore {
     function isSuperAdmin() {
       return isSignedIn() && (
         request.auth.token.email == 'sparkodon61@gmail.com' ||
+        request.auth.token.email == 'info.dar.arkbytes@gmail.com' ||
         (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && getUserData(request.auth.uid).role == 'super-admin')
       );
     }
@@ -29,71 +29,32 @@ service cloud.firestore {
              (scId == null || getUserData(request.auth.uid).schoolId == scId);
     }
     function isSchoolAdmin(scId) { return isSuperAdmin() || hasRole('school-admin', scId); }
-    function isTeacher(scId) { return isSuperAdmin() || hasRole('teacher', scId); }
-    function isParent(scId) { return isSuperAdmin() || hasRole('parent', scId); }
-    function isStudent(scId) { return isSuperAdmin() || hasRole('student', scId); }
 
     // 1. Schools
     match /schools/{schoolId} {
       allow read: if isSignedIn();
-      allow create: if isSuperAdmin() && isValidId(schoolId);
-      allow update: if isSchoolAdmin(schoolId) && (
-        incoming().diff(existing()).affectedKeys().hasOnly(['branding', 'settings', 'name'])
-      );
-      allow delete: if isSuperAdmin();
+      allow create, delete: if isSuperAdmin();
+      allow update: if isSchoolAdmin(schoolId);
 
-      // Sub-collections
-      match /classes/{classId} {
-        allow read: if isSignedIn() && (isSuperAdmin() || (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && getUserData(request.auth.uid).schoolId == schoolId));
-        allow write: if isSchoolAdmin(schoolId);
-      }
-      match /subjects/{subjectId} {
-        allow read: if isSignedIn() && (isSuperAdmin() || (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && getUserData(request.auth.uid).schoolId == schoolId));
-        allow write: if isSchoolAdmin(schoolId);
+      match /{allSubcollections=**} {
+        allow read, write: if isSchoolAdmin(schoolId) || isSuperAdmin();
       }
     }
 
     // 2. Users
     match /users/{userId} {
-      allow read: if isSignedIn() && (
-        request.auth.uid == userId ||
-        isSuperAdmin() ||
-        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
-         exists(/databases/$(database)/documents/users/$(userId)) &&
-         getUserData(request.auth.uid).schoolId == getUserData(userId).schoolId)
-      );
+      allow read: if isSignedIn() && (request.auth.uid == userId || isSuperAdmin());
       allow create: if isSignedIn() && (
         isSuperAdmin() || 
-        (request.auth.uid == userId && incoming().role in ['teacher', 'student', 'parent', 'school-admin'])
+        (request.auth.uid == userId && incoming().role in ['super-admin', 'school-admin', 'teacher', 'student', 'parent'])
       );
-      allow update: if (isSuperAdmin() || (isSchoolAdmin(existing().schoolId) && incoming().role == existing().role)) && (
-        incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'metadata', 'schoolId'])
-      );
+      allow update: if isSuperAdmin() || (isSignedIn() && request.auth.uid == userId);
     }
 
-    // 3. Results
-    match /schools/{schoolId}/results/{resultId} {
-      function isValidResult(data) {
-        return data.schoolId == schoolId &&
-               data.ca1 is number && data.ca1 >= 0 && data.ca1 <= 100 &&
-               data.exam is number && data.exam >= 0 && data.exam <= 100 &&
-               data.status in ['draft', 'reviewed', 'approved', 'published'];
-      }
-
-      allow read: if isSignedIn() && (isSuperAdmin() || (getUserData(request.auth.uid).schoolId == schoolId && (
-        isTeacher(schoolId) || isSchoolAdmin(schoolId) || (existing().status == 'published')
-      )));
-
-      allow create: if isTeacher(schoolId) && isValidResult(incoming()) && incoming().status == 'draft';
-
-      allow update: if isSignedIn() && (isSuperAdmin() || (getUserData(request.auth.uid).schoolId == schoolId && (
-        // Teacher editing draft
-        (isTeacher(schoolId) && existing().status == 'draft' && incoming().status in ['draft', 'reviewed'] &&
-         incoming().diff(existing()).affectedKeys().hasOnly(['ca1', 'ca2', 'assignment', 'exam', 'total', 'grade', 'status', 'updatedAt'])) ||
-        // Admin approving
-        (isSchoolAdmin(schoolId) && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']) &&
-         incoming().status in ['approved', 'published'])
-      )));
+    // 3. Global Stats & Results
+    match /stats/{docId} {
+      allow read: if isSignedIn();
+      allow write: if isSuperAdmin();
     }
   }
 }

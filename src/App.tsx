@@ -18,6 +18,7 @@ import ParentDashboard from './pages/parent/Dashboard';
 import ClassesPage from './pages/classes/ClassesPage';
 import StudentManagement from './pages/students/StudentManagement';
 import ResultEntryPage from './pages/results/ResultEntryPage';
+import ResultView from './pages/results/ResultView';
 import { SchoolProvider } from './hooks/useSchool';
 import { Loader2 } from 'lucide-react';
 
@@ -116,6 +117,7 @@ function AppContent() {
             <Route path="/exams/promotion" element={<PromotionPage />} />
             <Route path="/results/comments" element={<CommentsEntryPage />} />
             <Route path="/results/observation" element={<ObservationalEntryPage />} />
+            <Route path="/results/view/:studentId" element={<ResultView />} />
           </Route>
           
           <Route path="*" element={<Navigate to="/" replace />} />

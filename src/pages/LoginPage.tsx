@@ -10,7 +10,6 @@ import { useState } from 'react';
 
 export default function LoginPage() {
   const { login, resetPassword } = useAuth();
-  const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -25,10 +24,13 @@ export default function LoginPage() {
     setSuccess(null);
     try {
       await login(email, password);
-      setSuccess('Admittance Granted. Opening Command Center...');
-      setTimeout(() => navigate('/dashboard'), 1000);
+      setSuccess('ADMITTANCE GRANTED. INJECTING COMMAND CENTER...');
+      // FORCE RELOAD BYPASS
+      setTimeout(() => {
+        window.location.href = '/dashboard';
+      }, 800);
     } catch (err: any) {
-      setError(err.message || 'Invalid credentials. Please verify your Secure Key.');
+      setError(err.message || 'Invalid credentials. Verify your Secure Key.');
     } finally {
       setLoading(false);
     }
@@ -41,9 +43,9 @@ export default function LoginPage() {
     setSuccess(null);
     try {
       await resetPassword(email);
-      setSuccess('Recovery link sent! Check your inbox or contact platform security.');
+      setSuccess('Recovery link sent! Check your inbox.');
     } catch (err: any) {
-      setError('Could not send reset link. Please verify your email.');
+      setError('Could not send reset link.');
     } finally {
       setLoading(false);
     }
@@ -69,7 +71,7 @@ export default function LoginPage() {
         )}
 
         {success && (
-          <div className="mb-8 p-6 bg-emerald-500/10 text-emerald-400 rounded-3xl text-xs font-black border border-emerald-500/20 uppercase tracking-widest text-center">
+          <div className="mb-8 p-6 bg-emerald-500/20 text-emerald-400 rounded-3xl text-xs font-black border border-emerald-500/40 uppercase tracking-widest text-center shadow-2xl shadow-emerald-500/20">
             {success}
           </div>
         )}
@@ -98,21 +100,19 @@ export default function LoginPage() {
                 placeholder="••••••••"
               />
             </div>
-            <div className="flex items-center justify-between px-1">
-              <button 
-                type="button"
-                onClick={() => setShowForgot(true)}
-                className="text-xs font-black text-[#d946ef] hover:text-white transition-colors uppercase tracking-widest"
-              >
-                Forgot Password?
-              </button>
-            </div>
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || !!success}
               className="w-full bg-[#d946ef] text-white font-black py-6 rounded-2xl shadow-2xl shadow-magenta-500/40 hover:bg-[#c026d3] transition-all active:scale-95 disabled:opacity-50 text-lg uppercase tracking-widest"
             >
-              {loading ? 'Verifying...' : 'Sign In'}
+              {loading ? 'Verifying...' : success ? 'Admitted' : 'Sign In'}
+            </button>
+            <button 
+                type="button"
+                onClick={() => setShowForgot(true)}
+                className="w-full text-center text-xs font-black text-slate-600 hover:text-white transition-colors uppercase tracking-widest py-2"
+              >
+                Forgot Password?
             </button>
           </form>
         ) : (

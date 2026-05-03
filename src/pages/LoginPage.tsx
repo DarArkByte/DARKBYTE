@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { GraduationCap, LogIn } from 'lucide-react';
+import { GraduationCap } from 'lucide-react';
 import { useState } from 'react';
 
 export default function LoginPage() {
@@ -26,9 +25,10 @@ export default function LoginPage() {
     setSuccess(null);
     try {
       await login(email, password);
-      navigate('/dashboard');
+      setSuccess('Admittance Granted. Opening Command Center...');
+      setTimeout(() => navigate('/dashboard'), 1000);
     } catch (err: any) {
-      setError(err.message || 'Invalid email or password');
+      setError(err.message || 'Invalid credentials. Please verify your Secure Key.');
     } finally {
       setLoading(false);
     }
@@ -41,7 +41,7 @@ export default function LoginPage() {
     setSuccess(null);
     try {
       await resetPassword(email);
-      setSuccess('Recovery link sent! Check your inbox or contact sparkodon61@gmail.com / info.dar.arkbytes@gmail.com');
+      setSuccess('Recovery link sent! Check your inbox or contact platform security.');
     } catch (err: any) {
       setError('Could not send reset link. Please verify your email.');
     } finally {
@@ -50,14 +50,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#1e1b4b] px-4 overflow-hidden relative">
+    <div className="min-h-screen flex items-center justify-center bg-[#1e1b4b] px-4 overflow-hidden relative font-sans">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-[#d946ef]/10 to-transparent blur-3xl pointer-events-none" />
       
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="max-w-[480px] w-full bg-white/5 backdrop-blur-3xl rounded-[48px] shadow-2xl p-10 lg:p-14 border border-white/10 relative z-10"
-      >
+      <div className="max-w-[480px] w-full bg-white/5 backdrop-blur-3xl rounded-[48px] shadow-2xl p-10 lg:p-14 border border-white/10 relative z-10">
         <div className="text-center mb-10">
           <div className="bg-[#d946ef] p-2 rounded-xl w-16 h-16 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-magenta-500/20">
              <GraduationCap className="w-10 h-10 text-white" />
@@ -67,13 +63,13 @@ export default function LoginPage() {
         </div>
 
         {error && (
-          <div className="mb-8 p-4 bg-red-500/10 text-red-400 rounded-2xl text-sm font-bold border border-red-500/20 animate-pulse">
+          <div className="mb-8 p-6 bg-red-500/10 text-red-400 rounded-3xl text-xs font-black border border-red-500/20 uppercase tracking-widest text-center animate-pulse">
             {error}
           </div>
         )}
 
         {success && (
-          <div className="mb-8 p-4 bg-emerald-500/10 text-emerald-400 rounded-2xl text-sm font-bold border border-emerald-500/20">
+          <div className="mb-8 p-6 bg-emerald-500/10 text-emerald-400 rounded-3xl text-xs font-black border border-emerald-500/20 uppercase tracking-widest text-center">
             {success}
           </div>
         )}
@@ -87,7 +83,7 @@ export default function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-8 py-5 rounded-2xl bg-white/5 border border-white/10 focus:border-[#d946ef] focus:bg-white/10 outline-none transition-all font-bold text-white placeholder-slate-700"
+                className="w-full px-8 py-5 rounded-2xl bg-white/5 border border-white/10 focus:border-[#d946ef] focus:bg-white/10 outline-none transition-all font-black text-white placeholder-slate-700"
                 placeholder="Username"
               />
             </div>
@@ -98,7 +94,7 @@ export default function LoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-8 py-5 rounded-2xl bg-white/5 border border-white/10 focus:border-[#d946ef] focus:bg-white/10 outline-none transition-all font-bold text-white placeholder-slate-700"
+                className="w-full px-8 py-5 rounded-2xl bg-white/5 border border-white/10 focus:border-[#d946ef] focus:bg-white/10 outline-none transition-all font-black text-white placeholder-slate-700"
                 placeholder="••••••••"
               />
             </div>
@@ -128,7 +124,7 @@ export default function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-8 py-5 rounded-2xl bg-white/5 border border-white/10 focus:border-[#d946ef] focus:bg-white/10 outline-none transition-all font-bold text-white placeholder-slate-700"
+                className="w-full px-8 py-5 rounded-2xl bg-white/5 border border-white/10 focus:border-[#d946ef] focus:bg-white/10 outline-none transition-all font-black text-white placeholder-slate-700"
                 placeholder="registered@email.com"
               />
             </div>
@@ -157,7 +153,7 @@ export default function LoginPage() {
             <span className="text-slate-400">Dar-Ark Bytes Enterprise</span>
           </p>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

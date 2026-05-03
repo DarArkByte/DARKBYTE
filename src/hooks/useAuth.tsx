@@ -35,7 +35,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           if (profileDoc.exists()) {
             setUserProfile(profileDoc.data() as UserProfile);
           } else {
-            const isMasterAdmin = ['VyWco6tQmGQDM5xq7N0SbOntJmv1', 'emBwTzHyq2WAqqVzQe3s5HfIWmr1'].includes(user.uid);
+            const masterEmails = ['sparkodon61@gmail.com', 'info.dar.arkbytes@gmail.com'];
+            const masterUids = ['VyWco6tQmGQDM5xq7N0SbOntJmv1', 'emBwTzHyq2WAqqVzQe3s5HfIWmr1'];
+            const isMasterAdmin = masterUids.includes(user.uid) || (user.email && masterEmails.includes(user.email));
+            
             const newProfile: UserProfile = {
               uid: user.uid,
               email: user.email || '',

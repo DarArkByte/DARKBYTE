@@ -11,16 +11,27 @@ export default function SuperAdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // CACHE BUSTER: Force clear any stuck session on mount if requested
+  React.useEffect(() => {
+    if (window.location.search.includes('reset')) {
+      localStorage.clear();
+      window.location.href = '/master-command/login';
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setError(null);
     try {
       // Secret login logic
       await login(email, password);
-      navigate('/dashboard'); // Will redirect to super-admin dashboard
-    } catch (err) {
+      // FORCE RELOAD BYPASS for master command
+      window.location.href = '/dashboard'; 
+    } catch (err: any) {
       console.error(err);
+      setError(err.message || 'Access Denied: Master Security Protocol Failed.');
     } finally {
       setLoading(false);
     }
@@ -41,18 +52,24 @@ export default function SuperAdminLogin() {
           <p className="text-emerald-500/60 font-bold mt-2 text-sm tracking-widest">Dar-Ark Byte Multi-Tenant Architecture</p>
         </div>
 
+        {error && (
+          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-xs font-black uppercase tracking-widest text-center animate-pulse">
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="bg-gray-900 border border-gray-800 rounded-xl p-2 flex items-center shadow-inner">
             <div className="p-3">
                <Shield className="w-6 h-6 text-gray-500" />
             </div>
             <input
-              type="email"
+              type="text"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full bg-transparent border-none text-white font-bold placeholder-gray-600 focus:ring-0 outline-none"
-              placeholder="MASTER EMAIL"
+              placeholder="MASTER EMAIL / USERNAME"
             />
           </div>
 

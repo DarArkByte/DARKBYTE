@@ -3,6 +3,8 @@ import { useSchool } from '../../hooks/useSchool';
 import { Settings, LayoutTemplate, Calculator, CheckCircle2, Save, Users, AlertCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 import { GradeRange } from '../../types';
+import { db } from '../../lib/firebase';
+import { doc, updateDoc } from 'firebase/firestore';
 
 export default function AcademicSettingsPage() {
   const { school } = useSchool();
@@ -42,6 +44,20 @@ export default function AcademicSettingsPage() {
   const changeAssessmentType = (id: string, type: 'numerical' | 'observational') => {
     setClassesConfig(classesConfig.map(c => c.id === id ? { ...c, assessmentType: type } : c));
   };
+  const handleSave = async () => {
+    if (!school?.id) return;
+    try {
+      await updateDoc(doc(db, 'schools', school.id), {
+        settings: {
+          reportCardTheme: selectedTheme,
+          gradingSystem: gradingScale,
+        }
+      });
+      alert('Academic Configuration Saved Successfully');
+    } catch (err) {
+      alert('Failed to save configuration');
+    }
+  };
 
   return (
     <div className="space-y-8 pb-12">
@@ -56,7 +72,10 @@ export default function AcademicSettingsPage() {
             </h1>
             <p className="text-slate-300 font-medium">Configure grading scales, report templates, and class behaviors.</p>
           </div>
-          <button className="flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-full font-bold shadow-lg hover:shadow-xl hover:bg-emerald-500 transition-all w-fit">
+          <button 
+            onClick={handleSave}
+            className="flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-full font-bold shadow-lg hover:shadow-xl hover:bg-emerald-500 transition-all w-fit"
+          >
             <Save className="w-5 h-5" />
             Save Configuration
           </button>

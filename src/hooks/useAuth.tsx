@@ -35,19 +35,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           if (profileDoc.exists()) {
             setUserProfile(profileDoc.data() as UserProfile);
           } else {
-            const masterEmails = ['sparkodon61@gmail.com', 'info.dar.arkbytes@gmail.com'];
-            const masterUids = ['VyWco6tQmGQDM5xq7N0SbOntJmv1', 'emBwTzHyq2WAqqVzQe3s5HfIWmr1'];
-            const isMasterAdmin = masterUids.includes(user.uid) || (user.email && masterEmails.includes(user.email));
-            
-            const newProfile: UserProfile = {
-              uid: user.uid,
-              email: user.email || '',
-              displayName: user.displayName || 'User',
-              role: isMasterAdmin ? 'super-admin' : 'teacher', 
-              metadata: { firstLogin: new Date().toISOString() }
-            };
-            setUserProfile(newProfile); // OPTIMISTIC ADMITTANCE
-            await setDoc(doc(db, 'users', user.uid), newProfile);
+            // Check for pre-authorized profile by email (migration/authorization logic)
+            const emailId = user.email?.replace(/[@.]/g, '_');
+            const preAuthDoc = emailId ? await getDoc(doc(db, 'users', emailId)) : null;
+
+            if (preAuthDoc?.exists()) {
+              const data = preAuthDoc.data();
+              const migratedProfile = { 
+                ...data, 
+                uid: user.uid,
+                metadata: { ...data.metadata, migratedAt: new Date().toISOString() }
+              } as UserProfile;
+              
+              setUserProfile(migratedProfile);
+              await setDoc(doc(db, 'users', user.uid), migratedProfile);
+            } else {
+              const masterEmails = ['sparkodon61@gmail.com', 'info.dar.arkbytes@gmail.com', 'uche@darark.com'];
+              const masterUids = ['VyWco6tQmGQDM5xq7N0SbOntJmv1', 'emBwTzHyq2WAqqVzQe3s5HfIWmr1'];
+              const isMasterAdmin = masterUids.includes(user.uid) || (user.email && masterEmails.includes(user.email));
+              
+              const newProfile: UserProfile = {
+                uid: user.uid,
+                email: user.email || '',
+                displayName: user.displayName || 'User',
+                role: isMasterAdmin ? 'super-admin' : 'teacher', 
+                metadata: { firstLogin: new Date().toISOString() }
+              };
+              setUserProfile(newProfile);
+              await setDoc(doc(db, 'users', user.uid), newProfile);
+            }
           }
         } catch (error) {
           console.error("Auth profile fetch error:", error);

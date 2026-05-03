@@ -14,11 +14,13 @@ import {
   KeyRound,
   Activity,
   Loader2,
-  Globe
+  Globe,
+  Trash2,
+  Settings
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { db } from '../../lib/firebase';
-import { collection, query, getDocs, addDoc, doc, updateDoc, onSnapshot, where } from 'firebase/firestore';
+import { collection, query, getDocs, addDoc, doc, updateDoc, onSnapshot, where, setDoc, deleteDoc } from 'firebase/firestore';
 
 interface TenantSchool {
   id: string;
@@ -98,12 +100,35 @@ export default function SuperAdminDashboard() {
   const handleAuthorize = async () => {
     if (!newAdmin.email) return;
     try {
+      // Create a skeleton profile for the new admin
+      // The user will 'claim' this when they login with this email
+      const adminId = newAdmin.email.replace(/[@.]/g, '_');
+      await setDoc(doc(db, 'users', adminId), {
+        email: newAdmin.email,
+        displayName: newAdmin.name,
+        role: 'super-admin',
+        isAuthorized: true,
+        createdAt: new Date().toISOString()
+      });
+
       setSuccess(`Security clearance granted to [${newAdmin.email}]`);
       setIsAuthorizing(false);
       setNewAdmin({ email: '', name: '' });
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
+      console.error(err);
       alert('Authorization failed');
+    }
+  };
+
+  const deleteSchool = async (id: string) => {
+    if (!confirm('Are you sure you want to decommission this school node? This action is irreversible.')) return;
+    try {
+      await deleteDoc(doc(db, 'schools', id));
+      setSuccess('School Node Decommissioned');
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (err) {
+      alert('Decommission failed');
     }
   };
 
@@ -264,9 +289,14 @@ export default function SuperAdminDashboard() {
                           </span>
                         </td>
                         <td className="p-10 text-right">
-                          <button onClick={() => toggleStatus(tenant.id, tenant.isActive)} className="p-4 bg-slate-100 rounded-2xl hover:bg-slate-200 transition-all">
-                            {tenant.isActive ? <PowerOff className="w-5 h-5 text-rose-500" /> : <Power className="w-5 h-5 text-emerald-500" />}
-                          </button>
+                          <div className="flex justify-end gap-2">
+                            <button onClick={() => toggleStatus(tenant.id, tenant.isActive)} className="p-4 bg-slate-100 rounded-2xl hover:bg-slate-200 transition-all">
+                              {tenant.isActive ? <PowerOff className="w-5 h-5 text-rose-500" /> : <Power className="w-5 h-5 text-emerald-500" />}
+                            </button>
+                            <button onClick={() => deleteSchool(tenant.id)} className="p-4 bg-rose-50 rounded-2xl hover:bg-rose-100 transition-all">
+                              <Trash2 className="w-5 h-5 text-rose-600" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}

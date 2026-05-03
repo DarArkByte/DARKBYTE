@@ -1,7 +1,6 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
- * Build Trigger: Case-Sensitivity Fix v2
  */
 
 import React from 'react';
@@ -14,113 +13,72 @@ import SuperAdminLogin from './pages/super-admin/SuperAdminLogin';
 import DashboardLayout from './components/layout/DashboardLayout';
 import SchoolAdminDashboard from './pages/school-admin/Dashboard';
 import TeacherDashboard from './pages/teacher/Dashboard';
-import TeacherResultEntry from './pages/teacher/ResultEntry';
 import SuperAdminDashboard from './pages/super-admin/Dashboard';
 import ParentDashboard from './pages/parent/Dashboard';
-import ResultView from './pages/results/ResultView';
 import ClassesPage from './pages/classes/ClassesPage';
+import StudentManagement from './pages/students/StudentManagement';
 import TimetablesPage from './pages/timetables/TimetablesPage';
 import ExamSchedulePage from './pages/exams/ExamSchedulePage';
-import PromotionPage from './pages/exams/PromotionPage';
-import MessagesPage from './pages/communication/MessagesPage';
-import MediaManagerPage from './pages/media/MediaManagerPage';
-import QuestionBankPage from './pages/cbt/QuestionBankPage';
-import OnlineExamPage from './pages/cbt/OnlineExamPage';
 import ResultEntryPage from './pages/results/ResultEntryPage';
-import CommentsEntryPage from './pages/results/CommentsEntryPage';
-import ObservationalEntryPage from './pages/results/ObservationalEntryPage';
-import AcademicSettingsPage from './pages/settings/AcademicSettingsPage';
-import SubjectAllocationPage from './pages/academics/SubjectAllocationPage';
 import FeeManager from './pages/finance/FeeManager';
-import StorePage from './pages/inventory/StorePage';
 import StaffManagement from './pages/staff/StaffManagement';
-import SecurityTransportHub from './pages/gate_system/SecurityTransportHub';
 import { SchoolProvider } from './hooks/useSchool';
+import { Loader2 } from 'lucide-react';
+
+function DashboardHome() {
+  const { userProfile, loading } = useAuth();
+  
+  if (loading) return (
+    <div className="h-screen flex flex-col items-center justify-center bg-[#1e1b4b] text-white">
+      <Loader2 className="w-12 h-12 text-[#d946ef] animate-spin mb-4" />
+      <p className="font-black uppercase tracking-widest text-xs">Syncing Master Node...</p>
+    </div>
+  );
+
+  if (!userProfile) return <Navigate to="/login" replace />;
+  
+  // Direct Role Routing
+  if (userProfile.role === 'super-admin') return <SuperAdminDashboard />;
+  if (userProfile.role === 'school-admin') return <SchoolAdminDashboard />;
+  if (userProfile.role === 'teacher') return <TeacherDashboard />;
+  if (userProfile.role === 'parent') return <ParentDashboard />;
+  
+  return <SuperAdminDashboard />; // Emergency Fallback to Super Admin
+}
 
 function AppContent() {
-  const { user, loading, userProfile } = useAuth();
+  const { loading } = useAuth();
 
-  if (loading) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-[#1e1b4b]">
-        <div className="text-center">
-          <div className="h-16 w-16 animate-spin rounded-full border-t-4 border-b-4 border-[#d946ef] mx-auto mb-6"></div>
-          <h2 className="text-white text-2xl font-black tracking-tighter uppercase mb-2">Dar-Ark Bytes</h2>
-          <p className="text-slate-400 font-bold uppercase tracking-[0.3em] text-[10px]">Initializing Secure Core...</p>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return (
+    <div className="h-screen flex flex-col items-center justify-center bg-[#1e1b4b] text-white">
+      <div className="h-16 w-16 animate-spin rounded-full border-t-4 border-[#d946ef] mb-6"></div>
+      <h2 className="text-2xl font-black uppercase tracking-tighter">Dar-Ark Byte</h2>
+    </div>
+  );
 
   return (
     <Router>
       <Routes>
-        {/* Public Landing Page */}
-        <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
-
-        {/* Login */}
-        <Route path="/login" element={user ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/portal/:schoolDomain/login" element={<SchoolPortalLogin />} />
+        <Route path="/master-command/login" element={<SuperAdminLogin />} />
         
-        {/* Independent School Portals */}
-        <Route path="/portal/:schoolDomain/login" element={user ? <Navigate to="/dashboard" replace /> : <SchoolPortalLogin />} />
-        
-        {/* Secret Master Admin Login */}
-        <Route path="/master-command/login" element={user ? <Navigate to="/dashboard" replace /> : <SuperAdminLogin />} />
-        
-        {/* Protected Dashboard Routes */}
         <Route element={<DashboardLayout />}>
           <Route path="/dashboard" element={<DashboardHome />} />
+          <Route path="/super-admin" element={<SuperAdminDashboard />} />
+          <Route path="/students" element={<StudentManagement />} />
           <Route path="/classes" element={<ClassesPage />} />
           <Route path="/timetables" element={<TimetablesPage />} />
-          <Route path="/exams/schedule" element={<ExamSchedulePage />} />
-          <Route path="/promotion" element={<PromotionPage />} />
-          <Route path="/messages" element={<MessagesPage />} />
-          <Route path="/media" element={<MediaManagerPage />} />
-          <Route path="/cbt/questions" element={<QuestionBankPage />} />
-          <Route path="/cbt/exams" element={<OnlineExamPage />} />
           <Route path="/results/entry" element={<ResultEntryPage />} />
-          <Route path="/results/observations" element={<ObservationalEntryPage />} />
-          <Route path="/results/comments" element={<CommentsEntryPage />} />
-          <Route path="/settings/academic" element={<AcademicSettingsPage />} />
-          <Route path="/academics/subjects" element={<SubjectAllocationPage />} />
           <Route path="/finance" element={<FeeManager />} />
-          <Route path="/inventory" element={<StorePage />} />
           <Route path="/staff" element={<StaffManagement />} />
-          <Route path="/security" element={<SecurityTransportHub />} />
-          <Route path="/transport" element={<SecurityTransportHub />} />
-          
-          {/* Direct Role Routes */}
-          <Route path="/super-admin/*" element={<SuperAdminDashboard />} />
-          <Route path="/school-admin/*" element={<SchoolAdminDashboard />} />
-          <Route path="/teacher/*" element={<TeacherDashboard />} />
-          <Route path="/parent/*" element={<ParentDashboard />} />
         </Route>
         
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );
-}
-
-function DashboardHome() {
-  const { userProfile, loading } = useAuth();
-  
-  if (loading) return null;
-  if (!userProfile) return <Navigate to="/login" replace />;
-  
-  switch (userProfile.role) {
-    case 'super-admin': return <SuperAdminDashboard />;
-    case 'school-admin': return <SchoolAdminDashboard />;
-    case 'teacher': return <TeacherDashboard />;
-    case 'parent': return <ParentDashboard />;
-    default: return (
-      <div className="p-10 text-center">
-        <h2 className="text-2xl font-black text-slate-900">Unknown Role Detected</h2>
-        <p className="text-slate-500">Your account role ({userProfile.role}) does not have a mapped dashboard.</p>
-        <button onClick={() => window.location.href = '/'} className="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-xl">Go Home</button>
-      </div>
-    );
-  }
 }
 
 export default function App() {

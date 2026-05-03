@@ -15,6 +15,8 @@ import {
   X,
   GraduationCap,
   Calendar,
+  Layers,
+  LayoutDashboard,
   FileText,
   TrendingUp,
   Folder,

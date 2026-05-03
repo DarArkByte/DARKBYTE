@@ -148,13 +148,22 @@ export default function SuperAdminDashboard() {
 
   const filteredTenants = tenants.filter(t => t.name.toLowerCase().includes(search.toLowerCase()));
 
-  const handleDownload = (imgSrc: string, filename: string) => {
-    const link = document.createElement('a');
-    link.href = imgSrc;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownload = async (imgSrc: string, filename: string) => {
+    try {
+      const response = await fetch(imgSrc);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Download failed:', err);
+      window.open(imgSrc, '_blank');
+    }
   };
 
   return (

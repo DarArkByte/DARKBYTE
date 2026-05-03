@@ -54,6 +54,9 @@ export default function SuperAdminDashboard() {
       } as TenantSchool));
       setTenants(schoolsData);
       setLoading(false);
+    }, (error) => {
+      console.error("School fetch error:", error);
+      setLoading(false);
     });
 
     const unsubscribeAdmins = onSnapshot(query(collection(db, 'users'), where('role', '==', 'super-admin')), (snapshot) => {
@@ -62,6 +65,8 @@ export default function SuperAdminDashboard() {
         ...doc.data()
       }));
       setAdmins(adminsData);
+    }, (error) => {
+      console.warn("Admin fetch restricted:", error.message);
     });
 
     return () => {

@@ -67,12 +67,21 @@ function DashboardHome() {
 }
 
 function AppContent() {
-  const { loading } = useAuth();
+  const { loading: authLoading } = useAuth();
+  const [safetyTimeout, setSafetyTimeout] = React.useState(false);
 
-  if (loading) return (
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      if (authLoading) setSafetyTimeout(true);
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, [authLoading]);
+
+  if (authLoading && !safetyTimeout) return (
     <div className="h-screen flex flex-col items-center justify-center bg-[#1e1b4b] text-white">
        <div className="h-20 w-20 animate-spin rounded-full border-t-4 border-[#d946ef] mb-8 shadow-2xl shadow-magenta-500/20"></div>
        <h1 className="text-3xl font-black tracking-tighter uppercase">DAR-ARK BYTE</h1>
+       <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px] mt-4">Initializing Security Matrix...</p>
     </div>
   );
 

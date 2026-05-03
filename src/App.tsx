@@ -33,7 +33,8 @@ import QuestionBankPage from './pages/cbt/QuestionBankPage';
 import OnlineExamPage from './pages/cbt/OnlineExamPage';
 import SubjectAllocationPage from './pages/academics/SubjectAllocationPage';
 import AcademicSettingsPage from './pages/settings/AcademicSettingsPage';
-import PromotionPage from './pages/exams/PromotionPage';
+import PromotionPage from './pages/academics/PromotionPage';
+import TranscriptPage from './pages/students/TranscriptPage';
 import ExamSchedulePage from './pages/exams/ExamSchedulePage';
 import CommentsEntryPage from './pages/results/CommentsEntryPage';
 import ObservationalEntryPage from './pages/results/ObservationalEntryPage';
@@ -115,6 +116,7 @@ function AppContent() {
             <Route path="/academics/allocation" element={<SubjectAllocationPage />} />
             <Route path="/academics/settings" element={<AcademicSettingsPage />} />
             <Route path="/exams/promotion" element={<PromotionPage />} />
+            <Route path="/students/transcript" element={<TranscriptPage />} />
             <Route path="/results/comments" element={<CommentsEntryPage />} />
             <Route path="/results/observation" element={<ObservationalEntryPage />} />
             <Route path="/results/view/:studentId" element={<ResultView />} />

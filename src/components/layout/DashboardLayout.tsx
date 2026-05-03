@@ -46,12 +46,14 @@ export default function DashboardLayout() {
     { name: 'Exam Hub', href: '/cbt/questions', icon: FileText, roles: ['school-admin', 'teacher'] },
     { name: 'Exam Schedule', href: '/exams/schedule', icon: Calendar, roles: ['school-admin', 'teacher', 'student'] },
     { name: 'Results', href: '/results/entry', icon: FileSpreadsheet, roles: ['school-admin', 'teacher'] },
+    { name: 'Promotion', href: '/exams/promotion', icon: TrendingUp, roles: ['school-admin'] },
+    { name: 'Transcripts', href: '/students/transcript', icon: FileText, roles: ['school-admin'] },
     { name: 'Finance', href: '/finance', icon: Wallet, roles: ['school-admin', 'parent'] },
     { name: 'Inventory', href: '/inventory', icon: Package, roles: ['school-admin'] },
     { name: 'Staff', href: '/staff', icon: UserCheck, roles: ['school-admin'] },
     { name: 'Communication', href: '/messages', icon: MessageSquare, roles: ['school-admin', 'teacher', 'parent'] },
     { name: 'Gate System', href: '/security', icon: Shield, roles: ['school-admin', 'security-officer'] },
-    { name: 'Transport', href: '/transport', icon: Bus, roles: ['school-admin', 'transport-manager'] },
+    { name: 'Transport', href: '/security', icon: Bus, roles: ['school-admin', 'transport-manager'] },
   ].filter(item => 
     !item.roles || 
     userProfile?.role === 'super-admin' || 

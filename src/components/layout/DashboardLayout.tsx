@@ -44,6 +44,7 @@ export default function DashboardLayout() {
     { name: 'Classes', href: '/classes', icon: Layers, roles: ['school-admin', 'teacher'] },
     { name: 'Timetables', href: '/timetables', icon: Calendar, roles: ['school-admin', 'teacher', 'student'] },
     { name: 'Exam Hub', href: '/cbt/questions', icon: FileText, roles: ['school-admin', 'teacher'] },
+    { name: 'Exam Schedule', href: '/exams/schedule', icon: Calendar, roles: ['school-admin', 'teacher', 'student'] },
     { name: 'Results', href: '/results/entry', icon: FileSpreadsheet, roles: ['school-admin', 'teacher'] },
     { name: 'Finance', href: '/finance', icon: Wallet, roles: ['school-admin', 'parent'] },
     { name: 'Inventory', href: '/inventory', icon: Package, roles: ['school-admin'] },

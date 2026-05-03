@@ -19,6 +19,7 @@ export default function EntranceExam() {
   const [submitting, setSubmitting] = useState(false);
   const [completed, setCompleted] = useState(false);
   const [timeLeft, setTimeLeft] = useState(1800); // 30 minutes
+  const [isExamDay, setIsExamDay] = useState(false);
 
   useEffect(() => {
     const fetchExam = async () => {
@@ -30,7 +31,17 @@ export default function EntranceExam() {
           navigate(`/portal/${domain}/admissions`);
           return;
         }
-        setApplicant(appSnap.data());
+        const appData = appSnap.data();
+        setApplicant(appData);
+
+        // DATE LOCK CHECK
+        const today = new Date().toISOString().split('T')[0];
+        if (appData.examDate !== today) {
+          setIsExamDay(false);
+          setLoading(false);
+          return;
+        }
+        setIsExamDay(true);
 
         // Fetch Entrance Questions for the school
         const q = query(collection(db, 'entrance_questions'), where('schoolId', '==', school.id));
@@ -98,6 +109,39 @@ export default function EntranceExam() {
   if (loading) return (
     <div className="h-screen flex items-center justify-center bg-slate-900">
       <Loader2 className="w-12 h-12 text-indigo-400 animate-spin" />
+    </div>
+  );
+
+  if (!isExamDay) return (
+    <div className="min-h-screen bg-[#0f172a] flex items-center justify-center p-6 font-sans">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white p-16 rounded-[64px] shadow-2xl max-w-2xl w-full text-center space-y-8"
+      >
+        <div className="w-24 h-24 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto border-4 border-rose-100 animate-pulse">
+           <AlertCircle className="w-12 h-12" />
+        </div>
+        <div className="space-y-4">
+          <h2 className="text-4xl font-black text-slate-900 tracking-tight uppercase">Portal Locked</h2>
+          <p className="text-slate-500 font-bold text-lg leading-relaxed">
+            Prospective student <span className="text-indigo-600">{applicant?.studentName}</span>, your entrance screening is not scheduled for today.
+          </p>
+        </div>
+
+        <div className="bg-indigo-50 p-8 rounded-[40px] border border-indigo-100 flex flex-col items-center gap-4">
+           <div className="flex items-center gap-2 text-indigo-600 font-black uppercase text-xs tracking-widest">
+             <Timer className="w-4 h-4" /> Assigned Screening Date
+           </div>
+           <p className="text-3xl font-black text-slate-900">{applicant?.examDate || 'PENDING SCHEDULE'}</p>
+        </div>
+
+        <p className="text-xs text-slate-400 font-bold">Please log back in on your assigned date to activate the screening interface.</p>
+        
+        <button onClick={() => navigate(`/portal/${domain}`)} className="w-full py-5 bg-slate-900 text-white rounded-3xl font-black uppercase tracking-widest hover:bg-indigo-600 transition-all shadow-xl">
+           Exit Secure Portal
+        </button>
+      </motion.div>
     </div>
   );
 

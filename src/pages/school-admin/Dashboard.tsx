@@ -3,7 +3,7 @@ import { doc, updateDoc, collection, query, where, onSnapshot } from 'firebase/f
 import { db } from '../../lib/firebase';
 import { useSchool } from '../../hooks/useSchool';
 import { ReportCardTheme } from '../../types';
-import { Palette, Check, Layout, Sparkles, Trophy, Hash, Ticket, Loader2, UserPlus, Users, ArrowUpRight, CheckCircle2, XCircle } from 'lucide-react';
+import { Palette, Check, Layout, Sparkles, Trophy, Hash, Ticket, Loader2, UserPlus, Users, ArrowUpRight, CheckCircle2, XCircle, Calendar } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export default function SchoolAdminDashboard() {
@@ -37,7 +37,6 @@ export default function SchoolAdminDashboard() {
   }, [school?.id]);
 
   const themes: { id: ReportCardTheme, name: string, icon: any, desc: string, color: string }[] = [
-    // ... (existing themes)
     { 
       id: 'modern', 
       name: 'Modern Minimal', 
@@ -64,15 +63,10 @@ export default function SchoolAdminDashboard() {
   const handleAcceptApplicant = async (app: any) => {
     if (!school) return;
     try {
-      // 1. Create Student Profile
       await updateDoc(doc(db, 'admissions', app.id), { status: 'accepted' });
-      
-      // 2. Add to students collection (simplified - in production would create full user)
-      const studentId = `STU-${Date.now().toString().slice(-6)}`;
       await updateDoc(doc(db, 'schools', school.id), {
         studentsCount: (school as any).studentsCount + 1
       });
-      
       alert(`${app.studentName} has been admitted to the school fleet!`);
     } catch (err) {
       alert('Acceptance failed');
@@ -85,6 +79,30 @@ export default function SchoolAdminDashboard() {
       await updateDoc(doc(db, 'admissions', id), { status: 'rejected' });
     } catch (err) {
       alert('Rejection failed');
+    }
+  };
+
+  const handleScheduleExam = async (id: string, date: string) => {
+    try {
+      await updateDoc(doc(db, 'admissions', id), { 
+        examDate: date,
+        status: 'exam-scheduled'
+      });
+      alert('Screening Date Locked Successfully!');
+    } catch (err) {
+      alert('Scheduling failed');
+    }
+  };
+
+  const updateTheme = async (theme: ReportCardTheme) => {
+    if (!school) return;
+    try {
+      await updateDoc(doc(db, 'schools', school.id), {
+        'settings.reportCardTheme': theme
+      });
+      await refreshSchool();
+    } catch (err) {
+      console.error('Error updating theme:', err);
     }
   };
 
@@ -107,7 +125,6 @@ export default function SchoolAdminDashboard() {
 
       <div className="grid lg:grid-cols-3 gap-10">
         <div className="lg:col-span-2 space-y-10">
-          {/* Admissions Desk */}
           <section className="bg-white rounded-[48px] border border-slate-100 shadow-sm overflow-hidden">
              <div className="p-10 border-b border-slate-50 bg-slate-50/30 flex justify-between items-center">
                 <div className="flex items-center gap-3">
@@ -153,7 +170,17 @@ export default function SchoolAdminDashboard() {
                                       <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">CBT COMPLETED</span>
                                    </div>
                                 ) : (
-                                   <span className="text-[10px] font-black text-slate-300 uppercase italic">Awaiting Exam</span>
+                                   <div className="flex flex-col items-center gap-2">
+                                      <input 
+                                        type="date" 
+                                        value={app.examDate || ''}
+                                        onChange={(e) => handleScheduleExam(app.id, e.target.value)}
+                                        className="bg-slate-50 border-none rounded-xl text-[10px] font-black uppercase py-2 px-3 focus:ring-2 focus:ring-indigo-600"
+                                      />
+                                      <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest flex items-center gap-1">
+                                        <Calendar className="w-2.5 h-2.5" /> Set Date
+                                      </span>
+                                   </div>
                                 )}
                              </td>
                              <td className="p-10 text-center">
@@ -165,7 +192,7 @@ export default function SchoolAdminDashboard() {
                                 </span>
                              </td>
                              <td className="p-10 text-right">
-                                {app.status === 'pending' || app.status === 'interview' ? (
+                                {app.status === 'pending' || app.status === 'interview' || app.status === 'exam-scheduled' ? (
                                    <div className="flex justify-end gap-2">
                                       <button onClick={() => handleAcceptApplicant(app)} className="p-3 bg-emerald-100 rounded-xl hover:bg-emerald-600 hover:text-white transition-all">
                                          <CheckCircle2 className="w-5 h-5" />
@@ -186,7 +213,6 @@ export default function SchoolAdminDashboard() {
              </div>
           </section>
 
-          {/* Themes Section */}
           <section className="bg-white rounded-[48px] p-10 border border-slate-100 shadow-sm">
             <div className="flex items-center gap-3 mb-10">
               <div className="bg-amber-50 p-3 rounded-2xl">
@@ -194,7 +220,6 @@ export default function SchoolAdminDashboard() {
               </div>
               <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">Academic Aesthetics</h2>
             </div>
-
             <div className="grid md:grid-cols-3 gap-6">
               {themes.map((t) => (
                 <button
@@ -211,11 +236,9 @@ export default function SchoolAdminDashboard() {
                       <Check className="w-3 h-3 text-white" />
                     </div>
                   )}
-                  
                   <div className={`w-14 h-14 ${t.color} rounded-2xl flex items-center justify-center mb-8 text-white shadow-xl group-hover:scale-110 transition-transform`}>
                     <t.icon className="w-7 h-7" />
                   </div>
-                  
                   <h3 className="font-black text-slate-900 mb-2 uppercase text-sm tracking-tight">{t.name}</h3>
                   <p className="text-[10px] text-slate-400 font-bold leading-relaxed flex-1">{t.desc}</p>
                 </button>
@@ -223,7 +246,6 @@ export default function SchoolAdminDashboard() {
             </div>
           </section>
 
-          {/* PIN Usage Matrix */}
           <section className="bg-white rounded-[48px] border border-slate-100 shadow-sm overflow-hidden">
              <div className="p-10 border-b border-slate-50 bg-slate-50/30 flex justify-between items-center">
                 <div className="flex items-center gap-3">
@@ -234,7 +256,6 @@ export default function SchoolAdminDashboard() {
                 </div>
                 <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Live Result Access Feed</div>
              </div>
-             
              <div className="overflow-x-auto">
                 <table className="w-full text-left">
                    <thead>
@@ -246,10 +267,8 @@ export default function SchoolAdminDashboard() {
                       </tr>
                    </thead>
                    <tbody className="divide-y divide-slate-50">
-                      {loading ? (
-                        <tr><td colSpan={4} className="p-20 text-center"><Loader2 className="w-8 h-8 animate-spin mx-auto text-indigo-600" /></td></tr>
-                      ) : pins.length === 0 ? (
-                        <tr><td colSpan={4} className="p-20 text-center text-slate-400 font-bold uppercase tracking-widest text-[10px]">No security pins found. Contact Super Admin for provisioning.</td></tr>
+                      {pins.length === 0 ? (
+                        <tr><td colSpan={4} className="p-20 text-center text-slate-400 font-bold uppercase tracking-widest text-[10px]">No security pins found.</td></tr>
                       ) : (
                         pins.map(pin => (
                           <tr key={pin.id} className="hover:bg-slate-50 transition-all group">
@@ -270,9 +289,6 @@ export default function SchoolAdminDashboard() {
                              </td>
                              <td className="p-10 text-center">
                                 <div className="space-y-2 w-32 mx-auto">
-                                   <div className="flex justify-between text-[8px] font-black uppercase">
-                                      <span className="text-indigo-600">{pin.usageCount} / {pin.maxUsage}</span>
-                                   </div>
                                    <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
                                       <div className={`h-full ${pin.usageCount >= pin.maxUsage ? 'bg-rose-500' : 'bg-indigo-500'} transition-all`} style={{ width: `${(pin.usageCount / pin.maxUsage) * 100}%` }} />
                                    </div>
@@ -294,29 +310,12 @@ export default function SchoolAdminDashboard() {
 
         <aside className="space-y-8">
            <div className="bg-indigo-900 rounded-[48px] p-10 text-white shadow-2xl relative overflow-hidden group">
-              <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/5 rounded-full blur-3xl group-hover:scale-125 transition-transform" />
               <Sparkles className="w-12 h-12 text-indigo-400 mb-8 bg-white/10 p-3 rounded-2xl" />
               <h3 className="text-2xl font-black mb-4 tracking-tighter uppercase leading-tight">Master Branding Engine</h3>
               <p className="text-indigo-200/80 text-sm font-bold leading-relaxed mb-8">
-                Your selected theme instantly updates the Report Cards and Transcripts generated for every student in your institution.
+                Your selected theme instantly updates the Report Cards and Transcripts generated for every student.
               </p>
-              <div className="p-6 bg-white/5 rounded-3xl border border-white/10">
-                 <div className="flex justify-between text-[10px] font-black uppercase text-indigo-300 mb-2">
-                    <span>Aesthetic Sync</span>
-                    <span>100%</span>
-                 </div>
-                 <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
-                    <div className="h-full bg-white w-full rounded-full" />
-                 </div>
-              </div>
            </div>
-
-           <div className="bg-slate-900 rounded-[48px] p-10 text-white relative overflow-hidden">
-              <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-6">Security Intelligence</h4>
-              <p className="text-sm font-bold leading-relaxed mb-6">Result access is monitored in real-time. Parents will need new PINs once their current 5-use limit expires.</p>
-              <button className="w-full py-4 bg-indigo-600 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-indigo-500 transition-all">Request New PIN Batch</button>
-           </div>
-
            <div className="bg-white p-10 rounded-[48px] border border-slate-100 shadow-sm">
               <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-8">Result Configuration</h4>
               <div className="space-y-6">

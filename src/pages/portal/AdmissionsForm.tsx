@@ -66,19 +66,17 @@ export default function AdmissionsForm() {
             Your application to <span className="text-indigo-600">{school?.name}</span> has been successfully logged into our digital matrix.
           </p>
           
-          <div className="bg-indigo-50 p-8 rounded-[32px] border border-indigo-100 space-y-4">
-             <h4 className="text-xs font-black text-indigo-600 uppercase tracking-widest flex items-center justify-center gap-2">
-               <BookOpen className="w-4 h-4" /> Next Step: Entrance Screening
+          <div className="bg-amber-50 p-8 rounded-[32px] border border-amber-100 space-y-4">
+             <h4 className="text-[10px] font-black text-amber-600 uppercase tracking-widest flex items-center justify-center gap-2">
+               <AlertCircle className="w-4 h-4" /> Application Processing
              </h4>
-             <p className="text-sm text-indigo-900 font-bold">
-               All prospective students must complete the online Entrance Exam to validate their academic readiness.
+             <p className="text-sm text-slate-900 font-bold">
+               Our admissions office will review your data and schedule an Entrance Exam date. You will be notified via phone/email.
              </p>
-             <button 
-               onClick={() => navigate(`/portal/${domain}/entrance-exam`)}
-               className="w-full bg-indigo-600 text-white py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-xl flex items-center justify-center gap-3"
-             >
-               Start Entrance Exam Now <ArrowRight className="w-5 h-5" />
-             </button>
+             <div className="p-4 bg-white/50 rounded-2xl border border-amber-200">
+               <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Portal Access</p>
+               <p className="text-slate-900 font-bold">Please return to this portal on your assigned date to take the screening.</p>
+             </div>
           </div>
           
           <button onClick={() => navigate(`/portal/${domain}`)} className="text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-slate-600">

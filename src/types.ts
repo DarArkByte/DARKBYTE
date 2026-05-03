@@ -362,6 +362,7 @@ export interface AdmissionApplication {
   previousSchool?: string;
   status: 'pending' | 'exam-scheduled' | 'interview' | 'accepted' | 'rejected';
   examScore?: number;
+  examDate?: string; // YYYY-MM-DD
   examStatus: 'pending' | 'completed' | 'not-required';
   createdAt: string;
 }

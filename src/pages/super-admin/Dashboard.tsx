@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { db } from '../../lib/firebase';
-import { collection, query, getDocs, addDoc, doc, updateDoc, onSnapshot } from 'firebase/firestore';
+import { collection, query, getDocs, addDoc, doc, updateDoc, onSnapshot, where } from 'firebase/firestore';
 
 interface TenantSchool {
   id: string;

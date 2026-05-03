@@ -508,6 +508,47 @@ export default function SuperAdminDashboard() {
           </div>
         )}
       </div>
+
+      {/* GLOBAL INTELLIGENCE MATRIX - EXCLUSIVE TO SUPER ADMIN */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 bg-[#1e1b4b] rounded-[56px] p-12 text-white relative overflow-hidden">
+           <div className="absolute top-0 right-0 w-64 h-64 bg-[#d946ef]/20 rounded-full blur-[80px] -mr-20 -mt-20" />
+           <h3 className="text-2xl font-black mb-8 uppercase tracking-tighter flex items-center gap-3">
+             <Database className="w-6 h-6 text-[#d946ef]" /> Global Fleet Intelligence
+           </h3>
+           <div className="grid md:grid-cols-3 gap-8">
+              <div className="space-y-2">
+                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Total Database Size</p>
+                 <p className="text-4xl font-black">1.2 GB</p>
+                 <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                    <div className="h-full w-1/3 bg-[#d946ef]" />
+                 </div>
+              </div>
+              <div className="space-y-2">
+                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Concurrent Sessions</p>
+                 <p className="text-4xl font-black">482</p>
+                 <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                    <div className="h-full w-3/4 bg-emerald-400" />
+                 </div>
+              </div>
+              <div className="space-y-2">
+                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Global Uptime</p>
+                 <p className="text-4xl font-black">99.9%</p>
+                 <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                    <div className="h-full w-full bg-indigo-400" />
+                 </div>
+              </div>
+           </div>
+        </div>
+
+        <div className="bg-white rounded-[56px] p-12 border border-slate-100 shadow-sm flex flex-col justify-center">
+           <TrendingUp className="w-12 h-12 text-emerald-500 mb-6" />
+           <h3 className="text-xl font-black text-slate-900 mb-2 uppercase tracking-tighter">Revenue Aggregator</h3>
+           <p className="text-slate-500 font-bold mb-6 text-sm">Real-time processing across all active school nodes.</p>
+           <p className="text-5xl font-black text-[#1e1b4b]">₦12.8M</p>
+           <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mt-2">+14% Growth this month</p>
+        </div>
+      </div>
     </div>
   );
 }

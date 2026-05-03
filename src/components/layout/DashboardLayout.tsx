@@ -39,7 +39,15 @@ export default function DashboardLayout() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const navigation = [
-    { name: 'Command Center', href: userProfile?.role === 'super-admin' ? '/super-admin' : '/dashboard', icon: LayoutDashboard },
+    // Super Admin Exclusive Tools
+    { name: 'Global HQ', href: '/super-admin', icon: LayoutDashboard, roles: ['super-admin'] },
+    { name: 'Proposal Architect', href: '/super-admin/proposal-editor', icon: FileText, roles: ['super-admin'] },
+    
+    // Core Oversight (Shared)
+    { name: 'School Fleet', href: '/super-admin', icon: Layers, roles: ['super-admin'] },
+    
+    // School Level Tools (Hidden from Super Admin unless explicitly allowed)
+    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, roles: ['school-admin', 'teacher', 'parent'] },
     { name: 'Students', href: '/students', icon: Users, roles: ['school-admin', 'teacher'] },
     { name: 'Classes', href: '/classes', icon: Layers, roles: ['school-admin', 'teacher'] },
     { name: 'Timetables', href: '/timetables', icon: Calendar, roles: ['school-admin', 'teacher', 'student'] },
@@ -55,9 +63,7 @@ export default function DashboardLayout() {
     { name: 'Gate System', href: '/security', icon: Shield, roles: ['school-admin', 'security-officer'] },
     { name: 'Transport', href: '/security', icon: Bus, roles: ['school-admin', 'transport-manager'] },
   ].filter(item => 
-    !item.roles || 
-    userProfile?.role === 'super-admin' || 
-    (userProfile?.role && item.roles.includes(userProfile.role))
+    item.roles && userProfile?.role && item.roles.includes(userProfile.role)
   );
 
   const handleLogout = async () => {
@@ -83,11 +89,11 @@ export default function DashboardLayout() {
       `}>
         <div className="p-8 flex flex-col h-full">
           <div className="flex items-center gap-3 mb-12 shrink-0">
-            <div className="bg-[#d946ef] p-2.5 rounded-2xl shadow-xl">
-               <GraduationCap className="text-white w-6 h-6" />
+            <div className={`p-2.5 rounded-2xl shadow-xl ${userProfile?.role === 'super-admin' ? 'bg-[#1e1b4b] border border-white/20' : 'bg-[#d946ef]'}`}>
+               <Shield className="text-white w-6 h-6" />
             </div>
             <span className="font-black text-xl tracking-tighter text-white uppercase truncate">
-              {school?.name || 'Dar-Ark Byte'}
+              {userProfile?.role === 'super-admin' ? 'Master Byte HQ' : (school?.name || 'Dar-Ark Byte')}
             </span>
           </div>
 

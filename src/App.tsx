@@ -99,6 +99,7 @@ function AppContent() {
           
           <Route element={<DashboardLayout />}>
             <Route path="/dashboard" element={<DashboardHome />} />
+            <Route path="/hq" element={<SuperAdminDashboard />} />
             <Route path="/super-admin" element={<SuperAdminDashboard />} />
             <Route path="/super-admin/proposal-editor" element={<ProposalEditor />} />
             <Route path="/students" element={<StudentManagement />} />

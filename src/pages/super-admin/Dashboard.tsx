@@ -366,9 +366,9 @@ export default function SuperAdminDashboard() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
               {[
-                { title: 'Result Template v1', type: 'Premium Mockup', img: '/src/assets/branding/result_template.png' },
-                { title: 'Digital Portal Proposal', type: 'Pitch Document', img: '/src/assets/branding/portal_proposal.png' },
-                { title: 'Finance Hub Interface', type: 'UI Screenshot', img: '/src/assets/branding/finance_mockup.png' },
+                { title: 'Result Template v1', type: 'Premium Mockup', img: '/assets/branding/result_template.png' },
+                { title: 'Digital Portal Proposal', type: 'Pitch Document', img: '/assets/branding/portal_proposal.png' },
+                { title: 'Finance Hub Interface', type: 'UI Screenshot', img: '/assets/branding/finance_mockup.png' },
               ].map((item, i) => (
                 <div key={i} className="bg-white rounded-[40px] overflow-hidden shadow-sm border border-slate-100 hover:shadow-2xl transition-all group">
                   <div className="h-64 overflow-hidden relative">

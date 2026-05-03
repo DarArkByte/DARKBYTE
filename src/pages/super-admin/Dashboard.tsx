@@ -16,7 +16,7 @@ import {
   Loader2,
   Globe,
   Trash2,
-  Settings,
+  FileText,
   Download
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';

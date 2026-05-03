@@ -46,8 +46,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               role: isMasterAdmin ? 'super-admin' : 'teacher', 
               metadata: { firstLogin: new Date().toISOString() }
             };
+            setUserProfile(newProfile); // OPTIMISTIC ADMITTANCE
             await setDoc(doc(db, 'users', user.uid), newProfile);
-            setUserProfile(newProfile);
           }
         } catch (error) {
           console.error("Auth profile fetch error:", error);

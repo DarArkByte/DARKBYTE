@@ -45,6 +45,7 @@ export default function LoginPage() {
   };
 
   const forceEntry = () => {
+    localStorage.clear(); // Clear any UI state blocks
     window.location.href = '/dashboard';
   };
 

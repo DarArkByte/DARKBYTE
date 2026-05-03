@@ -23,6 +23,11 @@ import { useAuth } from '../../hooks/useAuth';
 import { db } from '../../lib/firebase';
 import { collection, query, getDocs, addDoc, doc, updateDoc, onSnapshot, where, setDoc, deleteDoc } from 'firebase/firestore';
 
+// Import Assets for reliable serving
+import resultTemplateImg from '../../assets/branding/result_template.png';
+import proposalPreviewImg from '../../assets/branding/portal_proposal.png';
+import financeMockupImg from '../../assets/branding/finance_mockup.png';
+
 interface TenantSchool {
   id: string;
   domain: string;
@@ -143,6 +148,15 @@ export default function SuperAdminDashboard() {
 
   const filteredTenants = tenants.filter(t => t.name.toLowerCase().includes(search.toLowerCase()));
 
+  const handleDownload = (imgSrc: string, filename: string) => {
+    const link = document.createElement('a');
+    link.href = imgSrc;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-10 pb-24 font-sans">
       {/* Premium Hero Section */}
@@ -240,23 +254,31 @@ export default function SuperAdminDashboard() {
             <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase">Proposal & Marketing Arsenal</h2>
             <p className="text-slate-500 font-bold">Deploy these assets to secure new school partnerships.</p>
           </div>
-          <button className="flex items-center gap-3 bg-[#1e1b4b] text-white px-10 py-5 rounded-[24px] font-black text-sm uppercase tracking-widest shadow-xl shadow-indigo-500/20 hover:scale-105 transition-all">
+          <button 
+            onClick={() => handleDownload(proposalPreviewImg, 'DarArkByte_Portal_Proposal.png')}
+            className="flex items-center gap-3 bg-[#1e1b4b] text-white px-10 py-5 rounded-[24px] font-black text-sm uppercase tracking-widest shadow-xl shadow-indigo-500/20 hover:scale-105 transition-all"
+          >
             <Download className="w-5 h-5" /> Download Proposal PDF
           </button>
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
-            { title: 'Result Template v1', type: 'Premium Mockup', img: '/assets/branding/result_template.png' },
-            { title: 'Digital Portal Proposal', type: 'Pitch Document', img: '/assets/branding/portal_proposal.png' },
-            { title: 'Finance Hub Interface', type: 'UI Screenshot', img: '/assets/branding/finance_mockup.png' },
+            { title: 'Result Template v1', type: 'Premium Mockup', img: resultTemplateImg },
+            { title: 'Digital Portal Proposal', type: 'Pitch Document', img: proposalPreviewImg },
+            { title: 'Finance Hub Interface', type: 'UI Screenshot', img: financeMockupImg },
           ].map((item, i) => (
             <div key={i} className="group relative rounded-[40px] overflow-hidden bg-slate-100 aspect-video border border-slate-200">
                <img src={item.img} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-all duration-700" />
                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8 opacity-0 group-hover:opacity-100 transition-all">
                   <span className="text-[10px] font-black text-[#d946ef] uppercase tracking-widest mb-1">{item.type}</span>
                   <h4 className="text-white font-black text-xl mb-4">{item.title}</h4>
-                  <button className="bg-white text-black font-black px-6 py-3 rounded-xl text-[10px] uppercase tracking-widest w-fit">Open Preview</button>
+                  <button 
+                    onClick={() => handleDownload(item.img, `${item.title.replace(/\s+/g, '_')}.png`)}
+                    className="bg-white text-black font-black px-6 py-3 rounded-xl text-[10px] uppercase tracking-widest w-fit"
+                  >
+                    Download Resource
+                  </button>
                </div>
             </div>
           ))}

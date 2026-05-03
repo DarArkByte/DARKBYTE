@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   Building2, 
   Users, 
@@ -250,7 +251,12 @@ export default function SuperAdminDashboard() {
                           </div>
                         </td>
                         <td className="p-10 text-center">
-                          <span className="bg-slate-100 text-slate-600 px-4 py-2 rounded-xl font-bold text-xs">{tenant.domain}.darark.com</span>
+                          <Link 
+                            to={`/portal/${tenant.domain}/login`}
+                            className="bg-slate-100 text-[#1e1b4b] hover:bg-[#d946ef] hover:text-white px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all shadow-sm"
+                          >
+                            {tenant.domain}.darark.com
+                          </Link>
                         </td>
                         <td className="p-10 text-center">
                           <span className={`px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest ${tenant.isActive ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'}`}>

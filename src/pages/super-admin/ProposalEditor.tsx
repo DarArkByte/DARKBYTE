@@ -129,7 +129,7 @@ export default function ProposalEditor() {
                   <h2 className="text-5xl font-black text-[#1e1b4b] tracking-tighter uppercase leading-tight">Dar-Ark Byte</h2>
                   <p className="text-[#d946ef] font-black text-xs uppercase tracking-[0.3em]">Intelligence For Modern Schools</p>
                   <div className="mt-4 text-[11px] font-bold text-slate-500 uppercase tracking-widest leading-relaxed">
-                     12 Digital Excellence Way, Lagos <br />
+                     Trans Ekulu, Enugu <br />
                      {data.phone1} | {data.phone2} <br />
                      {data.email}
                   </div>

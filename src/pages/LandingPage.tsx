@@ -30,15 +30,36 @@ import {
 } from 'lucide-react';
 
 const fadeInUp = {
-  initial: { opacity: 0, y: 30 },
+  initial: { opacity: 0, y: 60 },
   whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-100px" },
+  transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] }
+};
+
+const slideInLeft = {
+  initial: { opacity: 0, x: -100 },
+  whileInView: { opacity: 1, x: 0 },
   viewport: { once: true },
-  transition: { duration: 0.8, ease: "easeOut" }
+  transition: { duration: 1, ease: [0.22, 1, 0.36, 1] }
+};
+
+const slideInRight = {
+  initial: { opacity: 0, x: 100 },
+  whileInView: { opacity: 1, x: 0 },
+  viewport: { once: true },
+  transition: { duration: 1, ease: [0.22, 1, 0.36, 1] }
 };
 
 const staggerContainer = {
   initial: {},
-  whileInView: { transition: { staggerChildren: 0.1 } }
+  whileInView: { transition: { staggerChildren: 0.1, delayChildren: 0.2 } }
+};
+
+const zoomIn = {
+  initial: { opacity: 0, scale: 0.8 },
+  whileInView: { opacity: 1, scale: 1 },
+  viewport: { once: true },
+  transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] }
 };
 
 export default function LandingPage() {
@@ -114,16 +135,16 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="relative pt-64 pb-48 px-6 z-10">
         <div className="max-w-7xl mx-auto text-center">
-          <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
-            <p className="text-blue-500 font-black uppercase tracking-[0.6em] mb-8 text-sm italic">The Future of Education is Here</p>
-            <h1 className="text-6xl md:text-[9rem] font-black leading-[0.85] mb-16 tracking-tighter uppercase italic">
+          <motion.div variants={staggerContainer} initial="initial" whileInView="whileInView" viewport={{ once: true }}>
+            <motion.p variants={slideInLeft} className="text-blue-500 font-black uppercase tracking-[0.6em] mb-8 text-sm italic">The Future of Education is Here</motion.p>
+            <motion.h1 variants={zoomIn} className="text-6xl md:text-[9rem] font-black leading-[0.85] mb-16 tracking-tighter uppercase italic">
               Strategic <br />
               <span className="text-blue-600">Transformation.</span>
-            </h1>
-            <p className="text-xl md:text-2xl text-slate-400 mb-20 max-w-4xl mx-auto leading-relaxed font-medium">
+            </motion.h1>
+            <motion.p variants={fadeInUp} className="text-xl md:text-2xl text-slate-400 mb-20 max-w-4xl mx-auto leading-relaxed font-medium">
               We deploy the complete **School Operating System**—unifying administration, future-ready learning, and parent-student engagement into one high-performance ecosystem.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-8 justify-center">
+            </motion.p>
+            <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-8 justify-center">
               <motion.button 
                 whileHover={{ scale: 1.05, y: -5 }}
                 whileTap={{ scale: 0.95 }}
@@ -148,15 +169,21 @@ export default function LandingPage() {
       {/* Operational Infrastructure (14 Pillars) */}
       <section id="ecosystem" className="py-48 px-6 relative z-10 border-t border-white/5 bg-white/[0.01]">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-32 space-y-4">
-             <h2 className="text-blue-500 font-black uppercase tracking-widest text-sm">Operational Ecosystem</h2>
-             <h3 className="text-6xl font-black tracking-tighter">The 14 Core OS Pillars</h3>
-             <p className="text-slate-500 text-xl font-medium max-w-3xl mx-auto">Everything you need to run a modern, technology-driven institution in one unified platform.</p>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          <motion.div variants={fadeInUp} className="text-center mb-32 space-y-4">
+             <motion.h2 variants={slideInLeft} className="text-blue-500 font-black uppercase tracking-widest text-sm">Operational Ecosystem</motion.h2>
+             <motion.h3 variants={slideInRight} className="text-6xl font-black tracking-tighter">The 14 Core OS Pillars</motion.h3>
+             <motion.p variants={zoomIn} className="text-slate-500 text-xl font-medium max-w-3xl mx-auto">Everything you need to run a modern, technology-driven institution in one unified platform.</p>
+          </motion.div>
+          <motion.div 
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="whileInView"
+            viewport={{ once: true }}
+            className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+          >
             {coreSystems.map((s, i) => (
               <motion.div 
-                {...fadeInUp}
+                variants={zoomIn}
                 key={i} 
                 className="bg-white/[0.03] border border-white/10 p-10 rounded-[48px] hover:border-blue-500/50 transition-all group backdrop-blur-3xl"
               >
@@ -178,26 +205,26 @@ export default function LandingPage() {
         </div>
         <div className="max-w-7xl mx-auto relative z-10">
            <div className="grid lg:grid-cols-2 gap-32 items-center">
-              <motion.div {...fadeInUp} className="space-y-10">
-                 <h2 className="text-white/60 font-black uppercase tracking-widest text-sm italic">Premium Integration</h2>
-                 <h3 className="text-7xl font-black tracking-tighter leading-none italic">Future-Ready <br /> <span className="text-[#facc15]">Robotics Academy.</span></h3>
-                 <p className="text-white/80 text-2xl font-medium leading-relaxed italic">
+              <motion.div variants={staggerContainer} initial="initial" whileInView="whileInView" className="space-y-10">
+                 <motion.h2 variants={slideInLeft} className="text-white/60 font-black uppercase tracking-widest text-sm italic">Premium Integration</motion.h2>
+                 <motion.h3 variants={slideInLeft} className="text-7xl font-black tracking-tighter leading-none italic">Future-Ready <br /> <span className="text-[#facc15]">Robotics Academy.</span></motion.h3>
+                 <motion.p variants={fadeInUp} className="text-white/80 text-2xl font-medium leading-relaxed italic">
                     We don't just build software; we build engineers. Our premium Robotics and Coding program equips students with real-world technical mastery.
-                 </p>
-                 <div className="grid sm:grid-cols-2 gap-8 pt-10">
-                    <div className="bg-white/10 p-10 rounded-[40px] backdrop-blur-3xl border border-white/10">
+                 </motion.p>
+                 <motion.div variants={staggerContainer} className="grid sm:grid-cols-2 gap-8 pt-10">
+                    <motion.div variants={zoomIn} className="bg-white/10 p-10 rounded-[40px] backdrop-blur-3xl border border-white/10">
                        <Code className="w-10 h-10 text-[#facc15] mb-6" />
                        <h4 className="text-2xl font-black mb-4 italic uppercase">Coding Mastery</h4>
                        <p className="text-white/60 text-sm leading-relaxed">Python, JavaScript, and Full-Stack development tracks for institutional deployment.</p>
-                    </div>
-                    <div className="bg-white/10 p-10 rounded-[40px] backdrop-blur-3xl border border-white/10">
+                    </motion.div>
+                    <motion.div variants={zoomIn} className="bg-white/10 p-10 rounded-[40px] backdrop-blur-3xl border border-white/10">
                        <Rocket className="w-10 h-10 text-[#facc15] mb-6" />
                        <h4 className="text-2xl font-black mb-4 italic uppercase">Hardware & AI</h4>
                        <p className="text-white/60 text-sm leading-relaxed">Hands-on robotics engineering, automated systems, and Artificial Intelligence foundations.</p>
-                    </div>
-                 </div>
+                    </motion.div>
+                 </motion.div>
               </motion.div>
-              <motion.div initial={{ opacity: 0, x: 100 }} whileInView={{ opacity: 1, x: 0 }} className="bg-white/5 rounded-[60px] p-4 border border-white/10 shadow-2xl">
+              <motion.div variants={slideInRight} initial="initial" whileInView="whileInView" className="bg-white/5 rounded-[60px] p-4 border border-white/10 shadow-2xl">
                  <div className="bg-white/10 aspect-square rounded-[50px] flex items-center justify-center p-20">
                     <Cpu className="w-full h-full text-[#facc15] animate-pulse" />
                  </div>

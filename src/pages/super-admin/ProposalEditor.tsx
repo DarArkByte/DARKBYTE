@@ -25,63 +25,59 @@ export default function ProposalEditor() {
           @media print {
             @page {
               size: A4;
-              margin: 0;
+              margin: 0mm;
             }
             
-            body > *:not(#proposal-root) {
-              display: none !important;
+            /* IRONCLAD HIDE: Kill everything except the proposal root */
+            body { 
+              visibility: hidden !important;
+              background: white !important;
             }
             
+            #proposal-root, #proposal-root * {
+              visibility: visible !important;
+            }
+
             #proposal-root {
+              position: absolute !important;
+              left: 0 !important;
+              top: 0 !important;
+              width: 100% !important;
               display: block !important;
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 100%;
+              margin: 0 !important;
+              padding: 0 !important;
             }
 
             .page {
-              width: 210mm;
-              height: 297mm;
-              padding: 25mm 20mm;
-              margin: 0;
-              page-break-after: always;
-              position: relative;
-              box-sizing: border-box;
+              width: 210mm !important;
+              height: 297mm !important;
+              padding: 25mm 20mm !important;
+              margin: 0 !important;
+              page-break-after: always !important;
+              display: block !important;
+              box-sizing: border-box !important;
               background: white !important;
-              overflow: hidden;
+              position: relative !important;
             }
 
-            h2 { font-size: 32pt !important; color: #1e1b4b !important; font-weight: 900 !important; letter-spacing: -1px !important; }
-            h3 { font-size: 16pt !important; color: #1e1b4b !important; border-bottom: 2pt solid #1e1b4b; padding-bottom: 6pt; margin-top: 15pt; text-transform: uppercase; font-weight: 900 !important; }
-            h4 { font-size: 11pt !important; color: #1e1b4b !important; font-weight: 900 !important; text-transform: uppercase; margin-bottom: 5pt; }
-            p, td, li { font-size: 10.5pt !important; line-height: 1.5 !important; color: #334155 !important; }
+            /* RE-ESTABLISHING TYPOGRAPHY WEIGHTS */
+            h2 { font-size: 32pt !important; color: #1e1b4b !important; font-weight: 900 !important; }
+            h3 { font-size: 18pt !important; color: #1e1b4b !important; border-bottom: 2pt solid #1e1b4b !important; padding-bottom: 6pt !important; }
+            h4 { font-size: 11pt !important; color: #1e1b4b !important; font-weight: 900 !important; }
+            p, td, li { font-size: 10.5pt !important; color: #334155 !important; }
             
-            .bold-label { font-weight: 900 !important; color: #1e1b4b !important; }
             .premium-text { color: #d946ef !important; font-weight: 900 !important; }
             
             .proposal-watermark {
-              position: absolute;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%) rotate(-45deg);
-              font-size: 100pt;
-              font-weight: 900;
-              color: rgba(30, 27, 75, 0.02);
-              white-space: nowrap;
-              z-index: 0;
-              text-transform: uppercase;
-              letter-spacing: 0.5em;
-              pointer-events: none;
+              position: absolute !important;
+              top: 50% !important;
+              left: 50% !important;
+              transform: translate(-50%, -50%) rotate(-45deg) !important;
+              font-size: 100pt !important;
+              font-weight: 900 !important;
+              color: rgba(30, 27, 75, 0.02) !important;
+              z-index: 0 !important;
             }
-
-            .z-10 { position: relative; z-index: 10; }
-            .grid-2 { display: grid; grid-template-cols: 1fr 1fr; gap: 15pt; }
-            .grid-3 { display: grid; grid-template-cols: 1fr 1fr 1fr; gap: 10pt; }
-            
-            table { width: 100%; border-collapse: collapse !important; border: 2pt solid #1e1b4b !important; }
-            th { background: #1e1b4b !important; color: white !important; padding: 10pt !important; text-align: left; font-size: 10pt !important; text-transform: uppercase; }
-            td { padding: 10pt !important; border-bottom: 1pt solid #e2e8f0 !important; font-weight: 800 !important; }
           }
           
           .document-preview-container { max-width: 210mm; margin: 0 auto; background: white; box-shadow: 0 40px 100px -20px rgba(0,0,0,0.15); }

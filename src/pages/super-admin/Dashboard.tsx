@@ -110,23 +110,27 @@ export default function SuperAdminDashboard() {
         batch.set(appRef, { ...app, schoolId, parentPhone: '08123456789', createdAt: new Date().toISOString() });
       });
 
-      // SEED DEMO ADMIN
-      const adminRef = doc(db, 'users', `demo_admin_${schoolId}`);
-      batch.set(adminRef, {
-        uid: `demo_admin_${schoolId}`,
-        email: `admin@${schoolDomain}.com`,
-        displayName: `${schoolName} Admin`,
-        role: 'school-admin',
-        schoolId: schoolId,
-        metadata: { isDemo: true }
-      }, { merge: true });
-
       await batch.commit();
+
+      // SEED DEMO ADMIN (Independent Operation)
+      try {
+        await setDoc(doc(db, 'users', `demo_admin_${schoolId}`), {
+          uid: `demo_admin_${schoolId}`,
+          email: `admin@${schoolDomain}.com`,
+          displayName: `${schoolName} Admin`,
+          role: 'school-admin',
+          schoolId: schoolId,
+          metadata: { isDemo: true }
+        }, { merge: true });
+      } catch (e) {
+        console.warn("User seeding failed - likely permissions", e);
+      }
+
       setSuccess(`${schoolName.toUpperCase()} SEEDED! Pitch mode active.`);
       setTimeout(() => setSuccess(null), 5000);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert('Seeding failed');
+      alert(`Seeding failed: ${err.message || 'Unknown Error'}`);
     } finally {
       setIsSeeding(false);
     }

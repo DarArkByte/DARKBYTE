@@ -240,14 +240,6 @@ export default function ProposalEditor() {
                 </div>
               </section>
 
-              <section className="space-y-6">
-                 <h3 className="text-2xl font-black">Proof of Output Excellence</h3>
-                 <div className="relative rounded-[40px] overflow-hidden border-2 border-slate-100 bg-slate-50 p-10 text-center">
-                    <img src={resultTemplateImg} alt="Result Sample" className="w-[65%] mx-auto h-auto rounded-2xl shadow-xl border border-white" />
-                    <p className="mt-6 text-[10px] text-slate-400 font-black uppercase tracking-[0.4em]">Proprietary Academic Output Matrix</p>
-                 </div>
-              </section>
-
               <section className="pt-10 border-t-2 border-slate-100">
                  <p className="text-sm font-medium text-slate-700 italic border-l-8 border-indigo-600 pl-6 leading-relaxed mb-8">
                    This system transforms your institution into a **Digital Learning Powerhouse**. By adopting the Dar-Ark Byte OS, you position your school as an unbeatable leader in the modern educational landscape.

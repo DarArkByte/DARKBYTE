@@ -17,7 +17,23 @@ export default function ProposalEditor() {
   };
 
   return (
-    <div className="space-y-8 pb-24 font-sans print:p-0 print:m-0">
+    <div className="space-y-8 pb-24 font-sans print:p-0 print:m-0 print:bg-white">
+      <style>
+        {`
+          @media print {
+            body { background: white !important; }
+            .print\\:hidden { display: none !important; }
+            .bg-white { box-shadow: none !important; border: none !important; }
+            .shadow-2xl { box-shadow: none !important; }
+            .rounded-\\[48px\\], .rounded-\\[40px\\] { border-radius: 0 !important; }
+            .lg\\:col-span-2 { width: 100% !important; margin: 0 !important; padding: 0 !important; }
+            header { border-bottom: 2px solid #1e1b4b !important; }
+            .bg-slate-50 { background: #f8fafc !important; border: 1px solid #e2e8f0 !important; }
+            table { border: 1px solid #1e1b4b !important; }
+            th { background: #1e1b4b !important; color: white !important; -webkit-print-color-adjust: exact; }
+          }
+        `}
+      </style>
       {/* Header - Hidden on Print */}
       <header className="flex items-center justify-between bg-white p-8 rounded-[40px] shadow-sm border border-slate-100 print:hidden">
         <div className="flex items-center gap-4">

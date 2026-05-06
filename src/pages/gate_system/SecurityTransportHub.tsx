@@ -165,7 +165,7 @@ export default function SecurityTransportHub() {
                     </div>
                     <div>
                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">{stat.label}</p>
-                       <p className="text-3xl font-black text-gray-900 tracking-tighter">{stat.val || stat.value}</p>
+                       <p className="text-3xl font-black text-gray-900 tracking-tighter">{stat.value}</p>
                     </div>
                   </div>
                 ))}
@@ -181,38 +181,39 @@ export default function SecurityTransportHub() {
                     <Plus className="w-4 h-4" /> Manual Log
                   </button>
                 </div>
-            <div className="divide-y divide-gray-50">
-              {loading ? (
-                <div className="p-10 text-center"><Loader2 className="w-8 h-8 animate-spin mx-auto text-blue-600" /></div>
-              ) : visitors.map((v) => (
-                <div key={v.id} className="p-6 flex items-center justify-between hover:bg-gray-50/50 transition-colors">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-600">
-                      {v.name[0]}
+                <div className="divide-y divide-gray-50">
+                  {loading ? (
+                    <div className="p-10 text-center"><Loader2 className="w-8 h-8 animate-spin mx-auto text-blue-600" /></div>
+                  ) : visitors.map((v) => (
+                    <div key={v.id} className="p-6 flex items-center justify-between hover:bg-gray-50/50 transition-colors">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 bg-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-600">
+                          {v.name[0]}
+                        </div>
+                        <div>
+                          <p className="font-bold text-gray-900">{v.name}</p>
+                          <p className="text-xs text-gray-400">{v.purpose} • Host: {v.host}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        {v.status === 'inside' ? (
+                          <button 
+                            onClick={() => markExited(v.id)}
+                            className="text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl bg-blue-100 text-blue-700 hover:bg-blue-600 hover:text-white transition-all"
+                          >
+                            Mark Exit
+                          </button>
+                        ) : (
+                          <span className="text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl bg-gray-100 text-gray-400">
+                            Exited
+                          </span>
+                        )}
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-bold text-gray-900">{v.name}</p>
-                      <p className="text-xs text-gray-400">{v.purpose} • Host: {v.host}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    {v.status === 'inside' ? (
-                      <button 
-                        onClick={() => markExited(v.id)}
-                        className="text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl bg-blue-100 text-blue-700 hover:bg-blue-600 hover:text-white transition-all"
-                      >
-                        Mark Exit
-                      </button>
-                    ) : (
-                      <span className="text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl bg-gray-100 text-gray-400">
-                        Exited
-                      </span>
-                    )}
-                  </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
+           </div>
         </div>
       ) : (
         <div className="space-y-8">

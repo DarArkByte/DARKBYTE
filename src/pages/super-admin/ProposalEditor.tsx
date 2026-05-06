@@ -176,21 +176,41 @@ export default function ProposalEditor() {
             </section>
 
             <section className="space-y-8">
-              <h3 className="text-xl font-black text-[#1e1b4b] uppercase tracking-tighter">Core Deliverables</h3>
-              <div className="grid grid-cols-2 gap-6">
+              <h3 className="text-xl font-black text-[#1e1b4b] uppercase tracking-tighter border-b-2 border-slate-100 pb-2">Platform Ecosystem Breakdown</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {[
-                  { title: 'Management Suite', desc: 'Full administrative dashboard with multi-role access control.' },
-                  { title: 'Smart Finance', desc: 'Automated fee collection, e-wallets, and POS inventory.' },
-                  { title: 'Academic Hub', desc: 'CBT exams, automatic result processing, and transcripts.' },
-                  { title: 'Security & Gate', desc: 'Visitor tracking and real-time student transport monitoring.' },
+                  { 
+                    title: 'Academic Intelligence', 
+                    desc: 'Automated result processing with Studet Weakness Analysis. includes CBT examination engine, lesson note management, and digital transcripts.' 
+                  },
+                  { 
+                    title: 'Smart Finance & Wallet', 
+                    desc: 'Cashless school ecosystem with parent e-wallets, automated fee reminders, and a POS system for school bookshops/uniform stores.' 
+                  },
+                  { 
+                    title: 'Security & Attendance', 
+                    desc: 'Real-time biometric or digital attendance with instant SMS alerts to parents. Includes visitor logging and transport fleet tracking.' 
+                  },
+                  { 
+                    title: 'Administrative Command', 
+                    desc: 'Centralized staff payroll, multi-role access control, and inventory management for school assets and textbooks.' 
+                  },
+                  { 
+                    title: 'Admission Gateway', 
+                    desc: 'Hybrid digital/physical admission funnel with automated screening dates and online payment for application forms.' 
+                  },
+                  { 
+                    title: 'Parent Experience', 
+                    desc: 'Personalized mobile-friendly portals for parents to track grades, attendance, and financial standing in real-time.' 
+                  },
                 ].map((item, i) => (
-                  <div key={i} className="flex gap-4">
-                    <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center shrink-0">
-                      <CheckCircle2 className="w-4 h-4 text-indigo-600" />
+                  <div key={i} className="flex gap-4 group">
+                    <div className="w-10 h-10 rounded-2xl bg-indigo-50 flex items-center justify-center shrink-0 border border-indigo-100 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                      <CheckCircle2 className="w-5 h-5" />
                     </div>
                     <div>
-                      <p className="font-black text-slate-900 text-sm">{item.title}</p>
-                      <p className="text-xs text-slate-500 font-medium">{item.desc}</p>
+                      <p className="font-black text-slate-900 text-sm mb-1 uppercase tracking-tight">{item.title}</p>
+                      <p className="text-xs text-slate-500 font-medium leading-relaxed">{item.desc}</p>
                     </div>
                   </div>
                 ))}

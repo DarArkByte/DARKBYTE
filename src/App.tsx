@@ -55,7 +55,7 @@ function DashboardHome() {
   if (loading) return (
     <div className="h-screen flex flex-col items-center justify-center bg-[#1e1b4b] text-white p-10">
       <Loader2 className="w-16 h-16 text-[#d946ef] animate-spin mb-6" />
-      <h2 className="text-2xl font-black uppercase tracking-tighter">Syncing Command Center</h2>
+      <h2 className="text-2xl font-black uppercase tracking-tighter">Syncing Management Engine</h2>
       <p className="text-slate-400 font-bold uppercase tracking-[0.3em] text-[10px] mt-2 text-center">Authenticating Master Security Profile...</p>
     </div>
   );

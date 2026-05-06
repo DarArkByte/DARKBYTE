@@ -402,7 +402,7 @@ export default function SuperAdminDashboard() {
             </button>
             <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-6 leading-[0.9]">
               DAR-ARK BYTE <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d946ef] to-indigo-400 italic">COMMAND CENTER.</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d946ef] to-indigo-400 italic">GLOBAL HUB.</span>
             </h1>
             <p className="text-slate-400 font-bold text-xl tracking-tight max-w-xl">
               You are currently managing {tenants.length} active school nodes across the platform.
@@ -859,7 +859,7 @@ export default function SuperAdminDashboard() {
                     <th className="p-10">School Identity</th>
                     <th className="p-10 text-center">Data Readiness</th>
                     <th className="p-10 text-center">Visibility</th>
-                    <th className="p-10 text-right">Master Command</th>
+                    <th className="p-10 text-right">Master Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">

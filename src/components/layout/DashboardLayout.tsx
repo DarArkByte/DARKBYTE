@@ -146,7 +146,7 @@ export default function DashboardLayout() {
               <Menu className="w-5 h-5" />
             </button>
             <h2 className="font-black text-slate-900 text-lg uppercase tracking-tight">
-              {navigation.find(item => location.pathname === item.href)?.name || 'Command Center'}
+              {navigation.find(item => location.pathname === item.href)?.name || 'Dashboard'}
             </h2>
           </div>
 

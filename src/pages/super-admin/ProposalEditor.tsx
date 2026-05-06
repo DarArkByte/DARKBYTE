@@ -149,7 +149,7 @@ export default function ProposalEditor() {
               <h3 className="text-xl font-black text-[#1e1b4b] uppercase tracking-tighter">Core Deliverables</h3>
               <div className="grid grid-cols-2 gap-6">
                 {[
-                  { title: 'Command Center', desc: 'Full administrative dashboard with multi-role access control.' },
+                  { title: 'Management Suite', desc: 'Full administrative dashboard with multi-role access control.' },
                   { title: 'Smart Finance', desc: 'Automated fee collection, e-wallets, and POS inventory.' },
                   { title: 'Academic Hub', desc: 'CBT exams, automatic result processing, and transcripts.' },
                   { title: 'Security & Gate', desc: 'Visitor tracking and real-time student transport monitoring.' },

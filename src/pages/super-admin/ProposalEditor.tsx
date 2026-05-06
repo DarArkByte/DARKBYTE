@@ -22,6 +22,19 @@ export default function ProposalEditor() {
     <div className="min-h-screen bg-slate-100 font-sans print:bg-white print:p-0">
       <style>
         {`
+          /* SCREEN ONLY PREVIEW STYLING */
+          @media screen {
+            .page {
+              margin-bottom: 40px !important;
+              box-shadow: 0 10px 40px rgba(0,0,0,0.1) !important;
+              border-radius: 4px;
+            }
+            #proposal-root {
+              padding-top: 40px;
+              padding-bottom: 100px;
+            }
+          }
+
           @media print {
             @page {
               size: A4;

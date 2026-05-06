@@ -53,7 +53,7 @@ export default function SuperAdminDashboard() {
     setIsSeeding(true);
     try {
       const batch = writeBatch(db);
-      const schoolId = 'dar-ark-elite';
+      const schoolId = 'elite-academy';
       
       const schoolRef = doc(db, 'schools', schoolId);
       batch.set(schoolRef, {
@@ -106,6 +106,17 @@ export default function SuperAdminDashboard() {
       apps.forEach(app => {
         const appRef = doc(admissionsRef);
         batch.set(appRef, { ...app, schoolId, parentPhone: '08123456789', createdAt: new Date().toISOString() });
+      });
+
+      // SEED DEMO ADMIN
+      const adminRef = doc(db, 'users', 'demo_admin_elite');
+      batch.set(adminRef, {
+        uid: 'demo_admin_elite',
+        email: 'admin@elite.com',
+        displayName: 'Elite Academy Admin',
+        role: 'school-admin',
+        schoolId: schoolId,
+        metadata: { isDemo: true }
       });
 
       await batch.commit();

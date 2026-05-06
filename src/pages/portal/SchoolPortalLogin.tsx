@@ -20,6 +20,13 @@ export default function SchoolPortalLogin() {
   const [school, setSchool] = useState<{ name: string; primaryColor: string; isActive: boolean; landingPageTheme: string } | null>(null);
 
   useEffect(() => {
+    if (userProfile?.role === 'super-admin' && school) {
+      localStorage.setItem('impersonated_school_id', schoolDomain || '');
+      navigate('/dashboard');
+    }
+  }, [userProfile, school, schoolDomain]);
+
+  useEffect(() => {
     // Simulate API call to verify tenant domain
     setTimeout(() => {
       if (schoolDomain === 'elite-academy') {

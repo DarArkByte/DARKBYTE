@@ -14,7 +14,7 @@ interface AuthContextType {
   userProfile: UserProfile | null;
   loading: boolean;
   signIn: () => Promise<void>;
-  login: (email: string, pass: string) => Promise<void>;
+  login: (email: string, pass: string, schoolId?: string) => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -88,10 +88,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await signInWithPopup(auth, provider);
   };
 
-  const login = async (username: string, pass: string) => {
+  const login = async (username: string, pass: string, schoolId?: string) => {
     // If it's a pure username (no @), convert to dummy email for Firebase
     const loginIdentifier = username.includes('@') ? username : `${username}@darark.com`;
-    await signInWithEmailAndPassword(auth, loginIdentifier, pass);
+    const userCredential = await signInWithEmailAndPassword(auth, loginIdentifier, pass);
+    
+    // If a specific school was requested, store it for the session
+    if (schoolId) {
+      localStorage.setItem('impersonated_school_id', schoolId);
+    }
+    
+    return userCredential;
   };
 
   const resetPassword = async (email: string) => {

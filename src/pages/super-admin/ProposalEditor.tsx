@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { FileText, Printer, ArrowLeft, Globe, Smartphone, Cpu, CheckCircle2, BookOpen, Code2, Zap, Rocket, Brain, Award, ShieldAlert, PenLine, Building2 } from 'lucide-react';
+import { FileText, Printer, ArrowLeft, Globe, Smartphone, Cpu, CheckCircle2, BookOpen, Code2, Zap, Rocket, Brain, Award, ShieldAlert, PenLine, Building2, LayoutGrid, Fingerprint, Receipt } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import resultTemplateImg from '../../assets/branding/result_template.png';
 
 export default function ProposalEditor() {
   const [data, setData] = useState({
     schoolName: '',
     contactPerson: '',
-    date: new Date().toLocaleDateString(),
+    date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
     phone1: '+234 812 345 6789',
     phone2: '+234 703 123 4567',
     email: 'info@darark.com',
@@ -22,12 +21,10 @@ export default function ProposalEditor() {
     <div className="min-h-screen bg-slate-100 font-sans print:bg-white print:p-0">
       <style>
         {`
-          /* SCREEN ONLY PREVIEW STYLING */
           @media screen {
             .page {
-              margin-bottom: 40px !important;
-              box-shadow: 0 10px 40px rgba(0,0,0,0.1) !important;
-              border-radius: 4px;
+              margin-bottom: 50px !important;
+              box-shadow: 0 30px 60px rgba(0,0,0,0.1) !important;
             }
             #proposal-root {
               padding-top: 40px;
@@ -41,48 +38,77 @@ export default function ProposalEditor() {
               margin: 0mm;
             }
             
-            /* ABSOLUTE ISOLATION: Remove everything else from the DOM view */
-            body > *:not(#proposal-root), nav, header, aside, .no-print, #topbar, #sidebar, [role="banner"] { 
+            body {
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+              visibility: hidden !important;
+            }
+
+            body > *:not(#proposal-root), nav, header, aside, .no-print, #topbar, #sidebar { 
               display: none !important; 
             }
             
+            #proposal-root, #proposal-root * {
+              visibility: visible !important;
+            }
+
             #proposal-root {
               display: block !important;
               position: static !important;
               width: 210mm !important;
               margin: 0 auto !important;
-              padding-top: 0 !important; /* CRITICAL: REMOVE TOP PADDING */
+              padding: 0 !important;
               background: white !important;
             }
 
             .page {
               width: 210mm !important;
               height: 297mm !important;
-              padding: 40mm 30mm !important; /* ULTRA SAFE MARGINS */
               margin: 0 !important;
-              display: block !important;
+              display: flex !important;
+              flex-direction: column !important;
               page-break-after: always !important;
               break-after: page !important;
               box-sizing: border-box !important;
-              background: white !important;
               position: relative !important;
-              overflow: visible !important;
+              overflow: hidden !important;
+              background: white;
             }
             
             .page:last-child {
               page-break-after: auto !important;
               break-after: auto !important;
             }
-
-            /* RE-ESTABLISHING TYPOGRAPHY WEIGHTS */
-            h2 { font-size: 36pt !important; color: #1e1b4b !important; font-weight: 900 !important; line-height: 1.1 !important; }
-            h3 { font-size: 18pt !important; color: #1e1b4b !important; border-bottom: 2pt solid #1e1b4b !important; padding-bottom: 8pt !important; }
-            p, td, li { font-size: 11pt !important; color: #334155 !important; }
-            
-            .premium-highlight { color: #d946ef !important; font-weight: 900 !important; }
           }
+
+          /* DESIGN TOKENS */
+          .navy-bg { background: #111827; }
+          .accent-blue { background: #3b82f6; }
+          .text-navy { color: #111827; }
+          .text-slate { color: #64748b; }
+          .border-accent { border-left: 6px solid #3b82f6; }
           
-          .document-preview-container { max-width: 210mm; margin: 0 auto; background: white; box-shadow: 0 40px 100px -20px rgba(0,0,0,0.15); }
+          .card-light { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; }
+          .card-blue { background: #eff6ff; border: 1px solid #dbeafe; border-radius: 12px; padding: 24px; }
+          .card-green { background: #f0fdf4; border: 1px solid #dcfce7; border-radius: 12px; padding: 24px; }
+          
+          .quote-box { background: #f1f5f9; padding: 40px; border-radius: 8px; font-style: italic; color: #334155; }
+          
+          .stamp-box {
+            width: 120px;
+            height: 120px;
+            border: 2px dashed #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+          }
+
+          h1, h2, h3, h4 { font-family: 'Inter', sans-serif; font-weight: 900; letter-spacing: -0.025em; }
         `}
       </style>
       
@@ -94,21 +120,21 @@ export default function ProposalEditor() {
               <ArrowLeft className="w-6 h-6" />
             </Link>
             <div>
-              <h1 className="text-xl font-black text-slate-900 uppercase italic tracking-tighter">Investor Proposal Architect</h1>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">v6.0 High-Fidelity Build</p>
+              <h1 className="text-xl font-black text-slate-900 uppercase italic tracking-tighter">Dar-Ark Byte OS Designer</h1>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">High-Fidelity Architectural Deployment</p>
             </div>
           </div>
           
           <div className="flex items-center gap-8">
              <input 
                type="text" 
-               placeholder="Target Institution Name"
+               placeholder="Target School Name"
                value={data.schoolName}
                onChange={(e) => setData({...data, schoolName: e.target.value})}
-               className="bg-slate-50 border-2 border-slate-100 rounded-xl p-3 text-sm font-bold w-80 focus:ring-2 focus:ring-indigo-600 transition-all"
+               className="bg-slate-50 border-2 border-slate-100 rounded-xl p-3 text-sm font-bold w-80 focus:ring-2 focus:ring-blue-600 transition-all"
              />
-             <button onClick={handlePrint} className="flex items-center gap-3 bg-[#1e1b4b] text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-2xl">
-              <Printer className="w-5 h-5" /> Generate Multi-Page PDF
+             <button onClick={handlePrint} className="flex items-center gap-3 bg-[#111827] text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-2xl">
+              <Printer className="w-5 h-5" /> Print Strategic Proposal
             </button>
           </div>
         </div>
@@ -118,203 +144,163 @@ export default function ProposalEditor() {
       <div id="proposal-root" className="pt-48 pb-24 print:p-0">
         <div className="document-preview-container print:shadow-none print:max-w-none print:w-full">
           
-          {/* PAGE 1: TITLE PAGE */}
-          <div className="page flex flex-col justify-between" style={{ minHeight: '297mm' }}>
-             <div className="space-y-4">
-                <p className="text-indigo-600 font-black text-xs uppercase tracking-[0.6em]">Dar-Ark Byte OS</p>
-                <h2 className="text-6xl font-black text-slate-900 leading-none">Strategic <br /> Transformation <br /> Proposal</h2>
-             </div>
-             
-             <div className="space-y-12">
-                <div className="space-y-2 border-l-[12px] border-[#d946ef] pl-10">
-                   <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Prepared Exclusively For:</p>
-                   <h3 className="border-none m-0 p-0 text-4xl font-black text-slate-900 tracking-tighter">{data.schoolName || '[School Name]'}</h3>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-10">
-                   <div className="space-y-1">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Head Office</p>
-                      <p className="text-sm font-bold text-slate-900">Trans Ekulu, Enugu, Nigeria</p>
-                   </div>
-                   <div className="space-y-1">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Issue Date</p>
-                      <p className="text-sm font-bold text-slate-900">{data.date}</p>
-                   </div>
+          {/* PAGE 1: COVER PAGE (WHITE OPTIMIZED) */}
+          <div className="page bg-white p-24 justify-between" style={{ minHeight: '297mm' }}>
+             <div className="space-y-24">
+                <p className="text-blue-600 font-black text-sm uppercase tracking-[0.4em]">Dar-Ark Byte Solutions</p>
+                <div className="space-y-6 text-navy">
+                  <h1 className="text-7xl font-black leading-[1.1]">Strategic <br /> Transformation <br /> Proposal</h1>
+                  <p className="text-2xl text-slate-400 font-medium italic">Dar-Ark Byte OS v6.0</p>
                 </div>
              </div>
              
-             <div className="pt-10 border-t border-slate-100 flex justify-between items-center">
-                <div className="flex gap-4">
-                   <Building2 className="w-10 h-10 text-slate-200" />
-                   <p className="text-[9pt] font-bold text-slate-400 uppercase tracking-widest leading-tight">Innovating Education <br /> Through Technology</p>
+             <div className="space-y-12 text-navy">
+                <div className="border-l-[6px] border-blue-600 pl-10 space-y-2">
+                   <p className="text-xs font-black text-blue-600 uppercase tracking-widest">Prepared Exclusively For:</p>
+                   <h2 className="text-4xl font-black">{data.schoolName || '[School Name]'}</h2>
+                   <p className="text-sm text-slate-500 font-bold italic tracking-tight">Head Office: Trans Ekulu, Enugu, Nigeria</p>
                 </div>
-                <p className="text-[9pt] font-black text-slate-900 uppercase tracking-widest">Confidential Build v6.0</p>
+                <div className="flex justify-between items-end border-t border-slate-100 pt-10">
+                   <p className="text-sm text-slate-400 font-black uppercase tracking-widest">Issue Date: {data.date}</p>
+                   <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest text-right">Confidential Strategic Build v7.0</p>
+                </div>
              </div>
           </div>
 
-          {/* PAGE 2: EXECUTIVE SUMMARY */}
-          <div className="page">
-            <div className="space-y-12">
-              <header className="flex justify-between items-center border-b-[6pt] border-[#1e1b4b] pb-8">
-                <h2 className="text-4xl font-black uppercase">Executive Strategy</h2>
-                <div className="text-right space-y-1">
-                   <p className="text-[10pt] font-black text-indigo-600 uppercase tracking-widest">{data.schoolName}</p>
-                   <p className="text-[9pt] font-bold text-slate-400">{data.date}</p>
-                </div>
-              </header>
+          {/* PAGE 2: EXECUTIVE STRATEGY */}
+          <div className="page bg-white p-20 space-y-12">
+            <header className="flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-6">
+               <p>Dar-Ark Byte OS | Executive Strategy</p>
+               <p>Issue: {data.date}</p>
+            </header>
 
-              <p className="text-slate-700 font-medium leading-relaxed text-lg italic border-l-8 border-indigo-600 pl-8">
-                "Our mission is to unify school administration, learning, and communication into one high-performance digital ecosystem that drives institutional excellence."
-              </p>
-
-              <div className="grid grid-cols-2 gap-10">
-                 <div className="space-y-6">
-                    <h3 className="text-xl font-black">🌐 Digital Identity</h3>
-                    <ul className="space-y-3 font-bold text-slate-500">
-                       <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-indigo-600" /> Custom SEO Website</li>
-                       <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-indigo-600" /> Online Admissions</li>
-                       <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-indigo-600" /> Brand Visibility</li>
-                       <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-indigo-600" /> Google Search Edge</li>
-                    </ul>
-                 </div>
-                 <div className="space-y-6">
-                    <h3 className="text-xl font-black">📱 Unified Access</h3>
-                    <ul className="space-y-3 font-bold text-slate-500">
-                       <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-indigo-600" /> Parent App Dashboard</li>
-                       <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-indigo-600" /> Real-time Results</li>
-                       <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-indigo-600" /> Student Portals</li>
-                       <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-indigo-600" /> Instant Alerts</li>
-                    </ul>
-                 </div>
-              </div>
-
-              <section className="bg-[#1e1b4b] p-12 rounded-[48px] text-white shadow-2xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-10 opacity-5">
-                   <Rocket className="w-40 h-40" />
-                </div>
-                <h4 className="text-white text-2xl uppercase tracking-tighter mb-6 font-black flex items-center gap-4 italic">
-                  <Cpu className="w-10 h-10 text-[#d946ef]" /> Robotics & Coding OS
-                </h4>
-                <div className="grid grid-cols-2 gap-12">
-                   <div className="space-y-2">
-                      <p className="premium-highlight text-sm uppercase tracking-widest">The Curriculum</p>
-                      <p className="text-xs text-slate-300 font-medium leading-relaxed">Python, JavaScript, Artificial Intelligence foundations, and Hardware engineering tracks.</p>
-                   </div>
-                   <div className="space-y-2">
-                      <p className="premium-highlight text-sm uppercase tracking-widest">Global Edge</p>
-                      <p className="text-xs text-slate-300 font-medium leading-relaxed">Equipping students with future-ready logic and career-ready software skills.</p>
-                   </div>
-                </div>
-              </section>
+            <div className="quote-box text-center text-xl leading-relaxed">
+              "Our mission is to unify school administration, learning, and communication into one high-performance digital ecosystem that drives institutional excellence."
             </div>
-          </div>
 
-          {/* PAGE 3: INFRASTRUCTURE & INVESTMENT */}
-          <div className="page">
-            <div className="space-y-12">
-              <h3 className="text-2xl font-black">Operational Infrastructure</h3>
-              <div className="grid grid-cols-2 gap-8">
-                {[
-                  { title: 'Academic Intelligence', desc: 'Auto grading and deep performance tracking.' },
-                  { title: 'CBT / Exam System', desc: 'Auto-marking with WAEC interface.' },
-                  { title: 'Teacher Productivity', desc: 'Lesson note and assignment distribution.' },
-                  { title: 'Smart Finance', desc: 'Cashless fee payments and wallets.' },
-                  { title: 'Security & SMS', desc: 'Automated attendance and safety alerts.' },
-                  { title: 'Admission Gateway', desc: 'Full digital enrollment funnel.' },
-                  { title: 'Communication Hub', desc: 'In-app chat and emergency broadcast.' },
-                  { title: 'Analytics Dashboard', desc: 'Financial and performance trends.' },
-                  { title: 'Document Lab', desc: 'Transcripts, ID Cards, and Certificates.' },
-                  { title: 'Multi-Campus Hub', desc: 'Centralized control for all branches.' },
-                ].map((item, i) => (
-                  <div key={i} className="flex gap-4 p-5 bg-slate-50 rounded-2xl border border-slate-100">
-                    <CheckCircle2 className="w-6 h-6 text-indigo-600 shrink-0 mt-1" />
-                    <div>
-                      <p className="font-black text-slate-900 text-[10pt] uppercase mb-1 tracking-tight">{item.title}</p>
-                      <p className="text-[9pt] text-slate-500 font-medium">{item.desc}</p>
-                    </div>
+            <section className="space-y-8">
+               <h3 className="text-3xl text-navy flex items-center gap-4"><span className="w-1.5 h-8 accent-blue inline-block"></span> Core Institutional Identity</h3>
+               <div className="grid grid-cols-2 gap-8">
+                  <div className="card-light space-y-4">
+                     <div className="flex items-center gap-3 text-blue-500 font-black uppercase text-sm">
+                        <Globe className="w-5 h-5" /> Digital Identity
+                     </div>
+                     <p className="text-sm text-slate-600 leading-relaxed font-medium">Custom SEO-optimized website and online admissions funnel to enhance global brand visibility and Google search ranking.</p>
                   </div>
-                ))}
-              </div>
+                  <div className="card-light space-y-4">
+                     <div className="flex items-center gap-3 text-blue-500 font-black uppercase text-sm">
+                        <Smartphone className="w-5 h-5" /> Unified Access
+                     </div>
+                     <p className="text-sm text-slate-600 leading-relaxed font-medium">Dedicated Parent/Student app dashboard with real-time results, instant alerts, and comprehensive portal access.</p>
+                  </div>
+               </div>
+            </section>
 
-              <section className="space-y-8 pt-10">
-                 <h3 className="text-2xl font-black">Strategic Investment</h3>
-                 <div className="overflow-hidden rounded-[32px] border-[3pt] border-[#1e1b4b]">
-                    <table className="w-full text-left">
-                      <thead className="bg-[#1e1b4b] text-white">
-                        <tr>
-                          <th className="p-8">Service Package</th>
-                          <th className="p-8 text-right">Investment per Student</th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white font-bold">
-                         <tr className="border-b-2 border-slate-100">
-                           <td className="p-8">
-                              <p className="font-black text-slate-900 text-xl tracking-tighter italic">Standard School Operating System</p>
-                              <p className="text-[8pt] text-[#16a34a] uppercase tracking-widest mt-2 italic font-black">✅ Zero Upfront Setup — Per Term Pay-as-you-Scale</p>
-                           </td>
-                           <td className="p-8 text-right font-black text-slate-900 text-4xl tracking-tighter">₦1,200</td>
-                         </tr>
-                         <tr className="bg-slate-50">
-                           <td className="p-8">
-                              <p className="font-black text-indigo-900 text-xl tracking-tighter italic">Premium Robotics & Coding Integration</p>
-                              <p className="text-[8pt] text-indigo-600 uppercase tracking-widest mt-2 italic font-black">✅ Complete Future-Ready Technical Deployment</p>
-                           </td>
-                           <td className="p-8 text-right font-black text-indigo-900 text-4xl tracking-tighter">₦6,000</td>
-                         </tr>
-                      </tbody>
-                    </table>
-                 </div>
-              </section>
-            </div>
+            <section className="space-y-8">
+               <h3 className="text-3xl text-navy flex items-center gap-4"><span className="w-1.5 h-8 accent-blue inline-block"></span> The Curriculum Evolution</h3>
+               <div className="grid grid-cols-2 gap-8">
+                  <div className="card-blue space-y-4">
+                     <h4 className="text-blue-600 text-lg uppercase tracking-tight">Robotics & Coding OS</h4>
+                     <p className="text-sm text-slate-600 font-medium">Foundations in Python, JavaScript, and Artificial Intelligence coupled with Hardware Engineering tracks.</p>
+                  </div>
+                  <div className="card-green space-y-4">
+                     <h4 className="text-green-600 text-lg uppercase tracking-tight">Global Edge</h4>
+                     <p className="text-sm text-slate-600 font-medium">Equipping students with future-ready logic and career-ready software development skills.</p>
+                  </div>
+               </div>
+            </section>
+
+            <section className="space-y-8">
+               <h3 className="text-3xl text-navy flex items-center gap-4"><span className="w-1.5 h-8 accent-blue inline-block"></span> Operational Infrastructure</h3>
+               <div className="grid grid-cols-2 gap-x-12 gap-y-6">
+                  {[
+                    { title: 'Academic Intelligence', desc: 'Auto-grading & performance tracking.' },
+                    { title: 'Security & SMS', desc: 'Attendance alerts & safety broadcasts.' },
+                    { title: 'CBT / Exam System', desc: 'WAEC-standard interface & marking.' },
+                    { title: 'Admission Gateway', desc: 'End-to-end digital enrollment.' },
+                    { title: 'Teacher Productivity', desc: 'Digital lesson notes & distribution.' },
+                    { title: 'Communication Hub', desc: 'In-app chat & emergency systems.' },
+                    { title: 'Smart Finance', desc: 'Cashless payments & digital wallets.' },
+                    { title: 'Document Lab', desc: 'Automated Transcripts & ID Cards.' },
+                  ].map((item, i) => (
+                    <div key={i} className="bg-slate-50 p-4 rounded-lg space-y-1">
+                       <p className="font-black text-navy text-xs uppercase">{item.title}</p>
+                       <p className="text-[10px] text-slate-400 font-medium uppercase tracking-tighter">{item.desc}</p>
+                    </div>
+                  ))}
+               </div>
+            </section>
           </div>
 
-          {/* PAGE 4: PROOF & AUTHORIZATION */}
-          <div className="page flex flex-col justify-between">
-            <div className="space-y-12">
-              <section className="space-y-6">
-                 <h3 className="text-2xl font-black">Proof of Output Excellence</h3>
-                 <div className="relative rounded-[48px] overflow-hidden border-2 border-slate-100 bg-slate-50 p-10 text-center">
-                    <img src={resultTemplateImg} alt="Result Sample" className="w-[60%] mx-auto h-auto rounded-2xl shadow-2xl border border-white mb-6" />
-                    <p className="text-[10pt] text-slate-400 font-black uppercase tracking-[0.5em]">Proprietary Academic Architecture</p>
-                 </div>
-              </section>
-
-              <section className="grid grid-cols-2 gap-12 pt-10 border-t border-slate-100">
-                 <div className="space-y-4">
-                    <h4 className="flex items-center gap-3 font-black text-slate-900"><ShieldAlert className="w-5 h-5 text-amber-500" /> Confidentiality</h4>
-                    <p className="text-[9.5pt] text-slate-500 font-medium leading-relaxed italic">
-                      This strategy is proprietary. All digital controls and administrative backends are isolated—ensuring absolute data privacy for your institution.
-                    </p>
-                 </div>
-                 <div className="space-y-4">
-                    <h4 className="flex items-center gap-3 font-black text-slate-900"><Award className="w-5 h-5 text-indigo-600" /> Certification</h4>
-                    <p className="text-[9.5pt] text-slate-500 font-medium leading-relaxed italic">
-                      Students in the Premium Program receive internationally recognized certificates of proficiency in Coding and Robotics.
-                    </p>
-                 </div>
-              </section>
-            </div>
+          {/* PAGE 3: FINANCIAL FRAMEWORK */}
+          <div className="page bg-white p-20 space-y-16">
+            <header className="flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-6">
+               <p>Financial Framework | Proprietary Build</p>
+               <p>Dar-Ark Byte OS v6.0</p>
+            </header>
 
             <section className="space-y-10">
-               <div className="flex justify-between items-start">
-                  <div className="signature-box">
-                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Authorized School Signature</p>
-                     <p className="text-xs font-bold text-slate-300 italic">Date & Stamp</p>
+               <h3 className="text-4xl text-navy flex items-center gap-4"><span className="w-1.5 h-10 accent-blue inline-block"></span> Strategic Investment</h3>
+               
+               <div className="overflow-hidden rounded-xl border border-slate-200">
+                  <table className="w-full text-left border-collapse">
+                     <thead>
+                        <tr className="bg-[#111827] text-white text-[10px] uppercase tracking-widest font-black">
+                           <th className="p-6">Service Package</th>
+                           <th className="p-6">Deployment Details</th>
+                           <th className="p-6 text-right">Investment / Student</th>
+                        </tr>
+                     </thead>
+                     <tbody className="text-sm font-bold text-slate-600">
+                        <tr className="border-b border-slate-100">
+                           <td className="p-6 text-navy">Standard Operating System</td>
+                           <td className="p-6 text-xs text-slate-400 italic">Zero Upfront Setup. Pay-as-you-Scale model. Includes all administrative modules.</td>
+                           <td className="p-6 text-right text-blue-600 text-lg">₦1,200 <span className="text-[10px] text-slate-400">/ Term</span></td>
+                        </tr>
+                        <tr className="bg-slate-50">
+                           <td className="p-6 text-navy">Premium Robotics & Coding</td>
+                           <td className="p-6 text-xs text-slate-400 italic">Complete Technical Deployment. Lab setup assistance and specialized curriculum.</td>
+                           <td className="p-6 text-right text-blue-600 text-lg">₦6,000 <span className="text-[10px] text-slate-400">/ Term</span></td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </section>
+
+            <section className="space-y-6">
+               <h4 className="text-navy text-xl uppercase tracking-tighter">Security & Certification</h4>
+               <div className="space-y-4 text-sm text-slate-500 leading-relaxed font-medium italic">
+                  <p><span className="font-black text-navy uppercase not-italic mr-2">Confidentiality:</span> This strategy is proprietary. All digital controls and administrative backends are isolated—ensuring absolute data privacy for your institution.</p>
+                  <p><span className="font-black text-navy uppercase not-italic mr-2">Certification:</span> Students in the Premium Program receive internationally recognized certificates of proficiency in Coding and Robotics upon completion of the track.</p>
+               </div>
+            </section>
+
+            <div className="pt-24 flex justify-between items-end">
+               <div className="space-y-12">
+                  <div className="w-80 border-t border-slate-400 pt-3">
+                     <p className="text-[10px] font-black text-navy uppercase tracking-widest mb-1">Authorized School Signature</p>
+                     <p className="text-[9px] text-slate-400 uppercase font-bold tracking-widest">Date & Official School Stamp</p>
                   </div>
-                  <div className="signature-box border-indigo-600">
-                     <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-2">Dar-Ark Byte Authorization</p>
-                     <p className="text-xs font-bold text-slate-900 font-sans tracking-tight">Verified Digital Executive</p>
+                  <div className="stamp-box">
+                     Stamp Here
                   </div>
                </div>
                
-               <div className="pt-10 border-t-[6pt] border-[#1e1b4b] flex justify-between items-end">
-                  <div>
-                    <h3 className="border-none m-0 p-0 text-4xl font-black text-slate-900 tracking-tighter leading-none italic">Dar-Ark Byte OS</h3>
-                    <p className="premium-highlight text-sm uppercase tracking-widest italic mt-3">Innovating Education Through Technology</p>
+               <div className="space-y-12 text-right">
+                  <div className="w-80 border-t border-slate-400 pt-3 inline-block">
+                     <p className="text-[10px] font-black text-navy uppercase tracking-widest mb-1">Dar-Ark Byte Authorization</p>
+                     <p className="text-[9px] text-slate-400 uppercase font-bold tracking-widest">Verified Digital Executive</p>
                   </div>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">© 2026 DAR-ARK BYTE SOLUTIONS</p>
+                  <div className="space-y-2">
+                    <p className="text-2xl text-blue-500 font-serif italic">Dar-Ark Byte Solutions</p>
+                  </div>
                </div>
-            </section>
+            </div>
+
+            <footer className="absolute bottom-12 left-0 right-0 text-center space-y-4">
+               <p className="text-[12px] font-black text-navy uppercase tracking-tighter">Innovating Education Through Technology</p>
+               <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">© 2026 DAR-ARK BYTE SOLUTIONS | ALL RIGHTS RESERVED</p>
+            </footer>
           </div>
 
         </div>

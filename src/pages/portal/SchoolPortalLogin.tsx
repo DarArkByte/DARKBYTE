@@ -22,7 +22,15 @@ export default function SchoolPortalLogin() {
   useEffect(() => {
     // Simulate API call to verify tenant domain
     setTimeout(() => {
-      if (schoolDomain === 'excel-royal') {
+      if (schoolDomain === 'elite-academy') {
+        setSchool({ 
+          name: 'Dar-Ark Elite Academy', 
+          primaryColor: '#1e1b4b', 
+          secondaryColor: '#d97706',
+          isActive: true, 
+          landingPageTheme: 'theme-4' 
+        });
+      } else if (schoolDomain === 'excel-royal') {
         setSchool({ name: 'Excel Royal Academy', primaryColor: '#4f46e5', isActive: true, landingPageTheme: 'theme-1' });
       } else if (schoolDomain === 'springfield') {
         setSchool({ name: 'Springfield High School', primaryColor: '#059669', isActive: false, landingPageTheme: 'theme-2' });

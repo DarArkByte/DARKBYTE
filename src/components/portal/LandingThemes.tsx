@@ -115,12 +115,111 @@ export const Theme3 = ({ school, onLoginClick }: ThemeProps) => (
   </div>
 );
 
+// Theme 4: High-Fidelity Elite Academy (Pitch Mode)
+export const Theme4 = ({ school, onLoginClick }: ThemeProps) => (
+  <div className="min-h-screen bg-[#1e1b4b] text-white selection:bg-amber-500 selection:text-[#1e1b4b]">
+    <nav className="p-8 flex justify-between items-center relative z-20">
+      <div className="flex items-center gap-4">
+        <div className="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center shadow-2xl shadow-amber-500/20 rotate-3">
+            <ShieldCheck className="w-7 h-7 text-[#1e1b4b]" />
+        </div>
+        <div className="flex flex-col">
+          <span className="font-black text-2xl tracking-tighter uppercase leading-none">{school.name}</span>
+          <span className="text-[8px] font-black tracking-[0.4em] text-amber-500 uppercase mt-1 italic">Est. 1998 • Excellence in Every Byte</span>
+        </div>
+      </div>
+      <div className="flex items-center gap-8">
+        <div className="hidden lg:flex gap-6 text-[10px] font-black uppercase tracking-widest text-slate-400">
+          <a href="#" className="hover:text-amber-500 transition-colors">Academics</a>
+          <a href="#" className="hover:text-amber-500 transition-colors">Admissions</a>
+          <a href="#" className="hover:text-amber-500 transition-colors">Facility</a>
+        </div>
+        <button 
+          onClick={onLoginClick} 
+          className="px-10 py-3.5 rounded-full font-black text-xs uppercase tracking-widest bg-amber-500 text-[#1e1b4b] hover:bg-white hover:scale-105 transition-all shadow-2xl shadow-amber-500/20"
+        >
+          Portal Entry
+        </button>
+      </div>
+    </nav>
+
+    <main className="relative z-10 max-w-7xl mx-auto px-6 pt-20 pb-40 grid lg:grid-cols-2 gap-20 items-center">
+      <div className="space-y-10">
+        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+           <span className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.3em] text-amber-400">
+              International Standard ERP System
+           </span>
+        </motion.div>
+        <h1 className="text-7xl md:text-8xl font-black leading-[0.85] tracking-tighter uppercase">
+          Empowering <br />
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-500 to-amber-200">World-Class</span> <br />
+          Scholars.
+        </h1>
+        <p className="text-xl text-slate-400 leading-relaxed max-w-lg font-medium">
+          Welcome to West Africa's leading digital learning environment. Powered by the proprietary Dar-Ark Byte core engine.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-6 pt-4">
+          <button 
+            onClick={() => window.location.href = `/portal/elite-academy/admissions`}
+            className="px-12 py-5 rounded-3xl font-black text-sm uppercase tracking-widest bg-white text-[#1e1b4b] hover:bg-amber-500 transition-all shadow-2xl"
+          >
+            Apply For Admission
+          </button>
+          <button 
+            onClick={onLoginClick}
+            className="px-12 py-5 rounded-3xl font-black text-sm uppercase tracking-widest bg-transparent border-2 border-white/10 text-white hover:bg-white/5 transition-all flex items-center justify-center gap-3"
+          >
+            Student Login <ArrowRight className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+
+      <div className="relative group">
+        <div className="absolute inset-0 bg-amber-500/20 rounded-[80px] blur-[100px] -z-10 group-hover:bg-amber-500/40 transition-all duration-1000" />
+        <div className="relative rounded-[80px] overflow-hidden border-8 border-white/5 shadow-2xl aspect-[4/5] lg:aspect-square">
+           <img 
+            src="https://images.unsplash.com/photo-1541339907198-e08756ebafe3?auto=format&fit=crop&q=80&w=800" 
+            alt="Elite Campus" 
+            className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000" 
+           />
+           <div className="absolute inset-0 bg-gradient-to-t from-[#1e1b4b] via-transparent to-transparent opacity-60" />
+        </div>
+        
+        {/* Floating Stat Cards */}
+        <motion.div 
+          initial={{ y: 20 }}
+          animate={{ y: 0 }}
+          transition={{ duration: 2, repeat: Infinity, repeatType: 'reverse' }}
+          className="absolute -bottom-10 -right-10 bg-white p-8 rounded-[40px] shadow-2xl text-[#1e1b4b] border-4 border-[#1e1b4b]"
+        >
+           <p className="text-4xl font-black mb-1 italic">99.8%</p>
+           <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Academic Success Rate</p>
+        </motion.div>
+        
+        <motion.div 
+          initial={{ x: -20 }}
+          animate={{ x: 0 }}
+          transition={{ duration: 3, repeat: Infinity, repeatType: 'reverse' }}
+          className="absolute top-20 -left-10 bg-amber-500 p-6 rounded-[32px] shadow-2xl text-[#1e1b4b] border-4 border-[#1e1b4b]"
+        >
+           <GraduationCap className="w-10 h-10" />
+        </motion.div>
+      </div>
+    </main>
+
+    {/* Background Decorations */}
+    <div className="fixed top-0 right-0 w-[600px] h-[600px] bg-amber-500/5 rounded-full blur-[120px] -mr-40 -mt-40 pointer-events-none" />
+    <div className="fixed bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[120px] -ml-40 -mb-40 pointer-events-none" />
+  </div>
+);
+
 // (Adding 7 more basic variations internally to fulfill the "10 designs" requirement)
 export const LandingThemeSelector = ({ themeId, school, onLoginClick }: { themeId: string; school: any; onLoginClick: () => void }) => {
   switch (themeId) {
     case 'theme-1': return <Theme1 school={school} onLoginClick={onLoginClick} />;
     case 'theme-2': return <Theme2 school={school} onLoginClick={onLoginClick} />;
     case 'theme-3': return <Theme3 school={school} onLoginClick={onLoginClick} />;
+    case 'theme-4': return <Theme4 school={school} onLoginClick={onLoginClick} />;
     // Fallback/Standard themes (variations of the first 3 for now)
     default: return <Theme1 school={school} onLoginClick={onLoginClick} />;
   }

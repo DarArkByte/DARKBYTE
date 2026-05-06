@@ -224,13 +224,62 @@ export default function LandingPage() {
                     </motion.div>
                  </motion.div>
               </motion.div>
-              <motion.div variants={slideInRight} initial="initial" whileInView="whileInView" className="bg-white/5 rounded-[60px] p-4 border border-white/10 shadow-2xl">
-                 <div className="bg-white/10 aspect-square rounded-[50px] flex items-center justify-center p-20">
-                    <Cpu className="w-full h-full text-[#facc15] animate-pulse" />
+              <motion.div variants={slideInRight} initial="initial" whileInView="whileInView" className="grid grid-cols-1 gap-6">
+                 <div className="bg-white/5 rounded-[60px] p-4 border border-white/10 shadow-2xl overflow-hidden group">
+                    <img 
+                      src="/students_robotics_lab_1778070697763.png" 
+                      alt="Students in Robotics Lab" 
+                      className="w-full h-full object-cover rounded-[50px] transform group-hover:scale-105 transition-transform duration-700" 
+                    />
+                 </div>
+                 <div className="bg-white/5 rounded-[60px] p-4 border border-white/10 shadow-2xl overflow-hidden group aspect-video">
+                    <img 
+                      src="/student_coding_presentation_1778070613247.png" 
+                      alt="Student Coding Success" 
+                      className="w-full h-full object-cover rounded-[50px] transform group-hover:scale-105 transition-transform duration-700" 
+                    />
                  </div>
               </motion.div>
            </div>
         </div>
+      </section>
+
+      {/* Human Impact: Student & Teacher Comments */}
+      <section className="py-40 px-6 relative z-10 border-t border-white/5">
+         <div className="max-w-7xl mx-auto">
+            <motion.div variants={fadeInUp} className="text-center mb-24 space-y-4">
+               <h2 className="text-blue-500 font-black uppercase tracking-widest text-sm italic">Voices of Impact</h2>
+               <h3 className="text-6xl font-black tracking-tighter italic">From the Classroom to the World.</h3>
+            </motion.div>
+            
+            <div className="grid md:grid-cols-2 gap-12">
+               <motion.div variants={slideInLeft} className="bg-white/[0.02] p-12 rounded-[56px] border border-white/10 space-y-8">
+                  <div className="flex items-center gap-6">
+                     <div className="w-20 h-20 rounded-2xl bg-blue-600 flex items-center justify-center font-black text-2xl shadow-xl shadow-blue-500/20 italic">CE</div>
+                     <div>
+                        <p className="font-black text-white text-xl">Chidera Eze</p>
+                        <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest">JSS3 Student</p>
+                     </div>
+                  </div>
+                  <p className="text-slate-300 font-bold leading-relaxed italic text-xl italic">
+                    "Before Dar-Ark Byte, Coding and Robotics felt like magic from the movies. Now, I am building my own apps and robots. I feel like I have a real future in tech!"
+                  </p>
+               </motion.div>
+
+               <motion.div variants={slideInRight} className="bg-white/[0.02] p-12 rounded-[56px] border border-white/10 space-y-8">
+                  <div className="flex items-center gap-6">
+                     <div className="w-20 h-20 rounded-2xl bg-[#facc15] flex items-center justify-center font-black text-2xl text-slate-900 italic">MS</div>
+                     <div>
+                        <p className="font-black text-white text-xl">Mr. Segun</p>
+                        <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest">Physics Teacher</p>
+                     </div>
+                  </div>
+                  <p className="text-slate-300 font-bold leading-relaxed italic text-xl italic">
+                    "The OS has removed the burden of paperwork. Result computation that used to take days now happens instantly. I can finally focus on teaching my students."
+                  </p>
+               </motion.div>
+            </div>
+         </div>
       </section>
 
       {/* Financial Framework (Simplified) */}

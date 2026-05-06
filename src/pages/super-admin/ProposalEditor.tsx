@@ -10,14 +10,12 @@ export default function ProposalEditor() {
     phone1: '+234 812 345 6789',
     phone2: '+234 703 123 4567',
     email: 'info@darark.com',
-    packageTier: 'premium', // Defaulting to premium for maximum impact
+    packageTier: 'premium',
   });
 
   const handlePrint = () => {
     window.print();
   };
-
-  const currentFee = data.packageTier === 'premium' ? '6,000' : '1,200';
 
   return (
     <div className="min-h-screen bg-slate-100 font-sans print:bg-white print:p-0">
@@ -44,19 +42,19 @@ export default function ProposalEditor() {
             .page {
               width: 210mm;
               height: 297mm;
-              padding: 25mm 20mm; /* PROPER MARGINS */
+              padding: 25mm 20mm;
               margin: 0;
-              page-break-after: always;
+              page-break-after: always; /* FORCE NEW PAGE */
               position: relative;
               box-sizing: border-box;
               background: white !important;
+              overflow: hidden;
             }
 
-            /* PROFESSIONAL TYPOGRAPHY */
             h2 { font-size: 32pt !important; color: #1e1b4b !important; font-weight: 900 !important; letter-spacing: -1px !important; }
-            h3 { font-size: 18pt !important; color: #1e1b4b !important; border-bottom: 2pt solid #1e1b4b; padding-bottom: 8pt; margin-top: 25pt; text-transform: uppercase; font-weight: 900 !important; }
+            h3 { font-size: 18pt !important; color: #1e1b4b !important; border-bottom: 2.5pt solid #1e1b4b; padding-bottom: 8pt; margin-top: 20pt; text-transform: uppercase; font-weight: 900 !important; }
             h4 { font-size: 13pt !important; color: #1e1b4b !important; font-weight: 900 !important; text-transform: uppercase; }
-            p, td, li { font-size: 11pt !important; line-height: 1.6 !important; color: #334155 !important; }
+            p, td, li { font-size: 11.5pt !important; line-height: 1.6 !important; color: #334155 !important; }
             
             .bold-label { font-weight: 900 !important; color: #1e1b4b !important; }
             
@@ -76,16 +74,14 @@ export default function ProposalEditor() {
             }
 
             .z-10 { position: relative; z-index: 10; }
-            
-            .stats-grid { display: grid; grid-template-cols: 1fr 1fr; gap: 20pt; }
             .feature-grid { display: grid; grid-template-cols: 1fr 1fr; gap: 15pt; }
             
-            table { width: 100%; border-collapse: collapse !important; border: 2pt solid #1e1b4b !important; margin-top: 20pt; }
+            table { width: 100%; border-collapse: collapse !important; border: 2.5pt solid #1e1b4b !important; margin-top: 20pt; }
             th { background: #1e1b4b !important; color: white !important; padding: 12pt !important; text-align: left; font-size: 11pt !important; text-transform: uppercase; }
-            td { padding: 12pt !important; border-bottom: 1pt solid #e2e8f0 !important; font-weight: 700 !important; }
+            td { padding: 12pt !important; border-bottom: 1.5pt solid #e2e8f0 !important; font-weight: 800 !important; }
           }
           
-          .document-preview-container { max-width: 210mm; margin: 0 auto; background: white; box-shadow: 0 40px 100px -20px rgba(0,0,0,0.15); border-radius: 0.5rem; overflow: hidden; }
+          .document-preview-container { max-width: 210mm; margin: 0 auto; background: white; box-shadow: 0 40px 100px -20px rgba(0,0,0,0.15); border-radius: 0.5rem; }
         `}
       </style>
       
@@ -97,10 +93,10 @@ export default function ProposalEditor() {
               <ArrowLeft className="w-6 h-6" />
             </Link>
             <div>
-              <h1 className="text-xl font-black text-slate-900 uppercase tracking-tighter italic">Dar-Ark Byte OS Engine</h1>
+              <h1 className="text-xl font-black text-slate-900 uppercase tracking-tighter">Dar-Ark Byte OS Engine</h1>
               <div className="flex gap-6 mt-1">
-                <button onClick={() => setData({...data, packageTier: 'standard'})} className={`text-[10px] font-black uppercase tracking-widest transition-all ${data.packageTier === 'standard' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-slate-400'}`}>Standard Mode</button>
-                <button onClick={() => setData({...data, packageTier: 'premium'})} className={`text-[10px] font-black uppercase tracking-widest transition-all ${data.packageTier === 'premium' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-slate-400'}`}>Premium Mode</button>
+                <button onClick={() => setData({...data, packageTier: 'standard'})} className={`text-[10px] font-black uppercase tracking-widest ${data.packageTier === 'standard' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-slate-400'}`}>Standard Mode</button>
+                <button onClick={() => setData({...data, packageTier: 'premium'})} className={`text-[10px] font-black uppercase tracking-widest ${data.packageTier === 'premium' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-slate-400'}`}>Premium Mode</button>
               </div>
             </div>
           </div>
@@ -111,10 +107,10 @@ export default function ProposalEditor() {
                placeholder="Strategic Partner Name"
                value={data.schoolName}
                onChange={(e) => setData({...data, schoolName: e.target.value})}
-               className="bg-slate-50 border-2 border-slate-100 rounded-xl p-3 text-sm font-bold w-80 focus:ring-2 focus:ring-indigo-600 transition-all"
+               className="bg-slate-50 border-2 border-slate-100 rounded-xl p-3 text-sm font-bold w-80 focus:ring-2 focus:ring-indigo-600"
              />
              <button onClick={handlePrint} className="flex items-center gap-3 bg-[#1e1b4b] text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-2xl">
-              <Printer className="w-5 h-5" /> Print Strategic Proposal
+              <Printer className="w-5 h-5" /> Print Strategic OS Proposal
             </button>
           </div>
         </div>
@@ -124,15 +120,15 @@ export default function ProposalEditor() {
       <div id="proposal-root" className="pt-48 pb-24 print:p-0">
         <div className="document-preview-container print:shadow-none print:max-w-none print:w-full">
           
-          {/* PAGE 1 */}
+          {/* PAGE 1: STRATEGY & IDENTITY */}
           <div className="page">
             <div className="proposal-watermark">DAR-ARK BYTE</div>
-            <div className="z-10 space-y-12">
+            <div className="z-10 space-y-10">
               <header className="flex justify-between items-start border-b-[4pt] border-[#1e1b4b] pb-10">
                 <div>
                   <h2 className="text-5xl font-black text-[#1e1b4b] uppercase leading-none tracking-tighter">Dar-Ark Byte</h2>
                   <p className="text-[#d946ef] font-black text-sm uppercase tracking-[0.5em] mt-3">The School Operating System</p>
-                  <div className="mt-8 text-xs font-bold text-slate-500 uppercase tracking-widest space-y-1">
+                  <div className="mt-8 text-xs font-bold text-slate-500 uppercase tracking-widest space-y-1 font-black">
                      <p>Trans Ekulu, Enugu</p>
                      <p>{data.phone1} | {data.phone2}</p>
                      <p>{data.email}</p>
@@ -147,17 +143,17 @@ export default function ProposalEditor() {
               <section className="space-y-6">
                  <h3 className="text-2xl font-black">Executive Strategy</h3>
                  <p className="text-slate-700 font-medium leading-relaxed">
-                   This proposal presents a complete digital transformation strategy for <span className="bold-label">{data.schoolName || 'Your Institution'}</span>. We are deploying a <span className="bold-label">School Operating System (OS)</span>—unifying administration, future-ready learning, and parent-student engagement into one high-performance ecosystem.
+                   This proposal presents a complete digital transformation strategy for <span className="bold-label">{data.schoolName || 'Your Institution'}</span>. We are deploying a <span className="bold-label text-indigo-900">School Operating System (OS)</span>—unifying administration, future-ready learning, and parent-student engagement into one high-performance ecosystem.
                  </p>
                  
-                 <div className="grid grid-cols-2 gap-10 stats-grid">
+                 <div className="grid grid-cols-2 gap-10 feature-grid">
                     <div className="space-y-4 p-8 bg-slate-50 rounded-[32px] border border-slate-100">
                        <h4 className="flex items-center gap-3"><Globe className="w-6 h-6 text-indigo-600" /> Digital Identity</h4>
-                       <p className="text-sm text-slate-500 font-medium">Professional SEO-optimized school website, integrated online admission funnels, and global brand visibility.</p>
+                       <p className="text-sm text-slate-500 font-medium">Professional SEO-optimized school website, integrated online admission funnels, and global brand visibility for your institution.</p>
                     </div>
                     <div className="space-y-4 p-8 bg-slate-50 rounded-[32px] border border-slate-100">
                        <h4 className="flex items-center gap-3"><Smartphone className="w-6 h-6 text-indigo-600" /> Unified Access</h4>
-                       <p className="text-sm text-slate-500 font-medium">Real-time mobile dashboards for parents and students to monitor assignments, attendance, and termly results.</p>
+                       <p className="text-sm text-slate-500 font-medium">Real-time mobile dashboards for parents and students to monitor assignments, attendance, and instant results.</p>
                     </div>
                  </div>
               </section>
@@ -170,7 +166,7 @@ export default function ProposalEditor() {
                   <h4 className="text-white text-xl uppercase tracking-tighter mb-6 font-black flex items-center gap-4">
                     <Rocket className="w-8 h-8 text-[#d946ef]" /> Future-Skills: Coding & Robotics
                   </h4>
-                  <div className="grid grid-cols-2 gap-10 stats-grid">
+                  <div className="grid grid-cols-2 gap-10 feature-grid">
                      <div className="space-y-3">
                         <p className="font-black text-[#d946ef] text-sm uppercase tracking-widest flex items-center gap-2"><Code2 className="w-4 h-4"/> Coding Mastery</p>
                         <p className="text-xs text-slate-300 leading-relaxed font-medium">Python, JavaScript, and Web Development tracks designed for real-world software engineering readiness.</p>
@@ -180,9 +176,11 @@ export default function ProposalEditor() {
                         <p className="text-xs text-slate-300 leading-relaxed font-medium">Hands-on hardware engineering, automated logic systems, and Artificial Intelligence fundamentals.</p>
                      </div>
                   </div>
-                  <div className="mt-8 pt-6 border-t border-white/10">
-                     <p className="text-[10px] font-black uppercase tracking-widest text-indigo-300 mb-2">Student Benefits:</p>
-                     <p className="text-xs text-slate-400 font-medium italic">Critical Thinking, Early Career Advantage, Global Technical Competitiveness, and Creative Problem Solving.</p>
+                  <div className="mt-8 pt-6 border-t border-white/10 flex justify-between items-center">
+                     <div className="space-y-1">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-indigo-300">Key Benefits:</p>
+                        <p className="text-xs text-slate-400 font-medium italic">Critical Thinking, Career Advantage, and Global Competitiveness.</p>
+                     </div>
                   </div>
                 </section>
               )}
@@ -214,12 +212,12 @@ export default function ProposalEditor() {
             </div>
           </div>
 
-          {/* PAGE 2 */}
+          {/* PAGE 2: OPERATIONAL ECOSYSTEM */}
           <div className="page">
             <div className="proposal-watermark">DAR-ARK BYTE</div>
-            <div className="z-10 space-y-12">
+            <div className="z-10 space-y-10">
               <section className="space-y-8">
-                <h3 className="text-2xl font-black">Operational Infrastructure</h3>
+                <h3 className="text-2xl font-black">Operational Infrastructure: The 14 Core Systems</h3>
                 <div className="grid grid-cols-2 gap-8 feature-grid">
                   {[
                     { title: 'Academic Intelligence', desc: 'Auto computation, grading, and deep performance analytics.' },
@@ -227,7 +225,7 @@ export default function ProposalEditor() {
                     { title: 'Teacher Productivity', desc: 'Centralized lesson note management and homework distribution.' },
                     { title: 'Student Learning Portal', desc: 'Direct dashboards for 24/7 access to study materials.' },
                     { title: 'Smart Finance & Wallet', desc: 'Cashless fee payments and institutional revenue monitoring.' },
-                    { title: 'Security & Attendance', desc: 'Digital tracking with automated SMS alerts for parent peace-of-mind.' },
+                    { title: 'Security & Attendance', desc: 'Digital tracking with automated SMS alerts for parent safety.' },
                     { title: 'Admission Gateway', desc: 'Complete digital funnel from application to enrollment tracking.' },
                     { title: 'Communication Hub', desc: 'Omni-channel SMS, in-app chat, and emergency broadcasts.' },
                     { title: 'Document Generator', desc: 'Instant generation of Transcripts, ID Cards, and Certificates.' },
@@ -247,17 +245,17 @@ export default function ProposalEditor() {
               </section>
 
               <section className="pt-20 border-t-[4pt] border-[#1e1b4b]">
-                 <p className="text-base font-medium text-slate-700 italic border-l-[10px] border-[#d946ef] pl-8 leading-relaxed mb-12">
+                 <p className="text-lg font-medium text-slate-700 italic border-l-[12px] border-[#d946ef] pl-10 leading-relaxed mb-12">
                    This system transforms your institution into a <span className="bold-label text-slate-900">Digital Learning Powerhouse</span>. By adopting the Dar-Ark Byte OS, you position your school as an unbeatable leader in the modern educational landscape.
                  </p>
                  <div className="flex justify-between items-end">
                     <div>
-                      <h3 className="border-none m-0 p-0 text-4xl font-black text-slate-900 tracking-tighter">Dar-Ark Byte OS</h3>
-                      <p className="text-sm font-bold text-[#d946ef] uppercase tracking-widest italic mt-2">Innovating Education Through Technology</p>
+                      <h3 className="border-none m-0 p-0 text-4xl font-black text-slate-900 tracking-tighter leading-none">Dar-Ark Byte OS</h3>
+                      <p className="text-sm font-bold text-[#d946ef] uppercase tracking-widest italic mt-3">Innovating Education Through Technology</p>
                     </div>
                     <div className="text-right">
                        <p className="text-xs font-black text-slate-900 uppercase tracking-widest">Confidential Strategy Proposal</p>
-                       <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-none mt-1">v4.0 Optimized Production Build</p>
+                       <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-none mt-2">v4.0 Final Optimized Build</p>
                     </div>
                  </div>
               </section>

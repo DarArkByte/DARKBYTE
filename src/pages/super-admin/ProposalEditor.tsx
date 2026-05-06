@@ -22,19 +22,40 @@ export default function ProposalEditor() {
       <style>
         {`
           @media print {
-            body { background: white !important; }
+            body { background: white !important; margin: 0; padding: 0; }
             .print\\:hidden { display: none !important; }
             .bg-white { box-shadow: none !important; border: none !important; }
             .shadow-2xl { box-shadow: none !important; }
             .rounded-\\[48px\\], .rounded-\\[40px\\] { border-radius: 0 !important; }
             .lg\\:col-span-2 { width: 100% !important; margin: 0 !important; padding: 0 !important; }
-            header { border-bottom: 2px solid #1e1b4b !important; }
-            .bg-slate-50 { background: #f8fafc !important; border: 1px solid #e2e8f0 !important; }
+            
+            /* Multi-page handling */
+            .page-break { page-break-before: always; }
+            
+            /* Watermark Effect */
+            .proposal-watermark {
+              position: fixed;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%) rotate(-45deg);
+              font-size: 120px;
+              font-weight: 900;
+              color: rgba(30, 27, 75, 0.03);
+              white-space: nowrap;
+              z-index: -1;
+              pointer-events: none;
+              text-transform: uppercase;
+              letter-spacing: 0.5em;
+            }
+
+            header.letterhead { border-bottom: 4px solid #1e1b4b !important; margin-bottom: 40px; }
+            .bg-slate-50 { background: white !important; border: 1px solid #eee !important; }
             table { border: 1px solid #1e1b4b !important; }
             th { background: #1e1b4b !important; color: white !important; -webkit-print-color-adjust: exact; }
           }
         `}
       </style>
+      
       {/* Header - Hidden on Print */}
       <header className="flex items-center justify-between bg-white p-8 rounded-[40px] shadow-sm border border-slate-100 print:hidden">
         <div className="flex items-center gap-4">
@@ -110,14 +131,22 @@ export default function ProposalEditor() {
 
         {/* Proposal Preview */}
         <div className="lg:col-span-2 bg-white rounded-[48px] shadow-2xl border border-slate-100 p-16 overflow-hidden relative print:shadow-none print:border-none print:rounded-none print:p-0">
-          {/* Watermark/Logo */}
-          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-slate-50 rounded-full -mr-40 -mt-40 -z-0 opacity-50" />
+          {/* Watermark */}
+          <div className="proposal-watermark hidden print:block">
+            DAR-ARK BYTE
+          </div>
+          
+          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-slate-50 rounded-full -mr-40 -mt-40 -z-0 opacity-50 print:hidden" />
           
           <div className="relative z-10 space-y-12">
-            <header className="flex justify-between items-start border-b-4 border-[#1e1b4b] pb-10">
+            <header className="flex justify-between items-start border-b-4 border-[#1e1b4b] pb-10 letterhead">
               <div>
                 <h2 className="text-4xl font-black text-[#1e1b4b] tracking-tighter uppercase">Dar-Ark Byte</h2>
-                <p className="text-[#d946ef] font-black text-xs uppercase tracking-[0.3em]">Next-Gen School Intelligence</p>
+                <p className="text-[#d946ef] font-black text-xs uppercase tracking-[0.3em]">Intelligence For Modern Schools</p>
+                <div className="mt-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-relaxed">
+                   12 Digital Excellence Way, Lagos <br />
+                   www.darark.com | info@darark.com
+                </div>
               </div>
               <div className="text-right">
                 <p className="font-black text-slate-900">Official Proposal</p>
@@ -205,7 +234,7 @@ export default function ProposalEditor() {
                </div>
             </section>
 
-            <section className="space-y-6">
+            <section className="space-y-6 page-break pt-12">
                <h3 className="text-xl font-black text-[#1e1b4b] uppercase tracking-tighter">Sample Academic Output</h3>
                <div className="relative rounded-[32px] overflow-hidden border-2 border-slate-100 bg-slate-50 p-6">
                   <div className="bg-white rounded-2xl overflow-hidden shadow-sm">

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FileText, Download, Printer, Save, ArrowLeft, Building, CreditCard, CheckCircle2, Cpu, Code2 } from 'lucide-react';
+import { FileText, Download, Printer, Save, ArrowLeft, Building, CreditCard, CheckCircle2, Cpu, Code2, Globe, Smartphone, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import resultTemplateImg from '../../assets/branding/result_template.png';
 
@@ -179,6 +179,30 @@ export default function ProposalEditor() {
               </div>
             </section>
 
+            <section className="space-y-6">
+              <h3 className="text-xl font-black text-[#1e1b4b] uppercase tracking-tighter flex items-center gap-2">
+                <Globe className="w-6 h-6 text-indigo-600" /> Digital Identity & Mobile Access
+              </h3>
+              <div className="grid grid-cols-2 gap-8">
+                 <div className="p-6 bg-slate-50 rounded-[24px] border border-slate-100 space-y-2">
+                    <p className="font-black text-indigo-900 text-[10px] uppercase tracking-widest flex items-center gap-2">
+                      <Zap className="w-3 h-3" /> Bespoke School Website
+                    </p>
+                    <p className="text-[11px] text-slate-600 font-medium leading-relaxed">
+                      A premium, SEO-optimized web presence for the institution, featuring online admission funnels and a dynamic news/gallery engine.
+                    </p>
+                 </div>
+                 <div className="p-6 bg-slate-50 rounded-[24px] border border-slate-100 space-y-2">
+                    <p className="font-black text-indigo-900 text-[10px] uppercase tracking-widest flex items-center gap-2">
+                      <Smartphone className="w-3 h-3" /> The Parent Mobile App
+                    </p>
+                    <p className="text-[11px] text-slate-600 font-medium leading-relaxed">
+                      Instant PWA mobile access for parents to track attendance, pay fees, and monitor student performance in real-time.
+                    </p>
+                 </div>
+              </div>
+            </section>
+
             {data.packageTier === 'premium' && (
               <section className="space-y-6 bg-indigo-50/30 p-8 rounded-[40px] border border-indigo-100">
                 <h3 className="text-xl font-black text-indigo-900 uppercase tracking-tighter flex items-center gap-2">
@@ -197,7 +221,7 @@ export default function ProposalEditor() {
               </section>
             )}
 
-            <section className="space-y-8">
+            <section className="space-y-8 page-break pt-12">
               <h3 className="text-xl font-black text-[#1e1b4b] uppercase tracking-tighter border-b-2 border-slate-100 pb-2">Platform Ecosystem Breakdown</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {[
@@ -238,7 +262,7 @@ export default function ProposalEditor() {
                               {data.packageTier === 'premium' ? 'Premium Robotics & Coding Bundle' : 'Standard ERP Usage Fee'}
                             </p>
                             <p className="text-[10px] font-bold text-slate-400">
-                              {data.packageTier === 'premium' ? 'Includes Full ERP + Weekly Robotics Sessions' : 'Processing fee per student per term'}
+                              {data.packageTier === 'premium' ? 'Includes Full ERP + School Website + Parent App' : 'Processing fee per student per term'}
                             </p>
                          </td>
                          <td className="p-5 text-right font-black text-slate-900">₦{currentFee}</td>

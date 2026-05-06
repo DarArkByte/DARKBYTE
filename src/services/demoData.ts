@@ -5,6 +5,37 @@ import {
 
 export const DEMO_SCHOOLS: School[] = [
   {
+    id: 'dar-ark-elite',
+    name: 'Dar-Ark Elite Academy',
+    isActive: true,
+    domain: 'elite-academy',
+    branding: {
+      primaryColor: '#1e1b4b',
+      secondaryColor: '#d946ef',
+      landingPageTheme: 'theme-5',
+      identity: {
+        motto: 'Excellence in Every Byte',
+        phone: '+234 812 345 6789',
+        email: 'info@dararkelite.edu.ng',
+        address: '12 Digital Command Way, Lagos',
+        website: 'www.dararkelite.edu.ng',
+        socials: { facebook: '#', instagram: '#', twitter: '#' }
+      }
+    },
+    settings: {
+      usePositions: true,
+      showAverage: true,
+      reportCardTheme: 'elite',
+      gradingSystem: [
+        { label: 'A', min: 75, max: 100, remark: 'Distinction' },
+        { label: 'B', min: 65, max: 74, remark: 'Very Good' },
+        { label: 'C', min: 50, max: 64, remark: 'Credit' }
+      ],
+      caWeight: 40,
+      examWeight: 60
+    }
+  },
+  {
     id: 'excel-royal',
     name: 'Excel Royal Academy',
     isActive: true,
@@ -16,14 +47,17 @@ export const DEMO_SCHOOLS: School[] = [
     },
     settings: {
       usePositions: true,
-      reportCardTheme: 'nigerian-standard',
-      gradingScale: []
+      showAverage: true,
+      reportCardTheme: 'modern',
+      gradingSystem: [],
+      caWeight: 30,
+      examWeight: 70
     }
   },
   {
     id: 'springfield',
     name: 'Springfield High School',
-    isActive: false,
+    isActive: true,
     domain: 'springfield',
     branding: {
       primaryColor: '#059669',
@@ -32,8 +66,11 @@ export const DEMO_SCHOOLS: School[] = [
     },
     settings: {
       usePositions: false,
-      reportCardTheme: 'international-modern',
-      gradingScale: []
+      showAverage: true,
+      reportCardTheme: 'dynamic',
+      gradingSystem: [],
+      caWeight: 40,
+      examWeight: 60
     }
   }
 ];
@@ -73,7 +110,21 @@ export const DEMO_STAFF: StaffSalary[] = [
   { id: 'sal-02', staffId: 'teacher-02', baseSalary: 150000, allowances: 10000, deductions: 0, netPay: 160000, status: 'pending' }
 ];
 
-export const DEMO_VISITORS: VisitorRecord[] = [
-  { id: 'v-01', name: 'Mr. Jude Anyanwu', purpose: 'Parent-Teacher Meeting', timeIn: '08:30 AM', hostId: 'principal' },
-  { id: 'v-02', name: 'Mrs. Funke Akindele', purpose: 'Uniform Purchase', timeIn: '10:15 AM', hostId: 'store-keeper' }
+];
+
+export const DEMO_ADMISSIONS = [
+  { id: 'adm-001', studentName: 'Chidi Okoro', targetClass: 'JSS 1', parentPhone: '08123456789', status: 'exam-scheduled', examDate: new Date().toISOString().split('T')[0], examStatus: 'pending' },
+  { id: 'adm-002', studentName: 'Fatima Yusuf', targetClass: 'SSS 1', parentPhone: '09087654321', status: 'accepted', examScore: 88, examStatus: 'completed' },
+  { id: 'adm-003', studentName: 'Tunde Bakare', targetClass: 'JSS 2', parentPhone: '07011223344', status: 'pending', examStatus: 'pending' }
+];
+
+export const DEMO_LIBRARY = [
+  { id: 'lib-001', title: 'New General Mathematics', author: 'Macrae et al.', category: 'Textbook', status: 'available', location: 'Shelf A1' },
+  { id: 'lib-002', title: 'Purple Hibiscus', author: 'Chimamanda Adichie', category: 'Literature', status: 'borrowed', dueDate: '2026-05-20' },
+  { id: 'lib-003', title: 'Introduction to Computing', author: 'Dar-Ark Press', category: 'ICT', status: 'available', location: 'Shelf C4' }
+];
+
+export const DEMO_BUS_FLEET = [
+  { id: 'bus-01', plateNumber: 'LAG-123-EB', driverName: 'Uncle Sam', status: 'en-route', currentStop: 'Victoria Island', studentCount: 15 },
+  { id: 'bus-02', plateNumber: 'ABJ-456-XY', driverName: 'Malam Ibrahim', status: 'idle', currentStop: 'School Base', studentCount: 0 }
 ];

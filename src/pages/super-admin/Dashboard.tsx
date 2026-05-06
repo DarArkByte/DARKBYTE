@@ -21,7 +21,9 @@ import {
   Database,
   TrendingUp,
   Hash,
-  Ticket
+  Ticket,
+  Sparkles as SparklesIcon,
+  Database as DatabaseIcon
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { db } from '../../lib/firebase';
@@ -43,6 +45,77 @@ interface TenantSchool {
 
 export default function SuperAdminDashboard() {
   const [activeTab, setActiveTab] = useState<'schools' | 'users' | 'media' | 'pins' | 'results'>('schools');
+  const [isSeeding, setIsSeeding] = useState(false);
+
+  const handleSeedPitch = async () => {
+    setIsSeeding(true);
+    try {
+      const batch = writeBatch(db);
+      const schoolId = 'dar-ark-elite';
+      
+      const schoolRef = doc(db, 'schools', schoolId);
+      batch.set(schoolRef, {
+        id: schoolId,
+        name: 'Dar-Ark Elite Academy',
+        isActive: true,
+        domain: 'elite-academy',
+        studentsCount: 150,
+        branding: {
+          primaryColor: '#1e1b4b',
+          secondaryColor: '#d946ef',
+          landingPageTheme: 'theme-5',
+          identity: {
+            motto: 'Excellence in Every Byte',
+            phone: '+234 812 345 6789',
+            email: 'info@dararkelite.edu.ng',
+            address: '12 Digital Command Way, Lagos'
+          }
+        },
+        settings: {
+          usePositions: true,
+          showAverage: true,
+          reportCardTheme: 'elite',
+          caWeight: 40,
+          examWeight: 60
+        },
+        createdAt: new Date().toISOString()
+      });
+
+      const resultsRef = collection(db, 'results');
+      for (let i = 0; i < 5; i++) {
+        const resRef = doc(resultsRef);
+        batch.set(resRef, {
+          schoolId,
+          studentName: `Demo Student ${i+1}`,
+          classId: 'JSS 1',
+          termId: '1st Term',
+          sessionId: '2023/2024',
+          total: 80 + i,
+          status: 'ready',
+          createdAt: new Date().toISOString()
+        });
+      }
+
+      const admissionsRef = collection(db, 'admissions');
+      const apps = [
+        { studentName: 'Chidi Okoro', targetClass: 'JSS 1', status: 'exam-scheduled', examDate: new Date().toISOString().split('T')[0], examStatus: 'pending' },
+        { studentName: 'Fatima Yusuf', targetClass: 'SSS 1', status: 'accepted', examScore: 88, examStatus: 'completed' }
+      ];
+      apps.forEach(app => {
+        const appRef = doc(admissionsRef);
+        batch.set(appRef, { ...app, schoolId, parentPhone: '08123456789', createdAt: new Date().toISOString() });
+      });
+
+      await batch.commit();
+      setSuccess("DAR-ARK ELITE ACADEMY SEEDED! Pitch mode active.");
+      setTimeout(() => setSuccess(null), 5000);
+    } catch (err) {
+      console.error(err);
+      alert('Seeding failed');
+    } finally {
+      setIsSeeding(false);
+    }
+  };
   const [search, setSearch] = useState('');
   const { resetPassword } = useAuth();
   const [tenants, setTenants] = useState<TenantSchool[]>([]);
@@ -283,6 +356,14 @@ export default function SuperAdminDashboard() {
               <ShieldCheck className="w-4 h-4 text-[#d946ef]" />
               <span className="text-[10px] font-black uppercase tracking-widest">Global Master Security Active</span>
             </div>
+            <button 
+              onClick={handleSeedPitch}
+              disabled={isSeeding}
+              className="inline-flex items-center gap-2 bg-indigo-500/20 hover:bg-indigo-500/40 px-4 py-2 rounded-full mb-6 border border-white/10 transition-all group"
+            >
+              <SparklesIcon className={`w-4 h-4 text-amber-400 ${isSeeding ? 'animate-spin' : 'group-hover:rotate-12'}`} />
+              <span className="text-[10px] font-black uppercase tracking-widest text-white">Activate Pitch Mode</span>
+            </button>
             <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-6 leading-[0.9]">
               DAR-ARK BYTE <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d946ef] to-indigo-400 italic">COMMAND CENTER.</span>

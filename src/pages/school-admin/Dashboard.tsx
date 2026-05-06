@@ -3,7 +3,7 @@ import { doc, updateDoc, collection, query, where, onSnapshot } from 'firebase/f
 import { db } from '../../lib/firebase';
 import { useSchool } from '../../hooks/useSchool';
 import { ReportCardTheme } from '../../types';
-import { Palette, Check, Layout, Sparkles, Trophy, Hash, Ticket, Loader2, UserPlus, Users, ArrowUpRight, CheckCircle2, XCircle, Calendar } from 'lucide-react';
+import { Palette, Check, Layout, Sparkles, Trophy, Hash, Ticket, Loader2, UserPlus, Users, ArrowUpRight, CheckCircle2, XCircle, Calendar, Database as DatabaseIcon } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export default function SchoolAdminDashboard() {
@@ -120,6 +120,11 @@ export default function SchoolAdminDashboard() {
            <div className="bg-indigo-50 text-indigo-600 px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest border border-indigo-100 flex items-center gap-2">
               <Sparkles className="w-4 h-4" /> Premium Tier Active
            </div>
+           {school?.id === 'dar-ark-elite' && (
+             <div className="bg-amber-100 text-amber-700 px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest border border-amber-200 flex items-center gap-2 animate-pulse">
+               <DatabaseIcon className="w-4 h-4" /> Demo Environment
+             </div>
+           )}
         </div>
       </header>
 

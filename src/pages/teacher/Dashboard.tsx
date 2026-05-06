@@ -61,6 +61,39 @@ export default function TeacherDashboard() {
         <StatsCard title="Students Pending Results" value={12} icon={<ChevronRight />} color="bg-amber-600" />
       </div>
 
+      {/* QUICK ACTIONS */}
+      <div className="grid md:grid-cols-2 gap-6">
+         <Link to="/teacher/lesson-notes" className="bg-[#1e1b4b] text-white p-8 rounded-[32px] flex items-center justify-between group hover:scale-[1.02] transition-all shadow-xl shadow-indigo-500/20">
+            <div className="flex items-center gap-6">
+               <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-white backdrop-blur-md">
+                  <BookOpen className="w-8 h-8" />
+               </div>
+               <div>
+                  <h3 className="text-xl font-black uppercase tracking-tight">Lesson Notes</h3>
+                  <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">Upload & Share Content</p>
+               </div>
+            </div>
+            <div className="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center group-hover:bg-[#d946ef] transition-all">
+               <ChevronRight className="w-6 h-6" />
+            </div>
+         </Link>
+         
+         <Link to="/teacher/assignments" className="bg-white border border-slate-100 p-8 rounded-[32px] flex items-center justify-between group hover:scale-[1.02] transition-all shadow-sm">
+            <div className="flex items-center gap-6">
+               <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600">
+                  <ClipboardList className="w-8 h-8" />
+               </div>
+               <div>
+                  <h3 className="text-xl font-black uppercase tracking-tight text-slate-900">Assignment Command</h3>
+                  <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">Set Tasks & Track Progress</p>
+               </div>
+            </div>
+            <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-all">
+               <ChevronRight className="w-6 h-6" />
+            </div>
+         </Link>
+      </div>
+
       <div className="grid xl:grid-cols-2 gap-8">
         {/* Classes List */}
         <section className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">

@@ -46,6 +46,8 @@ const EntranceExam = React.lazy(() => import('./pages/portal/EntranceExam'));
 const BrandingSettings = React.lazy(() => import('./pages/settings/BrandingSettings'));
 const ObservationalEntryPage = React.lazy(() => import('./pages/results/ObservationalEntryPage'));
 const ResultAnalysisPage = React.lazy(() => import('./pages/results/ResultAnalysisPage'));
+const LessonNotes = React.lazy(() => import('./pages/teacher/LessonNotes'));
+const Assignments = React.lazy(() => import('./pages/teacher/Assignments'));
 
 
 // STABLE DASHBOARD SWITCHER
@@ -140,6 +142,10 @@ function AppContent() {
             <Route path="/library/digital" element={<DigitalLibrary />} />
             <Route path="/communication/newsletter" element={<NewsletterCenter />} />
             <Route path="/settings/branding" element={<BrandingSettings />} />
+            
+            {/* TEACHER PRODUCTIVITY ROUTES */}
+            <Route path="/teacher/lesson-notes" element={<LessonNotes />} />
+            <Route path="/teacher/assignments" element={<Assignments />} />
           </Route>
           
           <Route path="*" element={<Navigate to="/" replace />} />

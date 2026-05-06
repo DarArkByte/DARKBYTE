@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom';
 
 export default function ProposalEditor() {
   const [data, setData] = useState({
-    schoolName: '[Client School Name]',
-    contactPerson: '[Principal Name]',
+    schoolName: '',
+    contactPerson: '',
     date: new Date().toLocaleDateString(),
     setupFee: '0',
     annualLicense: '0',
@@ -127,8 +127,12 @@ export default function ProposalEditor() {
             <section className="space-y-6">
               <div className="space-y-2">
                 <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Prepared For:</p>
-                <h3 className="text-3xl font-black text-slate-900">{data.schoolName}</h3>
-                <p className="text-slate-600 font-bold">Attn: {data.contactPerson}</p>
+                <h3 className="text-3xl font-black text-slate-900">
+                  {data.schoolName || '_____________________________________'}
+                </h3>
+                <p className="text-slate-600 font-bold">
+                  Attn: {data.contactPerson || '_______________________'}
+                </p>
               </div>
               
               <div className="bg-slate-50 p-8 rounded-[32px] space-y-4">

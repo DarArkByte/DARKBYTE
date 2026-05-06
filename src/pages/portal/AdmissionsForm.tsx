@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../../lib/firebase';
 import { collection, addDoc } from 'firebase/firestore';
 import { useSchool } from '../../hooks/useSchool';
-import { Building2, User, Phone, Mail, GraduationCap, ArrowRight, CheckCircle2, Loader2, BookOpen } from 'lucide-react';
+import { Building2, User, Phone, Mail, GraduationCap, ArrowRight, CheckCircle2, Loader2, BookOpen, Printer, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function AdmissionsForm() {
@@ -87,9 +87,29 @@ export default function AdmissionsForm() {
     );
   }
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
-    <div className="min-h-screen bg-[#1e1b4b] flex items-center justify-center p-6 font-sans">
-      <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
+    <div className="min-h-screen bg-[#1e1b4b] flex items-center justify-center p-6 font-sans print:bg-white print:p-0 print:block">
+      <style>
+        {`
+          @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; }
+            .bg-indigo-600 { background: transparent !important; color: black !important; }
+            .bg-white { box-shadow: none !important; border: 1px solid #eee !important; border-radius: 0 !important; }
+            input, select { background: white !important; border: 1px solid #ccc !important; border-radius: 8px !important; }
+            button { display: none !important; }
+            .shadow-2xl { box-shadow: none !important; }
+            .rounded-\\[56px\\] { border-radius: 0 !important; }
+            .md\\:w-1\\/3 { display: none !important; }
+            header { border-bottom: 2px solid black; padding-bottom: 20px; }
+          }
+        `}
+      </style>
+      <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden print:hidden">
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-indigo-500/30 rounded-full blur-[120px] -mr-40 -mt-40" />
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-indigo-500/20 rounded-full blur-[120px] -ml-40 -mb-40" />
       </div>
@@ -225,7 +245,15 @@ export default function AdmissionsForm() {
               </div>
             </div>
 
-            <div className="pt-8 flex justify-end">
+            <div className="pt-8 flex justify-between items-center">
+              <button 
+                type="button"
+                onClick={handlePrint}
+                className="flex items-center gap-3 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-slate-900 transition-all border-b-2 border-transparent hover:border-slate-900 pb-1"
+              >
+                <Printer className="w-4 h-4" /> Print Physical Form
+              </button>
+              
               <button 
                 type="submit"
                 disabled={loading}

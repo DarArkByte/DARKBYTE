@@ -74,8 +74,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     });
 
-    // Safety timeout: Ensure app never hangs on loading screen
-    const safetyTimer = setTimeout(() => setLoading(false), 5000);
+    // Speed-optimized safety timeout
+    const safetyTimer = setTimeout(() => setLoading(false), 1200);
 
     return () => {
       unsubscribe();

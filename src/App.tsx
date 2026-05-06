@@ -23,28 +23,26 @@ import ResultView from './pages/results/ResultView';
 import { SchoolProvider } from './hooks/useSchool';
 import { Loader2 } from 'lucide-react';
 
-// MODULE IMPORTS
-import TimetablesPage from './pages/timetables/TimetablesPage';
-import StaffManagement from './pages/staff/StaffManagement';
-import FeeManager from './pages/finance/FeeManager';
-import StorePage from './pages/inventory/StorePage';
-import SecurityTransportHub from './pages/gate_system/SecurityTransportHub';
-import MessagesPage from './pages/communication/MessagesPage';
-import QuestionBankPage from './pages/cbt/QuestionBankPage';
-import OnlineExamPage from './pages/cbt/OnlineExamPage';
-import SubjectAllocationPage from './pages/academics/SubjectAllocationPage';
-import AcademicSettingsPage from './pages/settings/AcademicSettingsPage';
-import PromotionPage from './pages/academics/PromotionPage';
-import TranscriptPage from './pages/students/TranscriptPage';
-import ExamSchedulePage from './pages/exams/ExamSchedulePage';
-import CommentsEntryPage from './pages/results/CommentsEntryPage';
-import AttendancePage from './pages/academics/AttendancePage';
-import DigitalLibrary from './pages/library/DigitalLibrary';
-import NewsletterCenter from './pages/communication/NewsletterCenter';
-import AdmissionsForm from './pages/portal/AdmissionsForm';
-import EntranceExam from './pages/portal/EntranceExam';
-
-// LAZY LOADED MODULES (To prevent esbuild transform errors)
+// LAZY LOADED MODULES
+const TimetablesPage = React.lazy(() => import('./pages/timetables/TimetablesPage'));
+const StaffManagement = React.lazy(() => import('./pages/staff/StaffManagement'));
+const FeeManager = React.lazy(() => import('./pages/finance/FeeManager'));
+const StorePage = React.lazy(() => import('./pages/inventory/StorePage'));
+const SecurityTransportHub = React.lazy(() => import('./pages/gate_system/SecurityTransportHub'));
+const MessagesPage = React.lazy(() => import('./pages/communication/MessagesPage'));
+const QuestionBankPage = React.lazy(() => import('./pages/cbt/QuestionBankPage'));
+const OnlineExamPage = React.lazy(() => import('./pages/cbt/OnlineExamPage'));
+const SubjectAllocationPage = React.lazy(() => import('./pages/academics/SubjectAllocationPage'));
+const AcademicSettingsPage = React.lazy(() => import('./pages/settings/AcademicSettingsPage'));
+const PromotionPage = React.lazy(() => import('./pages/academics/PromotionPage'));
+const TranscriptPage = React.lazy(() => import('./pages/students/TranscriptPage'));
+const ExamSchedulePage = React.lazy(() => import('./pages/exams/ExamSchedulePage'));
+const CommentsEntryPage = React.lazy(() => import('./pages/results/CommentsEntryPage'));
+const AttendancePage = React.lazy(() => import('./pages/academics/AttendancePage'));
+const DigitalLibrary = React.lazy(() => import('./pages/library/DigitalLibrary'));
+const NewsletterCenter = React.lazy(() => import('./pages/communication/NewsletterCenter'));
+const AdmissionsForm = React.lazy(() => import('./pages/portal/AdmissionsForm'));
+const EntranceExam = React.lazy(() => import('./pages/portal/EntranceExam'));
 const BrandingSettings = React.lazy(() => import('./pages/settings/BrandingSettings'));
 const ObservationalEntryPage = React.lazy(() => import('./pages/results/ObservationalEntryPage'));
 const ResultAnalysisPage = React.lazy(() => import('./pages/results/ResultAnalysisPage'));
@@ -88,7 +86,7 @@ function AppContent() {
   React.useEffect(() => {
     const timer = setTimeout(() => {
       if (authLoading) setSafetyTimeout(true);
-    }, 5000);
+    }, 1500); // Drastically reduced from 5000ms
     return () => clearTimeout(timer);
   }, [authLoading]);
 

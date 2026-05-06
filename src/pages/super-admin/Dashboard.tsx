@@ -282,6 +282,9 @@ export default function SuperAdminDashboard() {
     }
   };
 
+  const totalStudents = tenants.reduce((acc, t) => acc + (t.studentsCount || 0), 0);
+  const projectedRevenue = totalStudents * 1200;
+
   const handleOnboard = async () => {
     if (!newSchool.name || !newSchool.domain) return;
     try {
@@ -574,9 +577,9 @@ export default function SuperAdminDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {[
           { label: 'Total Nodes', value: tenants.length, icon: Building2, color: 'bg-indigo-600' },
-          { label: 'Admin Fleet', value: admins.length, icon: ShieldCheck, color: 'bg-[#d946ef]' },
-          { label: 'Total PINs', value: pins.length, icon: Hash, color: 'bg-indigo-400' },
-          { label: 'System Health', value: 'Stable', icon: Zap, color: 'bg-[#facc15]' },
+          { label: 'Global Students', value: totalStudents, icon: Users, color: 'bg-emerald-600' },
+          { label: 'Term Revenue (₦)', value: `₦${projectedRevenue.toLocaleString()}`, icon: Wallet, color: 'bg-[#d946ef]' },
+          { label: 'Pricing Model', value: '₦1,200/Stud', icon: Zap, color: 'bg-[#facc15]' },
         ].map((stat, i) => (
           <div key={i} className="bg-white p-10 rounded-[48px] shadow-sm border border-slate-100 relative overflow-hidden group">
             <div className={`absolute top-0 left-0 w-2 h-full ${stat.color}`} />

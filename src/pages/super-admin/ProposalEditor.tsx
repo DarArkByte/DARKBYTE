@@ -7,9 +7,9 @@ export default function ProposalEditor() {
     schoolName: '[Client School Name]',
     contactPerson: '[Principal Name]',
     date: new Date().toLocaleDateString(),
-    setupFee: '250,000',
-    annualLicense: '150,000',
-    perStudentFee: '500',
+    setupFee: '0',
+    annualLicense: '0',
+    perStudentFee: '1,200',
   });
 
   const handlePrint = () => {
@@ -120,7 +120,7 @@ export default function ProposalEditor() {
                   <FileText className="w-4 h-4 text-indigo-600" /> Executive Summary
                 </h4>
                 <p className="text-slate-600 text-sm leading-relaxed font-medium">
-                  We are pleased to present Dar-Ark Byte, a comprehensive School ERP and Management System designed to digitize your institution's operational, financial, and academic ecosystem. Our platform ensures real-time oversight, automated revenue collection, and high-fidelity academic tracking.
+                  We are pleased to present Dar-Ark Byte, a next-gen School ERP. To support your growth, we offer a <strong>Zero-Upfront Cost</strong> model. We charge no hosting or setup fees; instead, we partner with you on a performance basis: only ₦{data.perStudentFee} per student per term for full access to our ecosystem.
                 </p>
               </div>
             </section>

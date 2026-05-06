@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FileText, Download, Printer, Save, ArrowLeft, Building, CreditCard, CheckCircle2, Cpu, Code2, Globe, Smartphone, Zap, BookOpen, GraduationCap, Users, ShieldCheck, BarChart3, MessageSquare } from 'lucide-react';
+import { FileText, Download, Printer, Save, ArrowLeft, Building, CreditCard, CheckCircle2, Cpu, Code2, Globe, Smartphone, Zap, BookOpen, GraduationCap, Users, ShieldCheck, BarChart3, MessageSquare, LayoutGrid, Award, HardDrive } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import resultTemplateImg from '../../assets/branding/result_template.png';
 
@@ -30,7 +30,7 @@ export default function ProposalEditor() {
           @media print {
             @page {
               size: A4;
-              margin: 12mm;
+              margin: 10mm;
             }
             
             body { 
@@ -42,10 +42,10 @@ export default function ProposalEditor() {
 
             .print\\:hidden { display: none !important; }
             
-            h2 { font-size: 26pt !important; line-height: 1.1 !important; color: #1e1b4b !important; }
-            h3 { font-size: 16pt !important; color: #1e1b4b !important; margin-top: 15pt !important; border-bottom: 1.5pt solid #1e1b4b; padding-bottom: 3pt; text-transform: uppercase; }
-            h4 { font-size: 11pt !important; color: #1e1b4b !important; font-weight: 900 !important; }
-            p, td, li { font-size: 9pt !important; line-height: 1.4 !important; color: #334155 !important; }
+            h2 { font-size: 24pt !important; line-height: 1.1 !important; color: #1e1b4b !important; }
+            h3 { font-size: 14pt !important; color: #1e1b4b !important; margin-top: 12pt !important; border-bottom: 2pt solid #1e1b4b; padding-bottom: 2pt; text-transform: uppercase; letter-spacing: 0.05em; }
+            h4 { font-size: 10pt !important; color: #1e1b4b !important; font-weight: 900 !important; }
+            p, td, li { font-size: 8.5pt !important; line-height: 1.3 !important; color: #334155 !important; }
             .font-black { font-weight: 900 !important; }
             
             .proposal-watermark {
@@ -53,9 +53,9 @@ export default function ProposalEditor() {
               top: 50%;
               left: 50%;
               transform: translate(-50%, -50%) rotate(-45deg);
-              font-size: 90pt;
+              font-size: 80pt;
               font-weight: 900;
-              color: rgba(30, 27, 75, 0.03);
+              color: rgba(30, 27, 75, 0.02);
               white-space: nowrap;
               z-index: -1;
               text-transform: uppercase;
@@ -63,16 +63,14 @@ export default function ProposalEditor() {
             }
 
             .letterhead-border { border-bottom: 3pt solid #1e1b4b !important; }
-            .bg-slate-50 { background: #f8fafc !important; border: 0.5pt solid #e2e8f0 !important; border-radius: 12pt !important; }
-            .bg-indigo-50\\/30 { background: #f5f3ff !important; border: 0.5pt solid #ddd6fe !important; border-radius: 12pt !important; }
+            .bg-slate-50 { background: #f8fafc !important; border: 0.5pt solid #e2e8f0 !important; }
             
             table { width: 100%; border-collapse: collapse !important; border: 1pt solid #1e1b4b !important; }
-            th { background: #1e1b4b !important; color: white !important; padding: 8pt !important; text-align: left; font-size: 8pt !important; text-transform: uppercase; }
-            td { padding: 8pt !important; border-bottom: 0.5pt solid #e2e8f0 !important; }
+            th { background: #1e1b4b !important; color: white !important; padding: 6pt !important; text-align: left; font-size: 8pt !important; text-transform: uppercase; }
+            td { padding: 6pt !important; border-bottom: 0.5pt solid #e2e8f0 !important; }
             
             .page-break { page-break-before: always; }
-            .card-grid { display: grid; grid-template-cols: 1fr 1fr; gap: 12pt; }
-            .feature-grid { display: grid; grid-template-cols: 1fr 1fr 1fr; gap: 10pt; }
+            .grid-14 { display: grid; grid-template-cols: 1fr 1fr; gap: 8pt; }
           }
           
           .document-preview { background: white; border-radius: 2rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1); }
@@ -86,10 +84,10 @@ export default function ProposalEditor() {
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <div>
-              <h1 className="text-lg font-black text-slate-900 uppercase tracking-tight italic">Nuclear Upgrade v3.0</h1>
-              <div className="flex gap-4">
-                <button onClick={() => setData({...data, packageTier: 'standard'})} className={`text-[10px] font-black uppercase tracking-widest ${data.packageTier === 'standard' ? 'text-indigo-600' : 'text-slate-400'}`}>Standard Hub</button>
-                <button onClick={() => setData({...data, packageTier: 'premium'})} className={`text-[10px] font-black uppercase tracking-widest ${data.packageTier === 'premium' ? 'text-indigo-600' : 'text-slate-400'}`}>Premium OS</button>
+              <h1 className="text-lg font-black text-slate-900 uppercase tracking-tight italic">MASTER OS PROPOSAL v4.0</h1>
+              <div className="flex gap-4 text-[10px] font-black uppercase">
+                <button onClick={() => setData({...data, packageTier: 'standard'})} className={data.packageTier === 'standard' ? 'text-indigo-600' : 'text-slate-400'}>Standard</button>
+                <button onClick={() => setData({...data, packageTier: 'premium'})} className={data.packageTier === 'premium' ? 'text-indigo-600' : 'text-slate-400'}>Premium</button>
               </div>
             </div>
           </div>
@@ -97,13 +95,13 @@ export default function ProposalEditor() {
           <div className="flex items-center gap-6">
              <input 
                type="text" 
-               placeholder="School Name"
+               placeholder="Strategic Partner Name"
                value={data.schoolName}
                onChange={(e) => setData({...data, schoolName: e.target.value})}
-               className="bg-slate-50 border-none rounded-lg p-2 text-xs font-bold w-48 focus:ring-2 focus:ring-indigo-600"
+               className="bg-slate-50 border-none rounded-lg p-2 text-xs font-bold w-64 focus:ring-2 focus:ring-indigo-600"
              />
              <button onClick={handlePrint} className="flex items-center gap-2 bg-[#1e1b4b] text-white px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-lg">
-              <Printer className="w-4 h-4" /> Print HD OS Proposal
+              <Printer className="w-4 h-4" /> Print Final Master Proposal
             </button>
           </div>
         </div>
@@ -115,159 +113,153 @@ export default function ProposalEditor() {
             <div className="proposal-watermark hidden print:block">DAR-ARK BYTE</div>
             
             <div className="relative z-10 space-y-8">
-              {/* LETTERHEAD */}
-              <header className="flex justify-between items-start border-b-[3pt] border-[#1e1b4b] pb-8 letterhead-border">
+              {/* PAGE 1: EXECUTIVE PRESENTATION */}
+              <header className="flex justify-between items-start border-b-[3pt] border-[#1e1b4b] pb-6 letterhead-border">
                 <div>
-                  <h2 className="text-5xl font-black text-[#1e1b4b] tracking-tighter uppercase leading-tight">Dar-Ark Byte</h2>
-                  <p className="text-[#d946ef] font-black text-[10px] uppercase tracking-[0.4em]">Integrated School Operating System</p>
-                  <div className="mt-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-relaxed">
-                     Trans Ekulu, Enugu <br />
-                     {data.phone1} | {data.phone2} <br />
-                     {data.email}
+                  <h2 className="text-4xl font-black text-[#1e1b4b] tracking-tighter uppercase leading-tight">Dar-Ark Byte</h2>
+                  <p className="text-[#d946ef] font-black text-[9px] uppercase tracking-[0.4em]">All-in-One School Operating System</p>
+                  <div className="mt-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                     Trans Ekulu, Enugu | {data.phone1} | {data.phone2}
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-black text-slate-900 text-base uppercase tracking-widest border-b-2 border-indigo-600 pb-1 inline-block">Official OS Proposal</p>
+                  <p className="font-black text-slate-900 text-sm uppercase tracking-widest border-b-2 border-indigo-600 pb-1 inline-block">Strategic Transformation Proposal</p>
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">{data.date}</p>
                 </div>
               </header>
 
-              <div className="text-center py-4 bg-slate-50 rounded-2xl border border-slate-100">
-                <h3 className="text-xl font-black text-slate-900 uppercase border-none m-0 p-0 tracking-widest">The All-In-One School Operating System</h3>
-              </div>
-
-              <div className="space-y-1">
-                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Strategic Partner:</p>
-                <h4 className="text-3xl font-black text-slate-900">{data.schoolName || '_____________________________________'}</h4>
-              </div>
-
-              {/* PAGE 1: THE STRATEGY */}
-              <section className="space-y-6">
-                <h3 className="text-lg font-black text-[#1e1b4b]">1. Digital Identity & Learning Portals</h3>
-                <p className="text-slate-600 font-medium text-xs leading-relaxed">
-                  We are not just providing software; we are deploying a **School Operating System (OS)**. 
-                  This transformation unifies your website, learning portals, and management into one high-performance ecosystem.
-                </p>
-                
-                <div className="grid grid-cols-2 gap-6 card-grid">
-                   <div className="p-6 bg-slate-50 rounded-[24px] border border-slate-100 space-y-2">
-                      <h4 className="flex items-center gap-2 uppercase tracking-tighter"><Globe className="w-4 h-4 text-indigo-600" /> School Global Identity</h4>
-                      <p className="text-[10px] text-slate-500 leading-relaxed">Bespoke, SEO-optimized website with integrated Online Admissions and high-fidelity branding.</p>
-                   </div>
-                   <div className="p-6 bg-slate-50 rounded-[24px] border border-slate-100 space-y-2">
-                      <h4 className="flex items-center gap-2 uppercase tracking-tighter"><GraduationCap className="w-4 h-4 text-indigo-600" /> Student Learning Portal</h4>
-                      <p className="text-[10px] text-slate-500 leading-relaxed">Direct dashboards for students to access lesson notes, assignments, and study materials 24/7.</p>
-                   </div>
-                </div>
+              <section className="space-y-4">
+                 <h3 className="text-lg font-black text-[#1e1b4b]">🏛️ Executive Overview</h3>
+                 <p className="text-slate-600 font-medium text-xs leading-relaxed">
+                   This proposal presents a complete digital transformation system designed to modernize school operations, enhance academic delivery, and position your institution as a leader in 21st-century education. 
+                   Our platform is not just a management tool—it is a fully integrated **School Operating System**, combining administration, learning, communication, and financial management into one seamless ecosystem.
+                 </p>
               </section>
 
-              {/* PRODUCTIVITY & CBT */}
-              <section className="space-y-6">
-                <div className="grid grid-cols-2 gap-6 card-grid">
-                   <div className="p-6 border-l-4 border-indigo-600 bg-white shadow-sm space-y-2">
-                      <h4 className="flex items-center gap-2 uppercase tracking-tighter"><BookOpen className="w-4 h-4 text-indigo-600" /> Teacher Productivity Suite</h4>
-                      <ul className="text-[9px] text-slate-500 space-y-1 list-disc pl-4 font-bold">
-                        <li>Lesson Note Upload & Management</li>
-                        <li>Assignment Distribution & Homework Tracking</li>
-                        <li>Auto-Marking Engine for Quizzes</li>
-                      </ul>
-                   </div>
-                   <div className="p-6 border-l-4 border-[#d946ef] bg-white shadow-sm space-y-2">
-                      <h4 className="flex items-center gap-2 uppercase tracking-tighter"><Zap className="w-4 h-4 text-[#d946ef]" /> Advanced CBT Exam Engine</h4>
-                      <ul className="text-[9px] text-slate-500 space-y-1 list-disc pl-4 font-bold">
-                        <li>JAMB/WAEC Style Practice Interface</li>
-                        <li>Online Examinations with Auto-Grading</li>
-                        <li>Instant High-Resolution Results</li>
-                      </ul>
-                   </div>
-                </div>
-              </section>
+              <div className="grid grid-cols-2 gap-8">
+                 <section className="space-y-4">
+                    <h4 className="flex items-center gap-2 uppercase tracking-tighter border-l-4 border-indigo-600 pl-3">🌐 Digital Identity</h4>
+                    <ul className="text-[9px] text-slate-500 space-y-1 list-disc pl-4 font-bold uppercase tracking-tight">
+                       <li>Bespoke SEO-Optimized Website</li>
+                       <li>Online Admissions & Enrollment</li>
+                       <li>Professional Brand Showcasing</li>
+                    </ul>
+                 </section>
+                 <section className="space-y-4">
+                    <h4 className="flex items-center gap-2 uppercase tracking-tighter border-l-4 border-[#d946ef] pl-3">📱 Mobile Ecosystem</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                       <div>
+                          <p className="font-black text-slate-900 text-[8px] uppercase">For Parents:</p>
+                          <p className="text-[8px] text-slate-500">Real-time results, attendance monitoring, and instant updates.</p>
+                       </div>
+                       <div>
+                          <p className="font-black text-slate-900 text-[8px] uppercase">For Students:</p>
+                          <p className="text-[8px] text-slate-500">Learning dashboards, assignments, and CBT practice tools.</p>
+                       </div>
+                    </div>
+                 </section>
+              </div>
 
-              {/* PAGE 2: CORE INFRASTRUCTURE */}
+              {data.packageTier === 'premium' && (
+                <section className="bg-[#1e1b4b] p-6 rounded-[24px] text-white">
+                  <h4 className="flex items-center gap-2 text-white uppercase tracking-tighter mb-2 font-black">🎓 Future-Skills & Innovation 🤖💻</h4>
+                  <div className="grid grid-cols-3 gap-4 text-[9px] font-bold uppercase tracking-widest">
+                     <p className="text-slate-300 border-l border-white/20 pl-3">Coding Mastery (Python/Web)</p>
+                     <p className="text-slate-300 border-l border-white/20 pl-3">Robotics & Automation</p>
+                     <p className="text-slate-300 border-l border-white/20 pl-3">Artificial Intelligence Logic</p>
+                  </div>
+                </section>
+              )}
+
+              {/* PAGE 2: THE 14 CORE SYSTEMS */}
               <section className="space-y-6 page-break pt-12">
-                <h3 className="text-lg font-black text-[#1e1b4b]">2. The Unbeatable System Ecosystem</h3>
-                <div className="grid grid-cols-3 gap-6 feature-grid">
+                <h3 className="text-lg font-black text-[#1e1b4b]">📊 Operational Infrastructure: The 14 Core Systems</h3>
+                <div className="grid-14">
                   {[
-                    { icon: <BarChart3 className="w-4 h-4"/>, title: 'Owner Analytics', desc: 'Revenue tracking, attendance trends, and conversion data for school owners.' },
-                    { icon: <MessageSquare className="w-4 h-4"/>, title: 'Communication Hub', desc: 'SMS + In-app messaging and teacher-parent controlled chat.' },
-                    { icon: <ShieldCheck className="w-4 h-4"/>, title: 'Role-Based Security', desc: 'Granular permissions for Admins, Teachers, Parents, and Students.' },
-                    { icon: <Building className="w-4 h-4"/>, title: 'Multi-Branch Command', desc: 'Manage multiple campuses and branches from a single unified hub.' },
-                    { icon: <CreditCard className="w-4 h-4"/>, title: 'Smart Finance', desc: 'Cashless e-wallets and automated term-end fee invoicing.' },
-                    { icon: <FileText className="w-4 h-4"/>, title: 'Document Lab', desc: 'Auto-generation of Transcripts, ID Cards, and Graduation Certificates.' },
+                    { id: '1', title: 'Academic Intelligence', desc: 'Auto computation, grading, analytics, and CA tracking.' },
+                    { id: '2', title: 'CBT & Exam System', desc: 'Auto-marking platform with WAEC/JAMB practice interface.' },
+                    { id: '3', title: 'Teacher Productivity', desc: 'Lesson note management and assignment distribution tools.' },
+                    { id: '4', title: 'Student Learning Portal', desc: 'Dedicated dashboards for study materials and exam prep.' },
+                    { id: '5', title: 'Smart Finance & Wallet', desc: 'Cashless payments, digital wallets, and revenue monitoring.' },
+                    { id: '6', title: 'Security & Attendance', desc: 'Digital tracking for staff/students with automated SMS alerts.' },
+                    { id: '7', title: 'Admin Command Center', desc: 'Payroll, leave management, and staff evaluation tools.' },
+                    { id: '8', title: 'Admission Gateway', desc: 'Online application funnel and enrollment analytics.' },
+                    { id: '9', title: 'Communication Hub', desc: 'SMS, in-app messaging, and emergency broadcast systems.' },
+                    { id: '10', title: 'Analytics Dashboard', desc: 'Student performance trends and revenue insights.' },
+                    { id: '11', title: 'Document Generator', desc: 'Auto-generation of Transcripts, ID Cards, and Certificates.' },
+                    { id: '12', title: 'Branch Management', desc: 'Centralized control for multiple campuses and branches.' },
+                    { id: '13', title: 'Security & Access Control', desc: 'Granular role-based permissions and secure data backup.' },
+                    { id: '14', title: 'Branding & Customization', desc: 'Full logo integration and custom domain white-labeling.' },
                   ].map((item, i) => (
-                    <div key={i} className="p-4 bg-slate-50/50 rounded-2xl border border-slate-100 space-y-2">
-                      <div className="text-indigo-600">{item.icon}</div>
-                      <p className="font-black text-slate-900 text-[10px] uppercase tracking-tight">{item.title}</p>
-                      <p className="text-[9px] text-slate-500 leading-relaxed font-medium">{item.desc}</p>
+                    <div key={i} className="p-3 bg-slate-50/50 border border-slate-100 rounded-xl flex gap-3">
+                      <span className="font-black text-indigo-600 text-[10px] shrink-0">{item.id}.</span>
+                      <div>
+                        <p className="font-black text-slate-900 text-[9px] uppercase tracking-tight">{item.title}</p>
+                        <p className="text-[8px] text-slate-500 font-medium leading-tight">{item.desc}</p>
+                      </div>
                     </div>
                   ))}
                 </div>
               </section>
 
-              {/* FUTURE SKILLS (IF PREMIUM) */}
-              {data.packageTier === 'premium' && (
-                <section className="space-y-4 bg-[#1e1b4b] p-8 rounded-[32px] text-white">
-                  <h3 className="text-lg font-black text-white uppercase tracking-tighter border-white/20 m-0 pb-2">Future-Skills OS Integration 🤖💻</h3>
-                  <div className="grid grid-cols-2 gap-8 card-grid">
-                    <div className="space-y-2">
-                      <p className="font-black text-[#d946ef] text-[10px] uppercase tracking-widest">Coding Mastery</p>
-                      <p className="text-[10px] text-slate-300 leading-relaxed">Full-stack software development tracks integrated into the school timetable.</p>
-                    </div>
-                    <div className="space-y-2">
-                      <p className="font-black text-[#d946ef] text-[10px] uppercase tracking-widest">Robotics & AI</p>
-                      <p className="text-[10px] text-slate-300 leading-relaxed">Hardware engineering and AI logic fundamentals using international kits.</p>
-                    </div>
-                  </div>
-                </section>
-              )}
-
               {/* FINANCIALS */}
-              <section className="space-y-4 page-break pt-12">
-                 <h3 className="text-lg font-black text-[#1e1b4b]">Investment & Licensing</h3>
-                 <div className="overflow-hidden rounded-[24px] border border-slate-200">
+              <section className="space-y-4">
+                 <h3 className="text-lg font-black text-[#1e1b4b]">💰 Financial Investment</h3>
+                 <div className="overflow-hidden rounded-[20px] border border-slate-200">
                     <table className="w-full text-left">
                       <thead className="bg-[#1e1b4b] text-white">
                         <tr>
-                          <th className="p-5">OS Package Description</th>
-                          <th className="p-5 text-right">Investment (₦)</th>
+                          <th className="p-4">Package Configuration</th>
+                          <th className="p-4 text-right">Investment (₦)</th>
                         </tr>
                       </thead>
                       <tbody className="bg-white font-bold">
                          <tr className="border-b border-slate-100">
-                           <td className="p-6">
-                              <p className="font-black text-slate-900 text-sm">{data.packageTier === 'premium' ? 'Premium Learning & Robotics OS' : 'Standard School Operating System'}</p>
-                              <p className="text-[9px] text-slate-400 uppercase tracking-widest mt-1">Zero Upfront Cost — Per-Student Usage Fee</p>
+                           <td className="p-5">
+                              <p className="font-black text-slate-900 text-xs">{data.packageTier === 'premium' ? 'Premium Learning & Robotics OS' : 'Standard School Operating System'}</p>
+                              <p className="text-[8px] text-[#16a34a] uppercase tracking-widest mt-1 italic">✅ ZERO UPFRONT COST — Usage Based Licensing</p>
                            </td>
-                           <td className="p-6 text-right font-black text-slate-900 text-base">₦{currentFee}</td>
+                           <td className="p-5 text-right font-black text-slate-900 text-sm">₦{currentFee} per student</td>
                          </tr>
                       </tbody>
                     </table>
                  </div>
               </section>
 
-              {/* PROOF OF EXCELLENCE */}
-              <section className="space-y-6">
-                 <h3 className="text-lg font-black text-[#1e1b4b]">Proof of Output Excellence</h3>
+              {/* PAGE 3: OUTPUT & CONCLUSION */}
+              <section className="space-y-6 page-break pt-12">
+                 <h3 className="text-lg font-black text-[#1e1b4b]">🖼️ Proof of Output Excellence</h3>
                  <div className="relative rounded-[32px] overflow-hidden border-2 border-slate-100 bg-slate-50 p-8 text-center">
-                    <img src={resultTemplateImg} alt="Result Template" className="w-full h-auto rounded-xl shadow-sm border border-slate-200" />
-                    <p className="mt-4 text-[9px] text-slate-400 font-black uppercase tracking-[0.3em]">High-Fidelity Automated Academic Output</p>
+                    <img src={resultTemplateImg} alt="Result Template" className="w-full h-auto rounded-xl shadow-md border border-slate-200 mb-2" />
+                    <p className="text-[9px] text-slate-400 font-black uppercase tracking-[0.3em]">High-Fidelity Automated Academic Output Matrix</p>
                  </div>
               </section>
 
-              {/* CONCLUSION */}
-              <section className="space-y-6 pt-6 border-t border-slate-100">
-                 <p className="text-xs font-medium text-slate-700 leading-relaxed italic border-l-4 border-indigo-600 pl-4">
-                   This system transforms your institution from a physical school into a **Digital Learning Powerhouse**. By adopting the Dar-Ark Byte OS, you position your school as an unbeatable leader in the 21st-century educational landscape.
-                 </p>
-                 <div className="flex justify-between items-end">
-                    <div>
-                      <p className="font-black text-slate-900 uppercase tracking-tighter text-xl">Dar-Ark Byte OS</p>
-                      <p className="text-[10px] font-bold text-[#d946ef] uppercase tracking-widest italic">The Future of School Operations</p>
-                    </div>
-                    <div className="text-right">
-                       <p className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Confidential Corporate Strategy</p>
-                       <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">v3.0 Production Build</p>
-                    </div>
+              {/* STRATEGIC OUTCOME */}
+              <section className="space-y-4 p-8 bg-slate-50 rounded-[32px] border border-slate-100">
+                 <h4 className="text-center text-slate-900 font-black uppercase tracking-widest mb-4 border-b border-slate-200 pb-2">Strategic Business Outcome</h4>
+                 <div className="grid grid-cols-2 gap-6">
+                    {[
+                      'Greater Operational Efficiency',
+                      'Improved Academic Performance Tracking',
+                      'Higher Parent & Student Engagement',
+                      'New Revenue & Growth Opportunities',
+                    ].map((outcome, i) => (
+                      <p key={i} className="flex items-center gap-2 text-[9px] font-black text-indigo-900">
+                        <CheckCircle2 className="w-3 h-3 text-indigo-600" /> {outcome}
+                      </p>
+                    ))}
+                 </div>
+              </section>
+
+              <section className="pt-10 border-t border-slate-100 flex justify-between items-end">
+                 <div>
+                    <h3 className="border-none m-0 p-0 text-xl font-black text-slate-900 tracking-tighter">Dar-Ark Byte OS</h3>
+                    <p className="text-[9px] font-bold text-[#d946ef] uppercase tracking-widest italic">Innovating Education Through Technology</p>
+                 </div>
+                 <div className="text-right space-y-1">
+                    <p className="text-[9px] font-black text-slate-900 uppercase tracking-widest border-t border-slate-100 pt-2">Confidential Corporate Proposal</p>
+                    <p className="text-[8px] text-slate-400 font-bold uppercase tracking-widest leading-none">v4.0 Final OS Build</p>
                  </div>
               </section>
             </div>

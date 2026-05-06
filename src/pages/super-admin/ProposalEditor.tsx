@@ -42,7 +42,7 @@ export default function ProposalEditor() {
             }
             
             /* ABSOLUTE ISOLATION: Remove everything else from the DOM view */
-            body > *:not(#proposal-root), nav, header, aside, .no-print, #topbar, #sidebar { 
+            body > *:not(#proposal-root), nav, header, aside, .no-print, #topbar, #sidebar, [role="banner"] { 
               display: none !important; 
             }
             
@@ -51,7 +51,7 @@ export default function ProposalEditor() {
               position: static !important;
               width: 210mm !important;
               margin: 0 auto !important;
-              padding: 0 !important;
+              padding-top: 0 !important; /* CRITICAL: REMOVE TOP PADDING */
               background: white !important;
             }
 

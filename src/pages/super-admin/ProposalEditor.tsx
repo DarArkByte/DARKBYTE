@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FileText, Download, Printer, Save, ArrowLeft, Building, CreditCard, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import resultTemplateImg from '../../assets/branding/result_template.png';
 
 export default function ProposalEditor() {
   const [data, setData] = useState({
@@ -201,6 +202,18 @@ export default function ProposalEditor() {
                        </tr>
                     </tbody>
                   </table>
+               </div>
+            </section>
+
+            <section className="space-y-6">
+               <h3 className="text-xl font-black text-[#1e1b4b] uppercase tracking-tighter">Sample Academic Output</h3>
+               <div className="relative rounded-[32px] overflow-hidden border-2 border-slate-100 bg-slate-50 p-6">
+                  <div className="bg-white rounded-2xl overflow-hidden shadow-sm">
+                    <img src={resultTemplateImg} alt="Result Template Sample" className="w-full h-auto" />
+                  </div>
+                  <p className="mt-4 text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] text-center">
+                    High-Fidelity Automated Result Matrix
+                  </p>
                </div>
             </section>
 

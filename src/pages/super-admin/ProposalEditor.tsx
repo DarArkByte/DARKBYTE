@@ -119,7 +119,7 @@ export default function ProposalEditor() {
         <div className="document-preview-container print:shadow-none print:max-w-none print:w-full">
           
           {/* PAGE 1: TITLE PAGE */}
-          <div className="page flex flex-col justify-between">
+          <div className="page flex flex-col justify-between" style={{ minHeight: '297mm' }}>
              <div className="space-y-4">
                 <p className="text-indigo-600 font-black text-xs uppercase tracking-[0.6em]">Dar-Ark Byte OS</p>
                 <h2 className="text-6xl font-black text-slate-900 leading-none">Strategic <br /> Transformation <br /> Proposal</h2>

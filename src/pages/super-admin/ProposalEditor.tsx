@@ -28,17 +28,23 @@ export default function ProposalEditor() {
               margin: 0mm;
             }
             
-            /* DISPLAY-ONLY STRATEGY: Kill everything else */
+            /* DYNAMIC BREAK STRATEGY */
             body > *:not(#proposal-root), nav, header, aside, #sidebar, #topbar { 
               display: none !important; 
             }
             
+            body, html {
+              height: auto !important;
+              overflow: visible !important;
+            }
+
             #proposal-root {
               display: block !important;
               width: 210mm !important;
               margin: 0 auto !important;
               padding: 0 !important;
-              background: white !important;
+              height: auto !important;
+              overflow: visible !important;
             }
 
             .page {
@@ -46,12 +52,13 @@ export default function ProposalEditor() {
               height: 297mm !important;
               padding: 25mm 20mm !important;
               margin: 0 !important;
-              page-break-after: always !important;
               display: block !important;
+              page-break-after: always !important;
+              break-after: page !important;
               box-sizing: border-box !important;
               background: white !important;
               position: relative !important;
-              overflow: hidden !important;
+              overflow: visible !important;
             }
 
             /* RE-ESTABLISHING TYPOGRAPHY WEIGHTS */

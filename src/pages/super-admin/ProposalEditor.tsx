@@ -205,7 +205,7 @@ export default function ProposalEditor() {
                                 <Award className="w-4 h-4" /> ✅ Zero Upfront Cost — Usage Based
                               </p>
                            </td>
-                           <td className="p-8 text-right font-black text-slate-900 text-3xl">₦{currentFee}</td>
+                           <td className="p-8 text-right font-black text-slate-900 text-3xl">₦{data.packageTier === 'premium' ? '6,000' : '1,200'}</td>
                          </tr>
                       </tbody>
                     </table>

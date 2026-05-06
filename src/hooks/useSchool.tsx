@@ -14,6 +14,7 @@ interface SchoolContextType {
   loading: boolean;
   refreshSchool: () => Promise<void>;
   updateSchool: (updates: Partial<School>) => Promise<void>;
+  clearImpersonation: () => void;
 }
 
 const SchoolContext = createContext<SchoolContextType | undefined>(undefined);
@@ -56,9 +57,9 @@ export function SchoolProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
-    // Priority 2: Authenticated User's School (with persistence fallback)
-    const storedSchoolId = localStorage.getItem('last_school_id');
-    const schoolId = userProfile?.schoolId || storedSchoolId;
+    // Priority 0: Super Admin Impersonation Bypass
+    const impersonatedId = localStorage.getItem('impersonated_school_id');
+    const schoolId = impersonatedId || userProfile?.schoolId || localStorage.getItem('last_school_id');
 
     if (!schoolId) {
       if (userProfile === null) {
@@ -121,12 +122,17 @@ export function SchoolProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const clearImpersonation = () => {
+    localStorage.removeItem('impersonated_school_id');
+    fetchSchool();
+  };
+
   useEffect(() => {
     fetchSchool();
   }, [fetchSchool]);
 
   return (
-    <SchoolContext.Provider value={{ school, loading, refreshSchool: fetchSchool, updateSchool }}>
+    <SchoolContext.Provider value={{ school, loading, refreshSchool: fetchSchool, updateSchool, clearImpersonation }}>
       {children}
     </SchoolContext.Provider>
   );

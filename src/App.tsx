@@ -71,8 +71,10 @@ function DashboardHome() {
   if (!userProfile) return <Navigate to="/login" replace />;
   
   // DIRECT INJECTION LOGIC
-  if (userProfile.role === 'super-admin') return <SuperAdminDashboard />;
-  if (userProfile.role === 'school-admin') return <SchoolAdminDashboard />;
+  const isImpersonating = !!localStorage.getItem('impersonated_school_id');
+  
+  if (userProfile.role === 'super-admin' && !isImpersonating) return <SuperAdminDashboard />;
+  if (userProfile.role === 'school-admin' || (userProfile.role === 'super-admin' && isImpersonating)) return <SchoolAdminDashboard />;
   if (userProfile.role === 'teacher') return <TeacherDashboard />;
   if (userProfile.role === 'parent') return <ParentDashboard />;
   

@@ -26,6 +26,7 @@ import {
   Database as DatabaseIcon
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
+import { useSchool } from '../../hooks/useSchool';
 import { db } from '../../lib/firebase';
 import { collection, query, getDocs, addDoc, doc, updateDoc, onSnapshot, where, setDoc, deleteDoc, writeBatch } from 'firebase/firestore';
 
@@ -44,6 +45,7 @@ interface TenantSchool {
 }
 
 export default function SuperAdminDashboard() {
+  const { clearImpersonation } = useSchool();
   const [activeTab, setActiveTab] = useState<'schools' | 'users' | 'media' | 'pins' | 'results'>('schools');
   const [isSeeding, setIsSeeding] = useState(false);
 
@@ -646,12 +648,15 @@ export default function SuperAdminDashboard() {
                           </div>
                         </td>
                         <td className="p-10 text-center">
-                          <Link 
-                            to={`/portal/${tenant.domain}/login`}
+                          <button 
+                            onClick={() => {
+                              localStorage.setItem('impersonated_school_id', tenant.id);
+                              window.location.href = '/dashboard';
+                            }}
                             className="bg-slate-100 text-[#1e1b4b] hover:bg-[#d946ef] hover:text-white px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all shadow-sm"
                           >
-                            {tenant.domain}.darark.com
-                          </Link>
+                            {tenant.domain}.darark.com (OPEN)
+                          </button>
                         </td>
                         <td className="p-10 text-center">
                           <span className={`px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest ${tenant.isActive ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'}`}>

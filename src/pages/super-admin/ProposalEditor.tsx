@@ -58,7 +58,7 @@ export default function ProposalEditor() {
             .page {
               width: 210mm !important;
               height: 297mm !important;
-              padding: 30mm 25mm !important;
+              padding: 40mm 30mm !important; /* ULTRA SAFE MARGINS */
               margin: 0 !important;
               display: block !important;
               page-break-after: always !important;
@@ -75,9 +75,9 @@ export default function ProposalEditor() {
             }
 
             /* RE-ESTABLISHING TYPOGRAPHY WEIGHTS */
-            h2 { font-size: 38pt !important; color: #1e1b4b !important; font-weight: 900 !important; line-height: 1.2 !important; }
-            h3 { font-size: 20pt !important; color: #1e1b4b !important; border-bottom: 3pt solid #1e1b4b !important; padding-bottom: 8pt !important; }
-            p, td, li { font-size: 11.5pt !important; color: #334155 !important; }
+            h2 { font-size: 36pt !important; color: #1e1b4b !important; font-weight: 900 !important; line-height: 1.1 !important; }
+            h3 { font-size: 18pt !important; color: #1e1b4b !important; border-bottom: 2pt solid #1e1b4b !important; padding-bottom: 8pt !important; }
+            p, td, li { font-size: 11pt !important; color: #334155 !important; }
             
             .premium-highlight { color: #d946ef !important; font-weight: 900 !important; }
           }

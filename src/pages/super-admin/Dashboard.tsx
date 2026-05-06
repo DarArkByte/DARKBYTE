@@ -49,27 +49,29 @@ export default function SuperAdminDashboard() {
   const [activeTab, setActiveTab] = useState<'schools' | 'users' | 'media' | 'pins' | 'results'>('schools');
   const [isSeeding, setIsSeeding] = useState(false);
 
-  const handleSeedPitch = async () => {
+  const handleSeedPitch = async (id?: string, domain?: string, customName?: string) => {
     setIsSeeding(true);
     try {
       const batch = writeBatch(db);
-      const schoolId = 'elite-academy';
+      const schoolId = id || 'elite-academy';
+      const schoolDomain = domain || 'elite-academy';
+      const schoolName = customName || 'Dar-Ark Elite Academy';
       
       const schoolRef = doc(db, 'schools', schoolId);
       batch.set(schoolRef, {
         id: schoolId,
-        name: 'Dar-Ark Elite Academy',
+        name: schoolName,
         isActive: true,
-        domain: 'elite-academy',
+        domain: schoolDomain,
         studentsCount: 150,
         branding: {
           primaryColor: '#1e1b4b',
           secondaryColor: '#d946ef',
-          landingPageTheme: 'theme-5',
+          landingPageTheme: 'theme-4',
           identity: {
             motto: 'Excellence in Every Byte',
             phone: '+234 812 345 6789',
-            email: 'info@dararkelite.edu.ng',
+            email: `info@${schoolDomain}.edu.ng`,
             address: '12 Digital Command Way, Lagos'
           }
         },
@@ -81,7 +83,7 @@ export default function SuperAdminDashboard() {
           examWeight: 60
         },
         createdAt: new Date().toISOString()
-      });
+      }, { merge: true });
 
       const resultsRef = collection(db, 'results');
       for (let i = 0; i < 5; i++) {
@@ -109,18 +111,18 @@ export default function SuperAdminDashboard() {
       });
 
       // SEED DEMO ADMIN
-      const adminRef = doc(db, 'users', 'demo_admin_elite');
+      const adminRef = doc(db, 'users', `demo_admin_${schoolId}`);
       batch.set(adminRef, {
-        uid: 'demo_admin_elite',
-        email: 'admin@elite.com',
-        displayName: 'Elite Academy Admin',
+        uid: `demo_admin_${schoolId}`,
+        email: `admin@${schoolDomain}.com`,
+        displayName: `${schoolName} Admin`,
         role: 'school-admin',
         schoolId: schoolId,
         metadata: { isDemo: true }
-      });
+      }, { merge: true });
 
       await batch.commit();
-      setSuccess("DAR-ARK ELITE ACADEMY SEEDED! Pitch mode active.");
+      setSuccess(`${schoolName.toUpperCase()} SEEDED! Pitch mode active.`);
       setTimeout(() => setSuccess(null), 5000);
     } catch (err) {
       console.error(err);
@@ -139,6 +141,20 @@ export default function SuperAdminDashboard() {
   const [isAuthorizing, setIsAuthorizing] = useState(false);
   const [isGeneratingPins, setIsGeneratingPins] = useState(false);
   const [isPublishing, setIsPublishing] = useState<string | null>(null);
+
+  const renameSchool = async (schoolId: string, currentName: string) => {
+    const newName = prompt('Enter new name for the school:', currentName);
+    if (!newName || newName === currentName) return;
+    
+    try {
+      await updateDoc(doc(db, 'schools', schoolId), { name: newName });
+      setSuccess(`SCHOOL RENAMED TO ${newName}`);
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (err) {
+      console.error(err);
+      alert('Rename failed');
+    }
+  };
 
   const publishAllResults = async (schoolId: string) => {
     setIsPublishing(schoolId);
@@ -676,6 +692,23 @@ export default function SuperAdminDashboard() {
                         </td>
                         <td className="p-10 text-right">
                           <div className="flex justify-end gap-2">
+                            <button 
+                              onClick={() => renameSchool(tenant.id, tenant.name)}
+                              className="p-4 bg-slate-100 rounded-2xl hover:bg-slate-200 transition-all"
+                              title="Rename School"
+                            >
+                              <FileText className="w-5 h-5 text-indigo-600" />
+                            </button>
+                            <button 
+                              onClick={() => {
+                                // Dynamic seeding for any school
+                                handleSeedPitch(tenant.id, tenant.domain, tenant.name);
+                              }}
+                              className="p-4 bg-emerald-50 rounded-2xl hover:bg-emerald-100 transition-all"
+                              title="Seed Demo Data"
+                            >
+                              <Zap className="w-5 h-5 text-emerald-600" />
+                            </button>
                             <button onClick={() => toggleStatus(tenant.id, tenant.isActive)} className="p-4 bg-slate-100 rounded-2xl hover:bg-slate-200 transition-all">
                               {tenant.isActive ? <PowerOff className="w-5 h-5 text-rose-500" /> : <Power className="w-5 h-5 text-emerald-500" />}
                             </button>

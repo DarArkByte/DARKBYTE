@@ -28,24 +28,17 @@ export default function ProposalEditor() {
               margin: 0mm;
             }
             
-            /* IRONCLAD HIDE: Kill everything except the proposal root */
-            body { 
-              visibility: hidden !important;
-              background: white !important;
+            /* DISPLAY-ONLY STRATEGY: Kill everything else */
+            body > *:not(#proposal-root), nav, header, aside, #sidebar, #topbar { 
+              display: none !important; 
             }
             
-            #proposal-root, #proposal-root * {
-              visibility: visible !important;
-            }
-
             #proposal-root {
-              position: absolute !important;
-              left: 0 !important;
-              top: 0 !important;
-              width: 100% !important;
               display: block !important;
-              margin: 0 !important;
+              width: 210mm !important;
+              margin: 0 auto !important;
               padding: 0 !important;
+              background: white !important;
             }
 
             .page {
@@ -58,6 +51,7 @@ export default function ProposalEditor() {
               box-sizing: border-box !important;
               background: white !important;
               position: relative !important;
+              overflow: hidden !important;
             }
 
             /* RE-ESTABLISHING TYPOGRAPHY WEIGHTS */

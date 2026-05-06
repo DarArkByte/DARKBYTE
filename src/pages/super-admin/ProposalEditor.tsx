@@ -33,6 +33,22 @@ export default function ProposalEditor() {
               margin: 10mm;
             }
             
+            /* NUCLEAR PRINT SHIELD: Hide everything that isn't the proposal */
+            nav, header, aside, .print\\:hidden, [role="navigation"], .sidebar, .topbar { 
+              display: none !important; 
+              width: 0 !important;
+              height: 0 !important;
+              visibility: hidden !important;
+            }
+
+            /* Reset the layout for print */
+            main { 
+              margin: 0 !important; 
+              padding: 0 !important; 
+              display: block !important;
+              width: 100% !important;
+            }
+            
             body { 
               background: white !important; 
               color: #000 !important;

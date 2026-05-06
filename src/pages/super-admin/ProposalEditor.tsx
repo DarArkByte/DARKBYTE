@@ -41,62 +41,45 @@ export default function ProposalEditor() {
               margin: 0mm;
             }
             
-            body {
-              -webkit-print-color-adjust: exact !important;
-              print-color-adjust: exact !important;
-              visibility: hidden !important;
-              background: white !important;
-            }
-
-            body > *:not(#proposal-root), nav, header, aside, .no-print { 
+            /* ABSOLUTE ISOLATION: Remove everything else from the DOM view */
+            body > *:not(#proposal-root), nav, header, aside, .no-print, #topbar, #sidebar { 
               display: none !important; 
             }
             
-            #proposal-root, #proposal-root * {
-              visibility: visible !important;
-            }
-
             #proposal-root {
               display: block !important;
+              position: static !important;
               width: 210mm !important;
               margin: 0 auto !important;
               padding: 0 !important;
-              position: absolute !important;
-              top: 0 !important;
-              left: 0 !important;
+              background: white !important;
             }
 
             .page {
               width: 210mm !important;
               height: 297mm !important;
-              padding: 30mm 25mm !important; /* INVESTOR GRADE MARGINS */
+              padding: 30mm 25mm !important;
               margin: 0 !important;
               display: block !important;
               page-break-after: always !important;
+              break-after: page !important;
               box-sizing: border-box !important;
               background: white !important;
               position: relative !important;
-              overflow: hidden !important;
+              overflow: visible !important;
             }
             
             .page:last-child {
               page-break-after: auto !important;
+              break-after: auto !important;
             }
 
-            h2 { font-size: 38pt !important; color: #1e1b4b !important; font-weight: 900 !important; letter-spacing: -2px !important; line-height: 1 !important; }
-            h3 { font-size: 20pt !important; color: #1e1b4b !important; border-bottom: 3pt solid #1e1b4b !important; padding-bottom: 8pt !important; margin-top: 25pt !important; text-transform: uppercase; font-weight: 900 !important; }
-            h4 { font-size: 13pt !important; color: #1e1b4b !important; font-weight: 900 !important; text-transform: uppercase; }
-            p, td, li { font-size: 11.5pt !important; line-height: 1.6 !important; color: #334155 !important; }
+            /* RE-ESTABLISHING TYPOGRAPHY WEIGHTS */
+            h2 { font-size: 38pt !important; color: #1e1b4b !important; font-weight: 900 !important; line-height: 1.2 !important; }
+            h3 { font-size: 20pt !important; color: #1e1b4b !important; border-bottom: 3pt solid #1e1b4b !important; padding-bottom: 8pt !important; }
+            p, td, li { font-size: 11.5pt !important; color: #334155 !important; }
             
-            .bold-label { font-weight: 900 !important; color: #1e1b4b !important; }
             .premium-highlight { color: #d946ef !important; font-weight: 900 !important; }
-            
-            .signature-box {
-              border-top: 1.5pt solid #cbd5e1;
-              padding-top: 10pt;
-              margin-top: 40pt;
-              width: 200pt;
-            }
           }
           
           .document-preview-container { max-width: 210mm; margin: 0 auto; background: white; box-shadow: 0 40px 100px -20px rgba(0,0,0,0.15); }

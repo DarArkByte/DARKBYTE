@@ -115,7 +115,6 @@ function AppContent() {
             <Route path="/dashboard" element={<DashboardHome />} />
             <Route path="/hq" element={<SuperAdminDashboard />} />
             <Route path="/super-admin" element={<SuperAdminDashboard />} />
-            <Route path="/super-admin/proposal-editor" element={<ProposalEditor />} />
             <Route path="/students" element={<StudentManagement />} />
             <Route path="/classes" element={<ClassesPage />} />
             <Route path="/results/entry" element={<ResultEntryPage />} />
@@ -147,6 +146,8 @@ function AppContent() {
             <Route path="/teacher/lesson-notes" element={<LessonNotes />} />
             <Route path="/teacher/assignments" element={<Assignments />} />
           </Route>
+
+          <Route path="/super-admin/proposal-editor" element={<ProposalEditor />} />
           
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

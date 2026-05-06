@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FileText, Download, Printer, Save, ArrowLeft, Building, CreditCard, CheckCircle2 } from 'lucide-react';
+import { FileText, Download, Printer, Save, ArrowLeft, Building, CreditCard, CheckCircle2, Cpu, Code2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import resultTemplateImg from '../../assets/branding/result_template.png';
 
@@ -8,14 +8,20 @@ export default function ProposalEditor() {
     schoolName: '',
     contactPerson: '',
     date: new Date().toLocaleDateString(),
+    phone1: '+234 812 345 6789',
+    phone2: '+234 703 123 4567',
+    email: 'info@darark.com',
     setupFee: '0',
     annualLicense: '0',
     perStudentFee: '1,200',
+    packageTier: 'standard', // standard or premium
   });
 
   const handlePrint = () => {
     window.print();
   };
+
+  const currentFee = data.packageTier === 'premium' ? '6,000' : data.perStudentFee;
 
   return (
     <div className="space-y-8 pb-24 font-sans print:p-0 print:m-0 print:bg-white">
@@ -29,10 +35,8 @@ export default function ProposalEditor() {
             .rounded-\\[48px\\], .rounded-\\[40px\\] { border-radius: 0 !important; }
             .lg\\:col-span-2 { width: 100% !important; margin: 0 !important; padding: 0 !important; }
             
-            /* Multi-page handling */
             .page-break { page-break-before: always; }
             
-            /* Watermark Effect */
             .proposal-watermark {
               position: fixed;
               top: 50%;
@@ -56,7 +60,6 @@ export default function ProposalEditor() {
         `}
       </style>
       
-      {/* Header - Hidden on Print */}
       <header className="flex items-center justify-between bg-white p-8 rounded-[40px] shadow-sm border border-slate-100 print:hidden">
         <div className="flex items-center gap-4">
           <Link to="/super-admin" className="p-3 bg-slate-50 rounded-2xl text-slate-400 hover:text-slate-900 transition-all">
@@ -64,7 +67,7 @@ export default function ProposalEditor() {
           </Link>
           <div>
             <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase">Proposal Architect</h1>
-            <p className="text-slate-500 font-bold text-sm">Customize and export your client proposals.</p>
+            <p className="text-slate-500 font-bold text-sm">Package: {data.packageTier.toUpperCase()}</p>
           </div>
         </div>
         <div className="flex gap-4">
@@ -75,68 +78,65 @@ export default function ProposalEditor() {
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Editor Controls - Hidden on Print */}
         <div className="lg:col-span-1 space-y-6 print:hidden">
           <div className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-sm space-y-6">
             <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest border-b border-slate-50 pb-4">Configuration</h3>
             
             <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Phone 1</label>
+                  <input 
+                    type="text" 
+                    value={data.phone1}
+                    onChange={(e) => setData({...data, phone1: e.target.value})}
+                    className="w-full p-4 bg-slate-50 border-none rounded-2xl font-bold focus:ring-2 focus:ring-indigo-600"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Phone 2</label>
+                  <input 
+                    type="text" 
+                    value={data.phone2}
+                    onChange={(e) => setData({...data, phone2: e.target.value})}
+                    className="w-full p-4 bg-slate-50 border-none rounded-2xl font-bold focus:ring-2 focus:ring-indigo-600"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Package Tier</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button 
+                    onClick={() => setData({...data, packageTier: 'standard'})}
+                    className={`p-3 rounded-xl font-black text-[10px] uppercase transition-all ${data.packageTier === 'standard' ? 'bg-indigo-600 text-white shadow-lg' : 'bg-slate-50 text-slate-400'}`}
+                  >
+                    Standard (₦1.2k)
+                  </button>
+                  <button 
+                    onClick={() => setData({...data, packageTier: 'premium'})}
+                    className={`p-3 rounded-xl font-black text-[10px] uppercase transition-all ${data.packageTier === 'premium' ? 'bg-[#d946ef] text-white shadow-lg' : 'bg-slate-50 text-slate-400'}`}
+                  >
+                    Premium (₦6k)
+                  </button>
+                </div>
+              </div>
+
               <div>
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Target Institution</label>
                 <input 
                   type="text" 
                   value={data.schoolName}
                   onChange={(e) => setData({...data, schoolName: e.target.value})}
-                  className="w-full p-4 bg-slate-50 border-none rounded-2xl font-bold focus:ring-2 focus:ring-indigo-600"
+                  className="w-full p-4 bg-slate-50 border-none rounded-2xl font-bold"
                 />
-              </div>
-              <div>
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Contact Person</label>
-                <input 
-                  type="text" 
-                  value={data.contactPerson}
-                  onChange={(e) => setData({...data, contactPerson: e.target.value})}
-                  className="w-full p-4 bg-slate-50 border-none rounded-2xl font-bold focus:ring-2 focus:ring-indigo-600"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Setup Fee (₦)</label>
-                  <input 
-                    type="text" 
-                    value={data.setupFee}
-                    onChange={(e) => setData({...data, setupFee: e.target.value})}
-                    className="w-full p-4 bg-slate-50 border-none rounded-2xl font-bold focus:ring-2 focus:ring-indigo-600"
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">License (₦)</label>
-                  <input 
-                    type="text" 
-                    value={data.annualLicense}
-                    onChange={(e) => setData({...data, annualLicense: e.target.value})}
-                    className="w-full p-4 bg-slate-50 border-none rounded-2xl font-bold focus:ring-2 focus:ring-indigo-600"
-                  />
-                </div>
               </div>
             </div>
           </div>
-
-          <div className="bg-indigo-600 p-8 rounded-[40px] text-white">
-            <CheckCircle2 className="w-8 h-8 mb-4 text-indigo-300" />
-            <h3 className="text-lg font-black mb-2">Live Syncing</h3>
-            <p className="text-sm text-indigo-100 font-medium leading-relaxed">Changes are updated in the preview instantly. Use "Ctrl + P" or the Print button to save as PDF.</p>
-          </div>
         </div>
 
-        {/* Proposal Preview */}
         <div className="lg:col-span-2 bg-white rounded-[48px] shadow-2xl border border-slate-100 p-16 overflow-hidden relative print:shadow-none print:border-none print:rounded-none print:p-0">
-          {/* Watermark */}
-          <div className="proposal-watermark hidden print:block">
-            DAR-ARK BYTE
-          </div>
-          
-          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-slate-50 rounded-full -mr-40 -mt-40 -z-0 opacity-50 print:hidden" />
+          <div className="proposal-watermark hidden print:block">DAR-ARK BYTE</div>
           
           <div className="relative z-10 space-y-12">
             <header className="flex justify-between items-start border-b-4 border-[#1e1b4b] pb-10 letterhead">
@@ -145,64 +145,68 @@ export default function ProposalEditor() {
                 <p className="text-[#d946ef] font-black text-xs uppercase tracking-[0.3em]">Intelligence For Modern Schools</p>
                 <div className="mt-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-relaxed">
                    12 Digital Excellence Way, Lagos <br />
-                   www.darark.com | info@darark.com
+                   {data.phone1} | {data.phone2} <br />
+                   {data.email}
                 </div>
               </div>
               <div className="text-right">
                 <p className="font-black text-slate-900">Official Proposal</p>
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{data.date}</p>
+                {data.packageTier === 'premium' && (
+                  <span className="inline-block mt-2 px-3 py-1 bg-indigo-600 text-white text-[8px] font-black uppercase tracking-widest rounded-full">Future-Skills Tier</span>
+                )}
               </div>
             </header>
 
             <section className="space-y-6">
               <div className="space-y-2">
                 <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Prepared For:</p>
-                <h3 className="text-3xl font-black text-slate-900">
-                  {data.schoolName || '_____________________________________'}
-                </h3>
-                <p className="text-slate-600 font-bold">
-                  Attn: {data.contactPerson || '_______________________'}
-                </p>
+                <h3 className="text-3xl font-black text-slate-900">{data.schoolName || '_____________________________________'}</h3>
               </div>
               
-              <div className="bg-slate-50 p-8 rounded-[32px] space-y-4">
+              <div className="bg-slate-50 p-8 rounded-[32px] space-y-4 border border-slate-100">
                 <h4 className="font-black text-slate-900 uppercase text-sm tracking-tight flex items-center gap-2">
                   <FileText className="w-4 h-4 text-indigo-600" /> Executive Summary
                 </h4>
                 <p className="text-slate-600 text-sm leading-relaxed font-medium">
-                  We are pleased to present Dar-Ark Byte, a next-gen School ERP. To support your growth, we offer a <strong>Zero-Upfront Cost</strong> model. We charge no hosting or setup fees; instead, we partner with you on a performance basis: only ₦{data.perStudentFee} per student per term for full access to our ecosystem.
+                  We are presenting Dar-Ark Byte, the ultimate School Intelligence Ecosystem. 
+                  {data.packageTier === 'premium' ? (
+                    " This Premium Package integrates our world-class ERP with a specialized Coding and Robotics curriculum, equipping every student with industry-ready technical skills."
+                  ) : (
+                    " Our Zero-Upfront model ensures your school transitions to digital excellence without financial strain."
+                  )}
                 </p>
               </div>
             </section>
+
+            {data.packageTier === 'premium' && (
+              <section className="space-y-6 bg-indigo-50/30 p-8 rounded-[40px] border border-indigo-100">
+                <h3 className="text-xl font-black text-indigo-900 uppercase tracking-tighter flex items-center gap-2">
+                  <Cpu className="w-6 h-6" /> Coding & Robotics Integration
+                </h3>
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <p className="font-black text-slate-900 text-xs uppercase tracking-widest flex items-center gap-2"><Code2 className="w-4 h-4 text-[#d946ef]" /> Modern Coding</p>
+                    <p className="text-[11px] text-slate-500 font-medium">Python, JavaScript, and Web Development tracks for all grade levels.</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="font-black text-slate-900 text-xs uppercase tracking-widest flex items-center gap-2"><Cpu className="w-4 h-4 text-[#d946ef]" /> Robotics & AI</p>
+                    <p className="text-[11px] text-slate-500 font-medium">Hands-on hardware programming, circuit design, and AI logic fundamentals.</p>
+                  </div>
+                </div>
+              </section>
+            )}
 
             <section className="space-y-8">
               <h3 className="text-xl font-black text-[#1e1b4b] uppercase tracking-tighter border-b-2 border-slate-100 pb-2">Platform Ecosystem Breakdown</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {[
-                  { 
-                    title: 'Academic Intelligence', 
-                    desc: 'Automated result processing with Studet Weakness Analysis. includes CBT examination engine, lesson note management, and digital transcripts.' 
-                  },
-                  { 
-                    title: 'Smart Finance & Wallet', 
-                    desc: 'Cashless school ecosystem with parent e-wallets, automated fee reminders, and a POS system for school bookshops/uniform stores.' 
-                  },
-                  { 
-                    title: 'Security & Attendance', 
-                    desc: 'Real-time biometric or digital attendance with instant SMS alerts to parents. Includes visitor logging and transport fleet tracking.' 
-                  },
-                  { 
-                    title: 'Administrative Command', 
-                    desc: 'Centralized staff payroll, multi-role access control, and inventory management for school assets and textbooks.' 
-                  },
-                  { 
-                    title: 'Admission Gateway', 
-                    desc: 'Hybrid digital/physical admission funnel with automated screening dates and online payment for application forms.' 
-                  },
-                  { 
-                    title: 'Parent Experience', 
-                    desc: 'Personalized mobile-friendly portals for parents to track grades, attendance, and financial standing in real-time.' 
-                  },
+                  { title: 'Academic Intelligence', desc: 'Automated result processing with Student Weakness Analysis.' },
+                  { title: 'Smart Finance & Wallet', desc: 'Cashless school ecosystem with parent e-wallets.' },
+                  { title: 'Security & Attendance', desc: 'Real-time attendance with instant SMS alerts to parents.' },
+                  { title: 'Administrative Command', desc: 'Centralized staff payroll and role-based access.' },
+                  { title: 'Admission Gateway', desc: 'Hybrid digital/physical admission funnel.' },
+                  { title: 'Parent Experience', desc: 'Mobile-friendly portals for real-time tracking.' },
                 ].map((item, i) => (
                   <div key={i} className="flex gap-4 group">
                     <div className="w-10 h-10 rounded-2xl bg-indigo-50 flex items-center justify-center shrink-0 border border-indigo-100 group-hover:bg-indigo-600 group-hover:text-white transition-all">
@@ -228,26 +232,16 @@ export default function ProposalEditor() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-50 bg-slate-50/30">
-                       <tr>
+                       <tr className={data.packageTier === 'premium' ? 'bg-indigo-50/50' : ''}>
                          <td className="p-5">
-                            <p className="font-black text-slate-900 text-sm">System Deployment & Setup</p>
-                            <p className="text-[10px] font-bold text-slate-400">One-time implementation fee</p>
+                            <p className="font-black text-slate-900 text-sm">
+                              {data.packageTier === 'premium' ? 'Premium Robotics & Coding Bundle' : 'Standard ERP Usage Fee'}
+                            </p>
+                            <p className="text-[10px] font-bold text-slate-400">
+                              {data.packageTier === 'premium' ? 'Includes Full ERP + Weekly Robotics Sessions' : 'Processing fee per student per term'}
+                            </p>
                          </td>
-                         <td className="p-5 text-right font-black text-slate-900">₦{data.setupFee}</td>
-                       </tr>
-                       <tr>
-                         <td className="p-5">
-                            <p className="font-black text-slate-900 text-sm">Annual Cloud Infrastructure</p>
-                            <p className="text-[10px] font-bold text-slate-400">Server maintenance and security updates</p>
-                         </td>
-                         <td className="p-5 text-right font-black text-slate-900">₦{data.annualLicense}</td>
-                       </tr>
-                       <tr className="bg-indigo-50/50">
-                         <td className="p-5">
-                            <p className="font-black text-indigo-900 text-sm">Per-Student Usage</p>
-                            <p className="text-[10px] font-bold text-indigo-400">Processing fee per term</p>
-                         </td>
-                         <td className="p-5 text-right font-black text-indigo-900">₦{data.perStudentFee}</td>
+                         <td className="p-5 text-right font-black text-slate-900">₦{currentFee}</td>
                        </tr>
                     </tbody>
                   </table>
@@ -258,21 +252,15 @@ export default function ProposalEditor() {
                <h3 className="text-xl font-black text-[#1e1b4b] uppercase tracking-tighter">Sample Academic Output</h3>
                <div className="relative rounded-[32px] overflow-hidden border-2 border-slate-100 bg-slate-50 p-6">
                   <div className="bg-white rounded-2xl overflow-hidden shadow-sm">
-                    <img src={resultTemplateImg} alt="Result Template Sample" className="w-full h-auto" />
+                    <img src={resultTemplateImg} alt="Result Template" className="w-full h-auto" />
                   </div>
-                  <p className="mt-4 text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] text-center">
-                    High-Fidelity Automated Result Matrix
-                  </p>
+                  <p className="mt-4 text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] text-center">High-Fidelity Automated Result Matrix</p>
                </div>
             </section>
 
             <footer className="pt-10 border-t border-slate-100 flex justify-between items-center">
                <div className="text-xs text-slate-400 font-bold uppercase tracking-widest">
                   &copy; {new Date().getFullYear()} Dar-Ark Byte Intelligence
-               </div>
-               <div className="flex gap-4">
-                  <div className="h-10 w-10 bg-slate-100 rounded-full" />
-                  <div className="h-10 w-10 bg-slate-100 rounded-full" />
                </div>
             </footer>
           </div>

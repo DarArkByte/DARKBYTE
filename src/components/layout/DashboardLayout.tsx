@@ -29,7 +29,8 @@ import {
   UserCheck,
   Shield,
   Bus,
-  Palette
+  Palette,
+  BarChart3
 } from 'lucide-react';
 
 export default function DashboardLayout() {

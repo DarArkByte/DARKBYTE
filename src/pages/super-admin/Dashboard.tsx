@@ -72,7 +72,7 @@ export default function SuperAdminDashboard() {
             motto: 'Excellence in Every Byte',
             phone: '+234 812 345 6789',
             email: `info@${schoolDomain}.edu.ng`,
-            address: '12 Digital Command Way, Lagos'
+            address: '12 Digital Excellence Way, Lagos'
           }
         },
         settings: {

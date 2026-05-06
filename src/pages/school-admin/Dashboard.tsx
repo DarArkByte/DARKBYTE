@@ -148,7 +148,7 @@ export default function SchoolAdminDashboard() {
                          <th className="p-10">Applicant Identity</th>
                          <th className="p-10 text-center">Exam Score</th>
                          <th className="p-10 text-center">Screening Status</th>
-                         <th className="p-10 text-right">Master Command</th>
+                         <th className="p-10 text-right">Master Action</th>
                       </tr>
                    </thead>
                    <tbody className="divide-y divide-slate-50">

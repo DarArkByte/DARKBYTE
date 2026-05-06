@@ -16,19 +16,22 @@ import {
   Star,
   MessageCircle,
   MapPin,
-  Mail
+  Mail,
+  ShieldAlert,
+  Smartphone,
+  Wallet,
+  BookOpen,
+  PieChart,
+  Users,
+  Settings,
+  Rocket,
+  Brain,
+  Award
 } from 'lucide-react';
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
-  transition: { duration: 0.8, ease: "easeOut" }
-};
-
-const slideInLeft = {
-  initial: { opacity: 0, x: -50 },
-  whileInView: { opacity: 1, x: 0 },
   viewport: { once: true },
   transition: { duration: 0.8, ease: "easeOut" }
 };
@@ -46,11 +49,19 @@ export default function LandingPage() {
   const schoolBranding = school?.branding;
   const identity = schoolBranding?.identity;
 
-  const services = [
-    { icon: GraduationCap, title: 'School ERP Portal', desc: 'Complete result processing, finance, and staff management.' },
-    { icon: Cpu, title: 'Robotics & Coding', desc: 'Preparing students for the future with hands-on technical skills.' },
-    { icon: Code, title: 'App Development', desc: 'Custom Mobile, Web, and Desktop applications for your business.' },
-    { icon: Monitor, title: 'CBT Training & Exams', desc: 'Professional computer-based testing and examination services.' },
+  const coreSystems = [
+    { icon: Brain, title: 'Academic Intelligence', desc: 'Auto-grading & performance analytics.' },
+    { icon: Monitor, title: 'CBT / Exam System', desc: 'Auto-marking WAEC/JAMB interface.' },
+    { icon: BookOpen, title: 'Teacher Productivity', desc: 'Lesson note & assignment management.' },
+    { icon: Smartphone, title: 'Student Portal', desc: '24/7 access to study materials & results.' },
+    { icon: Wallet, title: 'Smart Finance', desc: 'Cashless fee payments & revenue tracking.' },
+    { icon: ShieldCheck, title: 'Security & SMS', desc: 'Attendance & safety alerts to parents.' },
+    { icon: Globe, title: 'Admission Gateway', desc: 'Complete digital enrollment funnel.' },
+    { icon: MessageCircle, title: 'Communication Hub', desc: 'In-app chat & emergency broadcasts.' },
+    { icon: FileText, title: 'Document Lab', desc: 'Instant Transcripts, ID Cards & Certificates.' },
+    { icon: LayoutGrid, title: 'Multi-Campus Control', desc: 'Unified hub for multiple institutions.' },
+    { icon: ShieldAlert, title: 'Access Control', desc: 'Enterprise-grade role-based security.' },
+    { icon: Star, title: 'Branding & SEO', desc: 'School website & global visibility.' },
   ];
 
   const reviews = [
@@ -59,74 +70,40 @@ export default function LandingPage() {
     { name: 'Mrs. Adebayo', role: 'Proprietress', text: 'Their Robotics training for our students was the highlight of the session. Incredible expertise.' },
   ];
 
-  const primaryColor = schoolBranding?.primaryColor || '#1e1b4b';
-
   return (
-    <div className="min-h-screen bg-[#1e1b4b] text-white font-sans overflow-x-hidden selection:bg-[#d946ef] selection:text-white">
-      {/* Restored Dynamic Background Blobs */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    <div className="min-h-screen bg-[#111827] text-white font-sans overflow-x-hidden selection:bg-blue-600 selection:text-white">
+      {/* Dynamic Background Blobs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 opacity-20">
         <motion.div 
-          animate={{ 
-            x: [0, 100, 0], 
-            y: [0, 50, 0],
-            scale: [1, 1.2, 1] 
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-[#d946ef]/10 rounded-full blur-[120px]" 
+          animate={{ x: [0, 100, 0], y: [0, 50, 0], scale: [1, 1.2, 1] }}
+          transition={{ duration: 20, repeat: Infinity }}
+          className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-blue-600/30 rounded-full blur-[150px]" 
         />
         <motion.div 
-          animate={{ 
-            x: [0, -80, 0], 
-            y: [0, 120, 0],
-            scale: [1, 1.1, 1] 
-          }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute top-1/2 -right-40 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px]" 
+          animate={{ x: [0, -80, 0], y: [0, 120, 0], scale: [1, 1.1, 1] }}
+          transition={{ duration: 25, repeat: Infinity }}
+          className="absolute top-1/2 -right-40 w-[600px] h-[600px] bg-indigo-600/30 rounded-full blur-[150px]" 
         />
       </div>
 
-      {/* Floating WhatsApp Button */}
-      <motion.a 
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        whileHover={{ scale: 1.1 }}
-        href={`https://wa.me/${identity?.phone || '2349169600724'}`} 
-        target="_blank" 
-        rel="noopener noreferrer"
-        className="fixed bottom-8 right-8 z-[100] bg-[#25D366] p-4 rounded-full shadow-2xl transition-all flex items-center justify-center group"
-      >
-        <MessageCircle className="w-8 h-8 text-white" />
-        <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 text-white font-black whitespace-nowrap ml-0 group-hover:ml-2">
-          Contact Us
-        </span>
-      </motion.a>
-
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-[#1e1b4b]/60 backdrop-blur-2xl border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-3"
-          >
-            {schoolBranding?.logoUrl ? (
-              <img src={schoolBranding.logoUrl} alt="Logo" className="w-10 h-10 object-contain rounded-lg" />
-            ) : (
-              <div className="bg-[#d946ef] p-2 rounded-xl shadow-lg shadow-magenta-500/20">
-                 <GraduationCap className="w-7 h-7 text-white" />
-              </div>
-            )}
-            <span className="text-xl font-black tracking-tighter uppercase">{school?.name || 'Dar-Ark Bytes'}</span>
-          </motion.div>
-          <div className="hidden md:flex items-center gap-8 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-            <a href="#services" className="hover:text-[#d946ef] transition-colors">Services</a>
-            <a href="#reviews" className="hover:text-[#d946ef] transition-colors">Reviews</a>
-            <a href="#contact" className="hover:text-[#d946ef] transition-colors">Contact</a>
+      <nav className="fixed top-0 w-full z-50 bg-[#111827]/80 backdrop-blur-2xl border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="bg-blue-600 p-2 rounded-xl">
+               <GraduationCap className="w-8 h-8 text-white" />
+            </div>
+            <span className="text-2xl font-black tracking-tighter uppercase italic">{school?.name || 'Dar-Ark Byte OS'}</span>
+          </div>
+          <div className="hidden lg:flex items-center gap-12 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
+            <a href="#ecosystem" className="hover:text-blue-500 transition-colors">OS Ecosystem</a>
+            <a href="#robotics" className="hover:text-blue-500 transition-colors">Robotics Academy</a>
+            <a href="#investment" className="hover:text-blue-500 transition-colors">Investment</a>
             <motion.button 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/login')}
-              className="bg-[#d946ef] text-white px-8 py-2.5 rounded-full hover:bg-[#c026d3] transition-all shadow-lg shadow-magenta-500/20"
+              className="bg-blue-600 text-white px-10 py-3.5 rounded-2xl hover:bg-blue-700 transition-all shadow-2xl shadow-blue-500/20"
             >
               Portal Login
             </motion.button>
@@ -135,246 +112,170 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-60 pb-40 px-6 z-10">
+      <section className="relative pt-64 pb-48 px-6 z-10">
         <div className="max-w-7xl mx-auto text-center">
-          <motion.div 
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-          >
-            <motion.h2 
-              initial={{ opacity: 0, x: -100 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5, duration: 1 }}
-              className="text-[#facc15] font-black uppercase tracking-[0.4em] mb-6 text-xs"
-            >
-              {identity?.motto || 'Innovation Meets Education'}
-            </motion.h2>
-            
-            <motion.h1 
-              initial={{ opacity: 0, scale: 0.8, x: 100 }}
-              animate={{ opacity: 1, scale: 1, x: 0 }}
-              transition={{ delay: 0.2, duration: 1.2, ease: "easeOut" }}
-              className="text-6xl md:text-[8rem] font-black leading-[0.85] mb-12 tracking-tighter uppercase"
-            >
-              {isCustomSchool ? (
-                <>
-                  {school.name.split(' ')[0]} <br />
-                  <motion.span 
-                    animate={{ color: ['#ffffff', '#d946ef', '#ffffff'] }}
-                    transition={{ duration: 5, repeat: Infinity }}
-                    className="text-white"
-                  >
-                    {school.name.split(' ').slice(1).join(' ')}
-                  </motion.span>
-                </>
-              ) : (
-                <>
-                  BEYOND <br />
-                  <motion.span 
-                    animate={{ color: ['#ffffff', '#d946ef', '#ffffff'] }}
-                    transition={{ duration: 5, repeat: Infinity }}
-                    className="text-white"
-                  >
-                    TECHNOLOGY.
-                  </motion.span>
-                </>
-              )}
-            </motion.h1>
-
-            <motion.p 
-              {...fadeInUp}
-              className="text-xl md:text-2xl text-slate-400 mb-16 max-w-3xl mx-auto leading-relaxed font-medium"
-            >
-              {isCustomSchool 
-                ? `Welcome to the official portal of ${school.name}. We are dedicated to providing the best academic experience powered by Dar-Ark Byte.`
-                : 'We specialize in School ERP systems, Robotics & Coding Academy, and Enterprise Application Development.'}
-            </motion.p>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+          <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
+            <p className="text-blue-500 font-black uppercase tracking-[0.6em] mb-8 text-sm italic">The Future of Education is Here</p>
+            <h1 className="text-6xl md:text-[9rem] font-black leading-[0.85] mb-16 tracking-tighter uppercase italic">
+              Strategic <br />
+              <span className="text-blue-600">Transformation.</span>
+            </h1>
+            <p className="text-xl md:text-2xl text-slate-400 mb-20 max-w-4xl mx-auto leading-relaxed font-medium">
+              We deploy the complete **School Operating System**—unifying administration, future-ready learning, and parent-student engagement into one high-performance ecosystem.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-8 justify-center">
               <motion.button 
                 whileHover={{ scale: 1.05, y: -5 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate('/login')}
-                className="bg-white text-[#1e1b4b] px-14 py-6 rounded-3xl font-black text-xl flex items-center justify-center gap-3 shadow-[0_20px_50px_rgba(255,255,255,0.1)] transition-all"
+                className="bg-white text-[#111827] px-16 py-7 rounded-3xl font-black text-2xl shadow-[0_30px_100px_rgba(255,255,255,0.1)]"
               >
-                ACCESS PORTAL
+                ACCESS OS PORTAL
               </motion.button>
-              {!isCustomSchool && (
-                <motion.a 
-                  whileHover={{ scale: 1.05, y: -5 }}
-                  whileTap={{ scale: 0.95 }}
-                  href="#services"
-                  className="bg-white/5 border border-white/10 text-white px-14 py-6 rounded-3xl font-black text-xl hover:bg-white/10 transition-all flex items-center justify-center gap-3 backdrop-blur-xl"
-                >
-                  OUR SERVICES
-                </motion.a>
-              )}
+              <motion.a 
+                whileHover={{ scale: 1.05, y: -5 }}
+                whileTap={{ scale: 0.95 }}
+                href="#ecosystem"
+                className="bg-white/5 border-2 border-white/10 text-white px-16 py-7 rounded-3xl font-black text-2xl hover:bg-white/10 backdrop-blur-xl transition-all"
+              >
+                EXPLORE FEATURES
+              </motion.a>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Gallery Section for Schools */}
-      {isCustomSchool && schoolBranding?.gallery && schoolBranding.gallery.length > 0 && (
-        <section className="py-20 px-6 relative z-10 overflow-hidden">
-          <div className="max-w-7xl mx-auto">
-            <h3 className="text-3xl font-black uppercase tracking-tight mb-12 text-center">Institutional Gallery</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {schoolBranding.gallery.map((url, i) => (
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  key={i}
-                  className="rounded-[2.5rem] overflow-hidden aspect-video shadow-2xl border-4 border-white/5"
-                >
-                  <img src={url} alt={`Gallery ${i}`} className="w-full h-full object-cover" />
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Services Section */}
-      {!isCustomSchool && (
-        <section id="services" className="py-40 px-6 relative z-10 border-t border-white/5">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid lg:grid-cols-2 gap-32 items-center">
-              <motion.div {...slideInLeft}>
-                <h2 className="text-[#d946ef] font-black uppercase tracking-widest text-xs mb-4">Core Expertise</h2>
-                <h3 className="text-6xl font-black tracking-tighter mb-10 leading-tight">Advanced Digital <br /> Solutions for All.</h3>
-                <p className="text-slate-400 font-medium text-xl leading-relaxed mb-14">
-                  At Dar-Ark Bytes, we build the infrastructure for the future of education across Nigeria.
-                </p>
-                <div className="space-y-8">
-                  {['Custom School Management Systems', 'Professional Mobile App Development', 'CBT Examination Infrastructure', 'Robotics & STEAM Education'].map((item, i) => (
-                    <motion.div 
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.1 }}
-                      viewport={{ once: true }}
-                      key={i} 
-                      className="flex items-center gap-5 group"
-                    >
-                      <div className="bg-[#facc15]/20 p-2 rounded-lg group-hover:bg-[#facc15] transition-all">
-                         <CheckCircle2 className="w-6 h-6 text-[#facc15] group-hover:text-slate-900 transition-colors" />
-                      </div>
-                      <span className="font-bold text-slate-200 text-lg">{item}</span>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-              <motion.div 
-                variants={staggerContainer}
-                initial="initial"
-                whileInView="whileInView"
-                viewport={{ once: true }}
-                className="grid sm:grid-cols-2 gap-8"
-              >
-                {services.map((s, i) => (
-                  <motion.div 
-                    variants={fadeInUp}
-                    key={i} 
-                    className="bg-white/5 border border-white/10 p-10 rounded-[48px] hover:border-[#d946ef]/50 transition-all group backdrop-blur-3xl"
-                  >
-                    <div className="bg-[#d946ef] w-16 h-16 rounded-2xl flex items-center justify-center mb-8 shadow-xl shadow-magenta-500/20 group-hover:rotate-6 transition-transform">
-                      <s.icon className="w-8 h-8 text-white" />
-                    </div>
-                    <h4 className="text-2xl font-black mb-4">{s.title}</h4>
-                    <p className="text-slate-400 font-medium text-sm leading-relaxed">{s.desc}</p>
-                  </motion.div>
-                ))}
-              </motion.div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Reviews Section */}
-      <section id="reviews" className="py-40 px-6 relative z-10 bg-white/[0.02] border-y border-white/5">
+      {/* Operational Infrastructure (14 Pillars) */}
+      <section id="ecosystem" className="py-48 px-6 relative z-10 border-t border-white/5 bg-white/[0.01]">
         <div className="max-w-7xl mx-auto">
-          <motion.div {...fadeInUp} className="text-center mb-24">
-            <h2 className="text-[#facc15] font-black uppercase tracking-widest text-xs mb-4">Testimonials</h2>
-            <h3 className="text-6xl font-black tracking-tighter">What Clients Say</h3>
-          </motion.div>
-          <div className="grid md:grid-cols-3 gap-10">
-            {reviews.map((r, i) => (
+          <div className="text-center mb-32 space-y-4">
+             <h2 className="text-blue-500 font-black uppercase tracking-widest text-sm">Operational Ecosystem</h2>
+             <h3 className="text-6xl font-black tracking-tighter">The 14 Core OS Pillars</h3>
+             <p className="text-slate-500 text-xl font-medium max-w-3xl mx-auto">Everything you need to run a modern, technology-driven institution in one unified platform.</p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {coreSystems.map((s, i) => (
               <motion.div 
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.2 }}
-                viewport={{ once: true }}
+                {...fadeInUp}
                 key={i} 
-                className="bg-[#1e1b4b]/40 p-12 rounded-[56px] border border-white/10 backdrop-blur-3xl hover:bg-[#1e1b4b]/60 transition-all"
+                className="bg-white/[0.03] border border-white/10 p-10 rounded-[48px] hover:border-blue-500/50 transition-all group backdrop-blur-3xl"
               >
-                <div className="flex gap-1.5 mb-8">
-                  {[1,2,3,4,5].map(star => <Star key={star} className="w-5 h-5 text-[#facc15] fill-[#facc15]" />)}
+                <div className="bg-blue-600 w-16 h-16 rounded-2xl flex items-center justify-center mb-8 shadow-2xl shadow-blue-500/20 group-hover:rotate-6 transition-transform">
+                  <s.icon className="w-8 h-8 text-white" />
                 </div>
-                <p className="text-slate-300 font-bold leading-relaxed mb-10 italic text-lg">"{r.text}"</p>
-                <div>
-                  <p className="font-black text-white text-xl">{r.name}</p>
-                  <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.3em] mt-2">{r.role}</p>
-                </div>
+                <h4 className="text-xl font-black mb-4 uppercase tracking-tighter italic">{s.title}</h4>
+                <p className="text-slate-500 font-medium text-sm leading-relaxed">{s.desc}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section id="contact" className="py-40 px-6 relative z-10">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          className="max-w-4xl mx-auto text-center"
-        >
-          <div className="bg-[#d946ef] w-24 h-24 rounded-[36px] flex items-center justify-center mx-auto mb-12 shadow-2xl shadow-magenta-500/40 animate-bounce">
-             <Phone className="w-12 h-12 text-white" />
-          </div>
-          <h2 className="text-7xl font-black tracking-tighter mb-10 italic">{isCustomSchool ? 'Get In Touch' : 'Ready to Start?'}</h2>
-          <p className="text-2xl text-slate-400 mb-16 font-medium leading-relaxed">
-            {isCustomSchool 
-              ? `Reach out to ${school.name} administration for inquiries or support.`
-              : 'Contact Dar-Ark Bytes Technology today for your School Portal, Website, or App Development project.'}
-          </p>
-          <div className="grid sm:grid-cols-2 gap-8 mb-16">
-            <motion.div whileHover={{ scale: 1.02 }} className="bg-white/5 p-10 rounded-[48px] border border-white/10 backdrop-blur-xl flex flex-col items-center">
-               <Phone className="w-6 h-6 text-[#d946ef] mb-4" />
-               <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Call Us</p>
-               <p className="text-2xl font-black text-white">{identity?.phone || '+234 916 960 0724'}</p>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.02 }} className="bg-white/5 p-10 rounded-[48px] border border-white/10 backdrop-blur-xl flex flex-col items-center">
-               <Mail className="w-6 h-6 text-[#d946ef] mb-4" />
-               <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Email Us</p>
-               <p className="text-2xl font-black text-white">{identity?.email || 'info@dararkbytes.com'}</p>
-            </motion.div>
-          </div>
-          
-          {identity?.address && (
-            <div className="bg-white/5 p-10 rounded-[48px] border border-white/10 backdrop-blur-xl mb-16">
-              <MapPin className="w-6 h-6 text-[#d946ef] mx-auto mb-4" />
-              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Location</p>
-              <p className="text-xl font-bold text-white">{identity.address}</p>
-            </div>
-          )}
-        </motion.div>
+      {/* Robotics & Coding Section */}
+      <section id="robotics" className="py-48 px-6 relative z-10 bg-blue-600 overflow-hidden">
+        <div className="absolute top-0 right-0 p-20 opacity-10 pointer-events-none">
+           <Cpu className="w-[600px] h-[600px] text-white" />
+        </div>
+        <div className="max-w-7xl mx-auto relative z-10">
+           <div className="grid lg:grid-cols-2 gap-32 items-center">
+              <motion.div {...fadeInUp} className="space-y-10">
+                 <h2 className="text-white/60 font-black uppercase tracking-widest text-sm italic">Premium Integration</h2>
+                 <h3 className="text-7xl font-black tracking-tighter leading-none italic">Future-Ready <br /> <span className="text-[#facc15]">Robotics Academy.</span></h3>
+                 <p className="text-white/80 text-2xl font-medium leading-relaxed italic">
+                    We don't just build software; we build engineers. Our premium Robotics and Coding program equips students with real-world technical mastery.
+                 </p>
+                 <div className="grid sm:grid-cols-2 gap-8 pt-10">
+                    <div className="bg-white/10 p-10 rounded-[40px] backdrop-blur-3xl border border-white/10">
+                       <Code className="w-10 h-10 text-[#facc15] mb-6" />
+                       <h4 className="text-2xl font-black mb-4 italic uppercase">Coding Mastery</h4>
+                       <p className="text-white/60 text-sm leading-relaxed">Python, JavaScript, and Full-Stack development tracks for institutional deployment.</p>
+                    </div>
+                    <div className="bg-white/10 p-10 rounded-[40px] backdrop-blur-3xl border border-white/10">
+                       <Rocket className="w-10 h-10 text-[#facc15] mb-6" />
+                       <h4 className="text-2xl font-black mb-4 italic uppercase">Hardware & AI</h4>
+                       <p className="text-white/60 text-sm leading-relaxed">Hands-on robotics engineering, automated systems, and Artificial Intelligence foundations.</p>
+                    </div>
+                 </div>
+              </motion.div>
+              <motion.div initial={{ opacity: 0, x: 100 }} whileInView={{ opacity: 1, x: 0 }} className="bg-white/5 rounded-[60px] p-4 border border-white/10 shadow-2xl">
+                 <div className="bg-white/10 aspect-square rounded-[50px] flex items-center justify-center p-20">
+                    <Cpu className="w-full h-full text-[#facc15] animate-pulse" />
+                 </div>
+              </motion.div>
+           </div>
+        </div>
+      </section>
+
+      {/* Financial Framework (Simplified) */}
+      <section id="investment" className="py-48 px-6 relative z-10 border-t border-white/5">
+        <div className="max-w-5xl mx-auto text-center space-y-24">
+           <div className="space-y-4">
+              <h2 className="text-blue-500 font-black uppercase tracking-widest text-sm">Strategic Investment</h2>
+              <h3 className="text-6xl font-black tracking-tighter italic">Investment Framework</h3>
+           </div>
+           
+           <div className="grid md:grid-cols-2 gap-12">
+              <motion.div {...fadeInUp} className="bg-white/[0.02] border-2 border-white/10 p-16 rounded-[60px] space-y-10 hover:border-blue-500/50 transition-all">
+                 <div className="space-y-2">
+                   <h4 className="text-3xl font-black italic uppercase">Standard OS</h4>
+                   <p className="text-slate-500 text-sm font-bold uppercase tracking-widest italic">All Administrative Modules</p>
+                 </div>
+                 <div className="text-7xl font-black text-blue-500 italic">₦1,200<span className="text-xl text-slate-500">/Term</span></div>
+                 <ul className="space-y-4 text-slate-400 font-medium text-sm">
+                    <li className="flex items-center gap-3 justify-center italic"><CheckCircle2 className="w-4 h-4 text-blue-500" /> Academic Intelligence</li>
+                    <li className="flex items-center gap-3 justify-center italic"><CheckCircle2 className="w-4 h-4 text-blue-500" /> Smart Finance System</li>
+                    <li className="flex items-center gap-3 justify-center italic"><CheckCircle2 className="w-4 h-4 text-blue-500" /> Parent/Student Portals</li>
+                 </ul>
+              </motion.div>
+              <motion.div {...fadeInUp} className="bg-blue-600 p-16 rounded-[60px] space-y-10 shadow-3xl shadow-blue-500/40 transform scale-105 relative overflow-hidden">
+                 <div className="absolute top-0 right-0 p-8 opacity-10">
+                    <Award className="w-32 h-32 text-white" />
+                 </div>
+                 <div className="space-y-2">
+                   <h4 className="text-3xl font-black italic uppercase text-white">Premium OS</h4>
+                   <p className="text-white/60 text-sm font-bold uppercase tracking-widest italic">Robotics & Coding Integration</p>
+                 </div>
+                 <div className="text-7xl font-black text-white italic">₦6,000<span className="text-xl text-white/60">/Term</span></div>
+                 <ul className="space-y-4 text-white/80 font-medium text-sm">
+                    <li className="flex items-center gap-3 justify-center italic"><CheckCircle2 className="w-4 h-4 text-[#facc15]" /> Robotics Lab Setup</li>
+                    <li className="flex items-center gap-3 justify-center italic"><CheckCircle2 className="w-4 h-4 text-[#facc15]" /> Advanced AI Curriculum</li>
+                    <li className="flex items-center gap-3 justify-center italic"><CheckCircle2 className="w-4 h-4 text-[#facc15]" /> Digital Proficiency Certs</li>
+                 </ul>
+              </motion.div>
+           </div>
+           
+           <p className="text-slate-500 text-sm font-black uppercase tracking-widest italic">
+              ✅ Zero Upfront Cost. ✅ Pay-As-You-Scale Model.
+           </p>
+        </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-16 px-6 border-t border-white/5 bg-black/40 relative z-10">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
+      <footer className="py-24 px-6 border-t border-white/5 bg-black/40 relative z-10">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
           <div className="flex items-center gap-4">
-             <div className="bg-white/10 p-2 rounded-xl">
-                <GraduationCap className="w-6 h-6 text-[#d946ef]" />
+             <div className="bg-blue-600 p-2 rounded-xl">
+                <GraduationCap className="w-8 h-8 text-white" />
              </div>
-             <span className="text-lg font-black tracking-tighter uppercase">{school?.name || 'Dar-Ark Bytes Tech'}</span>
+             <span className="text-2xl font-black tracking-tighter uppercase italic">{school?.name || 'Dar-Ark Byte OS'}</span>
           </div>
-          <p className="text-slate-600 text-[10px] font-black uppercase tracking-[0.5em]">
-            © 2026 {isCustomSchool ? school.name.toUpperCase() : 'DAR-ARK BYTES ENTERPRISE'}. ALL RIGHTS RESERVED.
-          </p>
+          <div className="flex flex-col items-center md:items-end gap-4">
+             <p className="text-slate-600 text-[10px] font-black uppercase tracking-[0.5em]">
+               © 2026 DAR-ARK BYTE SOLUTIONS | HIGH-FIDELITY ARCHITECTURAL DEPLOYMENT
+             </p>
+             <div className="flex gap-8 text-[9px] font-black uppercase tracking-widest text-slate-500">
+                <a href="#ecosystem" className="hover:text-white">Privacy Protocol</a>
+                <a href="#robotics" className="hover:text-white">Service Infrastructure</a>
+                <a href="#investment" className="hover:text-white">Investment Terms</a>
+             </div>
+          </div>
         </div>
       </footer>
     </div>
   );
 }
+
+// Helper icons that were missing
+const FileText = ({ className }: { className?: string }) => <FileTextIcon className={className} />;
+const LayoutGrid = ({ className }: { className?: string }) => <LayoutGridIcon className={className} />;
+import { FileText as FileTextIcon, LayoutGrid as LayoutGridIcon } from 'lucide-react';

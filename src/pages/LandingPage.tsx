@@ -85,6 +85,13 @@ export default function LandingPage() {
     { icon: Star, title: 'Branding & SEO', desc: 'School website & global visibility.' },
   ];
 
+  const enterpriseSolutions = [
+    { icon: Receipt, title: 'Commerce OS', desc: 'Enterprise E-commerce & POS systems with real-time inventory.' },
+    { icon: Brain, title: 'AI Intelligence', desc: 'Custom Artificial Intelligence & machine learning integrations.' },
+    { icon: Smartphone, title: 'App Development', desc: 'High-performance iOS, Android & Web application builds.' },
+    { icon: ShieldCheck, title: 'Digital Infrastructure', desc: 'Secure cloud hosting & enterprise network architecture.' },
+  ];
+
   const reviews = [
     { name: 'Dr. Samuel Okoro', role: 'Principal, Excel Academy', text: 'Dar-Ark Bytes transformed our result processing from weeks to just minutes. Highly recommended!' },
     { name: 'Engr. Fatima B.', role: 'CEO, TechFlow Ltd', text: 'The mobile app they built for us is world-class. Fast, secure, and very professional.' },
@@ -119,7 +126,9 @@ export default function LandingPage() {
           <div className="hidden lg:flex items-center gap-12 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
             <a href="#ecosystem" className="hover:text-blue-500 transition-colors">OS Ecosystem</a>
             <a href="#robotics" className="hover:text-blue-500 transition-colors">Robotics Academy</a>
+            <a href="#enterprise" className="hover:text-blue-500 transition-colors">Enterprise</a>
             <a href="#investment" className="hover:text-blue-500 transition-colors">Investment</a>
+            <button onClick={() => navigate('/contact')} className="hover:text-blue-500 transition-colors">Contact</button>
             <motion.button 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -244,8 +253,65 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Human Impact: Student & Teacher Comments */}
-      <section className="py-40 px-6 relative z-10 border-t border-white/5">
+      {/* Enterprise Solutions Section */}
+      <section id="enterprise" className="py-48 px-6 relative z-10 bg-white/[0.01]">
+         <div className="max-w-7xl mx-auto">
+            <motion.div variants={fadeInUp} className="text-center mb-32 space-y-4">
+               <h2 className="text-blue-500 font-black uppercase tracking-widest text-sm italic">Enterprise Technology</h2>
+               <h3 className="text-6xl font-black tracking-tighter italic">Beyond School Management.</h3>
+               <p className="text-slate-500 text-xl font-medium max-w-3xl mx-auto">We build high-performance digital infrastructure for the most ambitious businesses.</p>
+            </motion.div>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+               {enterpriseSolutions.map((sol, i) => (
+                  <motion.div 
+                    variants={zoomIn}
+                    key={i} 
+                    className="bg-white/[0.03] border border-white/10 p-10 rounded-[48px] hover:border-blue-500/50 transition-all group backdrop-blur-3xl"
+                  >
+                    <div className="bg-navy-bg border border-white/5 w-16 h-16 rounded-2xl flex items-center justify-center mb-8 shadow-2xl group-hover:bg-blue-600 transition-all">
+                       <sol.icon className="w-8 h-8 text-blue-500 group-hover:text-white" />
+                    </div>
+                    <h4 className="text-xl font-black mb-4 uppercase tracking-tighter italic">{sol.title}</h4>
+                    <p className="text-slate-500 font-medium text-sm leading-relaxed">{sol.desc}</p>
+                  </motion.div>
+               ))}
+            </div>
+         </div>
+      </section>
+
+      {/* Result Templates Showcase */}
+      <section className="py-48 px-6 relative z-10 border-t border-white/5">
+         <div className="max-w-7xl mx-auto">
+            <div className="grid lg:grid-cols-2 gap-32 items-center">
+               <motion.div variants={slideInLeft} className="space-y-10">
+                  <h2 className="text-blue-500 font-black uppercase tracking-widest text-sm italic">Academic Output</h2>
+                  <h3 className="text-7xl font-black tracking-tighter leading-none italic text-white">Pixel-Perfect <br /> <span className="text-blue-600">Certifications.</span></h3>
+                  <p className="text-slate-400 text-2xl font-medium leading-relaxed italic">
+                     Our system generates boardroom-ready academic reports, high-security certificates, and detailed transcripts instantly.
+                  </p>
+                  <ul className="space-y-6">
+                     {['Automated Result Computation', 'High-Security QR-Coded Certificates', 'Interactive Performance Analytics', 'Custom School Branding'].map((item, i) => (
+                        <li key={i} className="flex items-center gap-4 text-xl font-black italic text-slate-500 group cursor-default">
+                           <CheckCircle2 className="w-6 h-6 text-blue-600" />
+                           <span className="group-hover:text-white transition-colors">{item}</span>
+                        </li>
+                     ))}
+                  </ul>
+               </motion.div>
+               <motion.div variants={slideInRight} className="relative group">
+                  <div className="absolute -inset-4 bg-blue-600/20 blur-[100px] opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="bg-white/5 p-4 rounded-[60px] border border-white/10 shadow-2xl overflow-hidden relative">
+                     <img 
+                       src="/modern_academic_result_template_1778071423161.png" 
+                       alt="Result Template" 
+                       className="w-full h-auto rounded-[50px] shadow-2xl" 
+                     />
+                  </div>
+               </motion.div>
+            </div>
+         </div>
+      </section>
          <div className="max-w-7xl mx-auto">
             <motion.div variants={fadeInUp} className="text-center mb-24 space-y-4">
                <h2 className="text-blue-500 font-black uppercase tracking-widest text-sm italic">Voices of Impact</h2>

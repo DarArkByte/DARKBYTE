@@ -7,6 +7,7 @@ import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import LandingPage from './pages/LandingPage';
+import ContactPage from './pages/ContactPage';
 import LoginPage from './pages/LoginPage';
 import SchoolPortalLogin from './pages/portal/SchoolPortalLogin';
 import SuperAdminLogin from './pages/super-admin/SuperAdminLogin';
@@ -105,6 +106,7 @@ function AppContent() {
       <Suspense fallback={<div className="h-screen bg-[#1e1b4b]" />}>
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/portal/:schoolDomain/login" element={<SchoolPortalLogin />} />
           <Route path="/portal/:domain/admissions" element={<AdmissionsForm />} />

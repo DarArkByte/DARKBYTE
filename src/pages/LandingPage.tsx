@@ -26,7 +26,8 @@ import {
   Settings,
   Rocket,
   Brain,
-  Award
+  Award,
+  Receipt
 } from 'lucide-react';
 
 const fadeInUp = {
@@ -79,8 +80,8 @@ export default function LandingPage() {
     { icon: ShieldCheck, title: 'Security & SMS', desc: 'Attendance & safety alerts to parents.' },
     { icon: Globe, title: 'Admission Gateway', desc: 'Complete digital enrollment funnel.' },
     { icon: MessageCircle, title: 'Communication Hub', desc: 'In-app chat & emergency broadcasts.' },
-    { icon: FileText, title: 'Document Lab', desc: 'Instant Transcripts, ID Cards & Certificates.' },
-    { icon: LayoutGrid, title: 'Multi-Campus Control', desc: 'Unified hub for multiple institutions.' },
+    { icon: FileTextIcon, title: 'Document Lab', desc: 'Instant Transcripts, ID Cards & Certificates.' },
+    { icon: LayoutGridIcon, title: 'Multi-Campus Control', desc: 'Unified hub for multiple institutions.' },
     { icon: ShieldAlert, title: 'Access Control', desc: 'Enterprise-grade role-based security.' },
     { icon: Star, title: 'Branding & SEO', desc: 'School website & global visibility.' },
   ];
@@ -99,41 +100,41 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#111827] text-white font-sans overflow-x-hidden selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-[#1e1b4b] text-white font-sans overflow-x-hidden selection:bg-[#d946ef] selection:text-white">
       {/* Dynamic Background Blobs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 opacity-20">
         <motion.div 
           animate={{ x: [0, 100, 0], y: [0, 50, 0], scale: [1, 1.2, 1] }}
           transition={{ duration: 20, repeat: Infinity }}
-          className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-blue-600/30 rounded-full blur-[150px]" 
+          className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-[#d946ef]/10 rounded-full blur-[150px]" 
         />
         <motion.div 
           animate={{ x: [0, -80, 0], y: [0, 120, 0], scale: [1, 1.1, 1] }}
           transition={{ duration: 25, repeat: Infinity }}
-          className="absolute top-1/2 -right-40 w-[600px] h-[600px] bg-indigo-600/30 rounded-full blur-[150px]" 
+          className="absolute top-1/2 -right-40 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[150px]" 
         />
       </div>
 
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-[#111827]/80 backdrop-blur-2xl border-b border-white/5">
+      <nav className="fixed top-0 w-full z-50 bg-[#1e1b4b]/60 backdrop-blur-2xl border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="bg-blue-600 p-2 rounded-xl">
+            <div className="bg-[#d946ef] p-2 rounded-xl shadow-lg shadow-magenta-500/20">
                <GraduationCap className="w-8 h-8 text-white" />
             </div>
             <span className="text-2xl font-black tracking-tighter uppercase italic">{school?.name || 'Dar-Ark Byte OS'}</span>
           </div>
           <div className="hidden lg:flex items-center gap-12 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
-            <a href="#ecosystem" className="hover:text-blue-500 transition-colors">OS Ecosystem</a>
-            <a href="#robotics" className="hover:text-blue-500 transition-colors">Robotics Academy</a>
-            <a href="#enterprise" className="hover:text-blue-500 transition-colors">Enterprise</a>
-            <a href="#investment" className="hover:text-blue-500 transition-colors">Investment</a>
-            <button onClick={() => navigate('/contact')} className="hover:text-blue-500 transition-colors">Contact</button>
+            <a href="#ecosystem" className="hover:text-[#d946ef] transition-colors">OS Ecosystem</a>
+            <a href="#robotics" className="hover:text-[#d946ef] transition-colors">Robotics Academy</a>
+            <a href="#enterprise" className="hover:text-[#d946ef] transition-colors">Enterprise</a>
+            <a href="#investment" className="hover:text-[#d946ef] transition-colors">Investment</a>
+            <button onClick={() => navigate('/contact')} className="hover:text-[#d946ef] transition-colors">Contact</button>
             <motion.button 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/login')}
-              className="bg-blue-600 text-white px-10 py-3.5 rounded-2xl hover:bg-blue-700 transition-all shadow-2xl shadow-blue-500/20"
+              className="bg-[#d946ef] text-white px-10 py-3.5 rounded-2xl hover:bg-[#c026d3] transition-all shadow-2xl shadow-magenta-500/20"
             >
               Portal Login
             </motion.button>
@@ -145,10 +146,10 @@ export default function LandingPage() {
       <section className="relative pt-64 pb-48 px-6 z-10">
         <div className="max-w-7xl mx-auto text-center">
           <motion.div variants={staggerContainer} initial="initial" whileInView="whileInView" viewport={{ once: true }}>
-            <motion.p variants={slideInLeft} className="text-blue-500 font-black uppercase tracking-[0.6em] mb-8 text-sm italic">The Future of Education is Here</motion.p>
+            <motion.p variants={slideInLeft} className="text-[#d946ef] font-black uppercase tracking-[0.6em] mb-8 text-sm italic">The Future of Education is Here</motion.p>
             <motion.h1 variants={zoomIn} className="text-6xl md:text-[9rem] font-black leading-[0.85] mb-16 tracking-tighter uppercase italic">
               Strategic <br />
-              <span className="text-blue-600">Transformation.</span>
+              <span className="text-[#d946ef]">Transformation.</span>
             </motion.h1>
             <motion.p variants={fadeInUp} className="text-xl md:text-2xl text-slate-400 mb-20 max-w-4xl mx-auto leading-relaxed font-medium">
               We deploy the complete **School Operating System**—unifying administration, future-ready learning, and parent-student engagement into one high-performance ecosystem.
@@ -158,7 +159,7 @@ export default function LandingPage() {
                 whileHover={{ scale: 1.05, y: -5 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate('/login')}
-                className="bg-white text-[#111827] px-16 py-7 rounded-3xl font-black text-2xl shadow-[0_30px_100px_rgba(255,255,255,0.1)]"
+                className="bg-white text-[#1e1b4b] px-16 py-7 rounded-3xl font-black text-2xl shadow-[0_30px_100px_rgba(255,255,255,0.1)] transition-all"
               >
                 ACCESS OS PORTAL
               </motion.button>
@@ -179,7 +180,7 @@ export default function LandingPage() {
       <section id="ecosystem" className="py-48 px-6 relative z-10 border-t border-white/5 bg-white/[0.01]">
         <div className="max-w-7xl mx-auto">
           <motion.div variants={fadeInUp} className="text-center mb-32 space-y-4">
-             <motion.h2 variants={slideInLeft} className="text-blue-500 font-black uppercase tracking-widest text-sm">Operational Ecosystem</motion.h2>
+             <motion.h2 variants={slideInLeft} className="text-[#d946ef] font-black uppercase tracking-widest text-sm">Operational Ecosystem</motion.h2>
              <motion.h3 variants={slideInRight} className="text-6xl font-black tracking-tighter">The 14 Core OS Pillars</motion.h3>
              <motion.p variants={zoomIn} className="text-slate-500 text-xl font-medium max-w-3xl mx-auto">Everything you need to run a modern, technology-driven institution in one unified platform.</p>
           </motion.div>
@@ -194,9 +195,9 @@ export default function LandingPage() {
               <motion.div 
                 variants={zoomIn}
                 key={i} 
-                className="bg-white/[0.03] border border-white/10 p-10 rounded-[48px] hover:border-blue-500/50 transition-all group backdrop-blur-3xl"
+                className="bg-white/[0.03] border border-white/10 p-10 rounded-[48px] hover:border-[#d946ef]/50 transition-all group backdrop-blur-3xl"
               >
-                <div className="bg-blue-600 w-16 h-16 rounded-2xl flex items-center justify-center mb-8 shadow-2xl shadow-blue-500/20 group-hover:rotate-6 transition-transform">
+                <div className="bg-[#d946ef] w-16 h-16 rounded-2xl flex items-center justify-center mb-8 shadow-2xl shadow-magenta-500/20 group-hover:rotate-6 transition-transform">
                   <s.icon className="w-8 h-8 text-white" />
                 </div>
                 <h4 className="text-xl font-black mb-4 uppercase tracking-tighter italic">{s.title}</h4>
@@ -208,25 +209,22 @@ export default function LandingPage() {
       </section>
 
       {/* Robotics & Coding Section */}
-      <section id="robotics" className="py-48 px-6 relative z-10 bg-blue-600 overflow-hidden">
-        <div className="absolute top-0 right-0 p-20 opacity-10 pointer-events-none">
-           <Cpu className="w-[600px] h-[600px] text-white" />
-        </div>
+      <section id="robotics" className="py-48 px-6 relative z-10 bg-[#1e1b4b] overflow-hidden border-y border-white/5">
         <div className="max-w-7xl mx-auto relative z-10">
            <div className="grid lg:grid-cols-2 gap-32 items-center">
               <motion.div variants={staggerContainer} initial="initial" whileInView="whileInView" className="space-y-10">
-                 <motion.h2 variants={slideInLeft} className="text-white/60 font-black uppercase tracking-widest text-sm italic">Premium Integration</motion.h2>
+                 <motion.h2 variants={slideInLeft} className="text-[#d946ef] font-black uppercase tracking-widest text-sm italic">Premium Integration</motion.h2>
                  <motion.h3 variants={slideInLeft} className="text-7xl font-black tracking-tighter leading-none italic">Future-Ready <br /> <span className="text-[#facc15]">Robotics Academy.</span></motion.h3>
                  <motion.p variants={fadeInUp} className="text-white/80 text-2xl font-medium leading-relaxed italic">
                     We don't just build software; we build engineers. Our premium Robotics and Coding program equips students with real-world technical mastery.
                  </motion.p>
                  <motion.div variants={staggerContainer} className="grid sm:grid-cols-2 gap-8 pt-10">
-                    <motion.div variants={zoomIn} className="bg-white/10 p-10 rounded-[40px] backdrop-blur-3xl border border-white/10">
+                    <motion.div variants={zoomIn} className="bg-white/5 p-10 rounded-[40px] backdrop-blur-3xl border border-white/10">
                        <Code className="w-10 h-10 text-[#facc15] mb-6" />
                        <h4 className="text-2xl font-black mb-4 italic uppercase">Coding Mastery</h4>
                        <p className="text-white/60 text-sm leading-relaxed">Python, JavaScript, and Full-Stack development tracks for institutional deployment.</p>
                     </motion.div>
-                    <motion.div variants={zoomIn} className="bg-white/10 p-10 rounded-[40px] backdrop-blur-3xl border border-white/10">
+                    <motion.div variants={zoomIn} className="bg-white/5 p-10 rounded-[40px] backdrop-blur-3xl border border-white/10">
                        <Rocket className="w-10 h-10 text-[#facc15] mb-6" />
                        <h4 className="text-2xl font-black mb-4 italic uppercase">Hardware & AI</h4>
                        <p className="text-white/60 text-sm leading-relaxed">Hands-on robotics engineering, automated systems, and Artificial Intelligence foundations.</p>
@@ -257,7 +255,7 @@ export default function LandingPage() {
       <section id="enterprise" className="py-48 px-6 relative z-10 bg-white/[0.01]">
          <div className="max-w-7xl mx-auto">
             <motion.div variants={fadeInUp} className="text-center mb-32 space-y-4">
-               <h2 className="text-blue-500 font-black uppercase tracking-widest text-sm italic">Enterprise Technology</h2>
+               <h2 className="text-[#d946ef] font-black uppercase tracking-widest text-sm italic">Enterprise Technology</h2>
                <h3 className="text-6xl font-black tracking-tighter italic">Beyond School Management.</h3>
                <p className="text-slate-500 text-xl font-medium max-w-3xl mx-auto">We build high-performance digital infrastructure for the most ambitious businesses.</p>
             </motion.div>
@@ -267,10 +265,10 @@ export default function LandingPage() {
                   <motion.div 
                     variants={zoomIn}
                     key={i} 
-                    className="bg-white/[0.03] border border-white/10 p-10 rounded-[48px] hover:border-blue-500/50 transition-all group backdrop-blur-3xl"
+                    className="bg-white/[0.03] border border-white/10 p-10 rounded-[48px] hover:border-[#d946ef]/50 transition-all group backdrop-blur-3xl"
                   >
-                    <div className="bg-navy-bg border border-white/5 w-16 h-16 rounded-2xl flex items-center justify-center mb-8 shadow-2xl group-hover:bg-blue-600 transition-all">
-                       <sol.icon className="w-8 h-8 text-blue-500 group-hover:text-white" />
+                    <div className="bg-[#1e1b4b] border border-white/5 w-16 h-16 rounded-2xl flex items-center justify-center mb-8 shadow-2xl group-hover:bg-[#d946ef] transition-all">
+                       <sol.icon className="w-8 h-8 text-[#d946ef] group-hover:text-white" />
                     </div>
                     <h4 className="text-xl font-black mb-4 uppercase tracking-tighter italic">{sol.title}</h4>
                     <p className="text-slate-500 font-medium text-sm leading-relaxed">{sol.desc}</p>
@@ -285,22 +283,22 @@ export default function LandingPage() {
          <div className="max-w-7xl mx-auto">
             <div className="grid lg:grid-cols-2 gap-32 items-center">
                <motion.div variants={slideInLeft} className="space-y-10">
-                  <h2 className="text-blue-500 font-black uppercase tracking-widest text-sm italic">Academic Output</h2>
-                  <h3 className="text-7xl font-black tracking-tighter leading-none italic text-white">Pixel-Perfect <br /> <span className="text-blue-600">Certifications.</span></h3>
+                  <h2 className="text-[#d946ef] font-black uppercase tracking-widest text-sm italic">Academic Output</h2>
+                  <h3 className="text-7xl font-black tracking-tighter leading-none italic text-white">Pixel-Perfect <br /> <span className="text-[#d946ef]">Certifications.</span></h3>
                   <p className="text-slate-400 text-2xl font-medium leading-relaxed italic">
                      Our system generates boardroom-ready academic reports, high-security certificates, and detailed transcripts instantly.
                   </p>
                   <ul className="space-y-6">
                      {['Automated Result Computation', 'High-Security QR-Coded Certificates', 'Interactive Performance Analytics', 'Custom School Branding'].map((item, i) => (
                         <li key={i} className="flex items-center gap-4 text-xl font-black italic text-slate-500 group cursor-default">
-                           <CheckCircle2 className="w-6 h-6 text-blue-600" />
+                           <CheckCircle2 className="w-6 h-6 text-[#d946ef]" />
                            <span className="group-hover:text-white transition-colors">{item}</span>
                         </li>
                      ))}
                   </ul>
                </motion.div>
                <motion.div variants={slideInRight} className="relative group">
-                  <div className="absolute -inset-4 bg-blue-600/20 blur-[100px] opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute -inset-4 bg-[#d946ef]/10 blur-[100px] opacity-0 group-hover:opacity-100 transition-opacity" />
                   <div className="bg-white/5 p-4 rounded-[60px] border border-white/10 shadow-2xl overflow-hidden relative">
                      <img 
                        src="/modern_academic_result_template_1778071423161.png" 
@@ -312,22 +310,25 @@ export default function LandingPage() {
             </div>
          </div>
       </section>
+
+      {/* Voices of Impact Section */}
+      <section className="py-48 px-6 relative z-10 border-t border-white/5">
          <div className="max-w-7xl mx-auto">
             <motion.div variants={fadeInUp} className="text-center mb-24 space-y-4">
-               <h2 className="text-blue-500 font-black uppercase tracking-widest text-sm italic">Voices of Impact</h2>
+               <h2 className="text-[#d946ef] font-black uppercase tracking-widest text-sm italic">Voices of Impact</h2>
                <h3 className="text-6xl font-black tracking-tighter italic">From the Classroom to the World.</h3>
             </motion.div>
             
             <div className="grid md:grid-cols-2 gap-12">
                <motion.div variants={slideInLeft} className="bg-white/[0.02] p-12 rounded-[56px] border border-white/10 space-y-8">
                   <div className="flex items-center gap-6">
-                     <div className="w-20 h-20 rounded-2xl bg-blue-600 flex items-center justify-center font-black text-2xl shadow-xl shadow-blue-500/20 italic">CE</div>
+                     <div className="w-20 h-20 rounded-2xl bg-[#d946ef] flex items-center justify-center font-black text-2xl shadow-xl shadow-magenta-500/20 italic text-white">CE</div>
                      <div>
                         <p className="font-black text-white text-xl">Chidera Eze</p>
                         <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest">JSS3 Student</p>
                      </div>
                   </div>
-                  <p className="text-slate-300 font-bold leading-relaxed italic text-xl italic">
+                  <p className="text-slate-300 font-bold leading-relaxed italic text-xl">
                     "Before Dar-Ark Byte, Coding and Robotics felt like magic from the movies. Now, I am building my own apps and robots. I feel like I have a real future in tech!"
                   </p>
                </motion.div>
@@ -340,7 +341,7 @@ export default function LandingPage() {
                         <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest">Physics Teacher</p>
                      </div>
                   </div>
-                  <p className="text-slate-300 font-bold leading-relaxed italic text-xl italic">
+                  <p className="text-slate-300 font-bold leading-relaxed italic text-xl">
                     "The OS has removed the burden of paperwork. Result computation that used to take days now happens instantly. I can finally focus on teaching my students."
                   </p>
                </motion.div>
@@ -352,24 +353,24 @@ export default function LandingPage() {
       <section id="investment" className="py-48 px-6 relative z-10 border-t border-white/5">
         <div className="max-w-5xl mx-auto text-center space-y-24">
            <div className="space-y-4">
-              <h2 className="text-blue-500 font-black uppercase tracking-widest text-sm">Strategic Investment</h2>
+              <h2 className="text-[#d946ef] font-black uppercase tracking-widest text-sm">Strategic Investment</h2>
               <h3 className="text-6xl font-black tracking-tighter italic">Investment Framework</h3>
            </div>
            
            <div className="grid md:grid-cols-2 gap-12">
-              <motion.div {...fadeInUp} className="bg-white/[0.02] border-2 border-white/10 p-16 rounded-[60px] space-y-10 hover:border-blue-500/50 transition-all">
+              <motion.div {...fadeInUp} className="bg-white/[0.02] border-2 border-white/10 p-16 rounded-[60px] space-y-10 hover:border-[#d946ef]/50 transition-all">
                  <div className="space-y-2">
                    <h4 className="text-3xl font-black italic uppercase">Standard OS</h4>
                    <p className="text-slate-500 text-sm font-bold uppercase tracking-widest italic">All Administrative Modules</p>
                  </div>
-                 <div className="text-7xl font-black text-blue-500 italic">₦1,200<span className="text-xl text-slate-500">/Term</span></div>
+                 <div className="text-7xl font-black text-[#d946ef] italic">₦1,200<span className="text-xl text-slate-500">/Term</span></div>
                  <ul className="space-y-4 text-slate-400 font-medium text-sm">
-                    <li className="flex items-center gap-3 justify-center italic"><CheckCircle2 className="w-4 h-4 text-blue-500" /> Academic Intelligence</li>
-                    <li className="flex items-center gap-3 justify-center italic"><CheckCircle2 className="w-4 h-4 text-blue-500" /> Smart Finance System</li>
-                    <li className="flex items-center gap-3 justify-center italic"><CheckCircle2 className="w-4 h-4 text-blue-500" /> Parent/Student Portals</li>
+                    <li className="flex items-center gap-3 justify-center italic"><CheckCircle2 className="w-4 h-4 text-[#d946ef]" /> Academic Intelligence</li>
+                    <li className="flex items-center gap-3 justify-center italic"><CheckCircle2 className="w-4 h-4 text-[#d946ef]" /> Smart Finance System</li>
+                    <li className="flex items-center gap-3 justify-center italic"><CheckCircle2 className="w-4 h-4 text-[#d946ef]" /> Parent/Student Portals</li>
                  </ul>
               </motion.div>
-              <motion.div {...fadeInUp} className="bg-blue-600 p-16 rounded-[60px] space-y-10 shadow-3xl shadow-blue-500/40 transform scale-105 relative overflow-hidden">
+              <motion.div {...fadeInUp} className="bg-[#d946ef] p-16 rounded-[60px] space-y-10 shadow-3xl shadow-magenta-500/40 transform scale-105 relative overflow-hidden text-white">
                  <div className="absolute top-0 right-0 p-8 opacity-10">
                     <Award className="w-32 h-32 text-white" />
                  </div>
@@ -378,7 +379,7 @@ export default function LandingPage() {
                    <p className="text-white/60 text-sm font-bold uppercase tracking-widest italic">Robotics & Coding Integration</p>
                  </div>
                  <div className="text-7xl font-black text-white italic">₦6,000<span className="text-xl text-white/60">/Term</span></div>
-                 <ul className="space-y-4 text-white/80 font-medium text-sm">
+                 <ul className="space-y-4 text-white font-medium text-sm">
                     <li className="flex items-center gap-3 justify-center italic"><CheckCircle2 className="w-4 h-4 text-[#facc15]" /> Robotics Lab Setup</li>
                     <li className="flex items-center gap-3 justify-center italic"><CheckCircle2 className="w-4 h-4 text-[#facc15]" /> Advanced AI Curriculum</li>
                     <li className="flex items-center gap-3 justify-center italic"><CheckCircle2 className="w-4 h-4 text-[#facc15]" /> Digital Proficiency Certs</li>
@@ -396,7 +397,7 @@ export default function LandingPage() {
       <footer className="py-24 px-6 border-t border-white/5 bg-black/40 relative z-10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
           <div className="flex items-center gap-4">
-             <div className="bg-blue-600 p-2 rounded-xl">
+             <div className="bg-[#d946ef] p-2 rounded-xl shadow-lg shadow-magenta-500/20">
                 <GraduationCap className="w-8 h-8 text-white" />
              </div>
              <span className="text-2xl font-black tracking-tighter uppercase italic">{school?.name || 'Dar-Ark Byte OS'}</span>
@@ -417,7 +418,6 @@ export default function LandingPage() {
   );
 }
 
-// Helper icons that were missing
-const FileText = ({ className }: { className?: string }) => <FileTextIcon className={className} />;
-const LayoutGrid = ({ className }: { className?: string }) => <LayoutGridIcon className={className} />;
-import { FileText as FileTextIcon, LayoutGrid as LayoutGridIcon } from 'lucide-react';
+const FileTextIcon = ({ className }: { className?: string }) => <FileTextIconLucide className={className} />;
+const LayoutGridIcon = ({ className }: { className?: string }) => <LayoutGridIconLucide className={className} />;
+import { FileText as FileTextIconLucide, LayoutGrid as LayoutGridIconLucide } from 'lucide-react';

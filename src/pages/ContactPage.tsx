@@ -19,23 +19,23 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#111827] text-white font-sans overflow-hidden">
+    <div className="min-h-screen bg-[#1e1b4b] text-white font-sans overflow-hidden">
       {/* Background Decor */}
       <div className="fixed inset-0 pointer-events-none opacity-20">
-         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-600/30 rounded-full blur-[150px] -mr-40 -mt-40" />
-         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-indigo-600/30 rounded-full blur-[150px] -ml-40 -mb-40" />
+         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#d946ef]/10 rounded-full blur-[150px] -mr-40 -mt-40" />
+         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[150px] -ml-40 -mb-40" />
       </div>
 
-      <nav className="fixed top-0 w-full z-50 bg-[#111827]/80 backdrop-blur-2xl border-b border-white/5">
+      <nav className="fixed top-0 w-full z-50 bg-[#1e1b4b]/60 backdrop-blur-2xl border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <button onClick={() => navigate(-1)} className="flex items-center gap-3 group text-slate-400 hover:text-white transition-all">
-             <div className="p-2 bg-white/5 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-all">
+             <div className="p-2 bg-white/5 rounded-xl group-hover:bg-[#d946ef] group-hover:text-white transition-all">
                 <ArrowLeft className="w-5 h-5" />
              </div>
              <span className="text-[10px] font-black uppercase tracking-widest">Back to Home</span>
           </button>
           <div className="flex items-center gap-3">
-             <div className="bg-blue-600 p-2 rounded-xl">
+             <div className="bg-[#d946ef] p-2 rounded-xl">
                 <Globe className="w-6 h-6 text-white" />
              </div>
              <span className="text-xl font-black tracking-tighter uppercase italic">Dar-Ark Byte OS</span>
@@ -49,9 +49,9 @@ export default function ContactPage() {
               {/* Left Side: Info */}
               <motion.div initial="initial" animate="animate" className="space-y-16">
                  <div className="space-y-6">
-                    <motion.h2 {...fadeInUp} className="text-blue-500 font-black uppercase tracking-[0.4em] text-sm italic">Contact Infrastructure</motion.h2>
+                    <motion.h2 {...fadeInUp} className="text-[#d946ef] font-black uppercase tracking-[0.4em] text-sm italic">Contact Infrastructure</motion.h2>
                     <motion.h1 {...fadeInUp} className="text-7xl font-black tracking-tighter leading-none italic uppercase">
-                       Let's Build the <br /> <span className="text-blue-600">Future.</span>
+                       Let's Build the <br /> <span className="text-[#d946ef]">Future.</span>
                     </motion.h1>
                     <motion.p {...fadeInUp} className="text-slate-400 text-xl font-medium leading-relaxed max-w-xl">
                        Whether you are a school owner, an enterprise CEO, or a tech visionary, our engineering team is ready to deploy your solution.
@@ -63,7 +63,7 @@ export default function ContactPage() {
                       { icon: Phone, title: 'Voice & WhatsApp', value: '+234 916 960 0724', sub: 'Instant support & inquiries' },
                       { icon: Mail, title: 'Strategic Email', value: 'info@dararkbytes.com', sub: 'Official proposals & partnerships' },
                       { icon: MapPin, title: 'Operational Hub', value: 'Trans Ekulu, Enugu, Nigeria', sub: 'Global tech headquarters' },
-                    ].map((item, i) => (
+                     ].map((item, i) => (
                       <motion.div 
                         initial={{ opacity: 0, x: -50 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -71,8 +71,8 @@ export default function ContactPage() {
                         key={i} 
                         className="flex items-center gap-8 group"
                       >
-                         <div className="w-16 h-16 rounded-[24px] bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-blue-600 transition-all shadow-2xl">
-                            <item.icon className="w-8 h-8 text-blue-500 group-hover:text-white" />
+                         <div className="w-16 h-16 rounded-[24px] bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-[#d946ef] transition-all shadow-2xl">
+                            <item.icon className="w-8 h-8 text-[#d946ef] group-hover:text-white" />
                          </div>
                          <div>
                             <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{item.title}</p>
@@ -99,17 +99,17 @@ export default function ContactPage() {
                     <div className="grid sm:grid-cols-2 gap-8">
                        <div className="space-y-3">
                           <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Full Name</label>
-                          <input type="text" className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm font-bold focus:ring-2 focus:ring-blue-600 transition-all" placeholder="John Doe" />
+                          <input type="text" className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm font-bold focus:ring-2 focus:ring-[#d946ef] transition-all" placeholder="John Doe" />
                        </div>
                        <div className="space-y-3">
                           <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Email Address</label>
-                          <input type="email" className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm font-bold focus:ring-2 focus:ring-blue-600 transition-all" placeholder="john@company.com" />
+                          <input type="email" className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm font-bold focus:ring-2 focus:ring-[#d946ef] transition-all" placeholder="john@company.com" />
                        </div>
                     </div>
 
                     <div className="space-y-3">
                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Project Type</label>
-                       <select className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm font-bold focus:ring-2 focus:ring-blue-600 transition-all text-slate-400">
+                       <select className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm font-bold focus:ring-2 focus:ring-[#d946ef] transition-all text-slate-400">
                           <option>School Operating System</option>
                           <option>Robotics Academy Deployment</option>
                           <option>Enterprise E-Commerce</option>
@@ -119,10 +119,10 @@ export default function ContactPage() {
 
                     <div className="space-y-3">
                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Message</label>
-                       <textarea rows={4} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm font-bold focus:ring-2 focus:ring-blue-600 transition-all" placeholder="Describe your vision..." />
+                       <textarea rows={4} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm font-bold focus:ring-2 focus:ring-[#d946ef] transition-all" placeholder="Describe your vision..." />
                     </div>
 
-                    <button className="w-full bg-blue-600 text-white py-6 rounded-3xl font-black text-xl uppercase italic shadow-2xl shadow-blue-500/20 flex items-center justify-center gap-3 group transition-all hover:bg-blue-700">
+                    <button className="w-full bg-[#d946ef] text-white py-6 rounded-3xl font-black text-xl uppercase italic shadow-2xl shadow-magenta-500/20 flex items-center justify-center gap-3 group transition-all hover:bg-[#c026d3]">
                        Deploy Inquiry
                        <Send className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                     </button>

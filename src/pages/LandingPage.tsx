@@ -1,3 +1,4 @@
+// VERSION: 9.0.2 - MAGENTA OVERRIDE FORCE
 import React from 'react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
@@ -67,10 +68,6 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const { school } = useSchool();
   
-  const isCustomSchool = !!school && school.id !== 'demo-school';
-  const schoolBranding = school?.branding;
-  const identity = schoolBranding?.identity;
-
   const coreSystems = [
     { icon: Brain, title: 'Academic Intelligence', desc: 'Auto-grading & performance analytics.' },
     { icon: Monitor, title: 'CBT / Exam System', desc: 'Auto-marking WAEC/JAMB interface.' },
@@ -93,12 +90,6 @@ export default function LandingPage() {
     { icon: ShieldCheck, title: 'Digital Infrastructure', desc: 'Secure cloud hosting & enterprise network architecture.' },
   ];
 
-  const reviews = [
-    { name: 'Dr. Samuel Okoro', role: 'Principal, Excel Academy', text: 'Dar-Ark Bytes transformed our result processing from weeks to just minutes. Highly recommended!' },
-    { name: 'Engr. Fatima B.', role: 'CEO, TechFlow Ltd', text: 'The mobile app they built for us is world-class. Fast, secure, and very professional.' },
-    { name: 'Mrs. Adebayo', role: 'Proprietress', text: 'Their Robotics training for our students was the highlight of the session. Incredible expertise.' },
-  ];
-
   return (
     <div className="min-h-screen bg-[#1e1b4b] text-white font-sans overflow-x-hidden selection:bg-[#d946ef] selection:text-white">
       {/* Dynamic Background Blobs */}
@@ -116,7 +107,7 @@ export default function LandingPage() {
       </div>
 
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-[#1e1b4b]/60 backdrop-blur-2xl border-b border-white/5">
+      <nav className="fixed top-0 w-full z-50 bg-[#1e1b4b]/80 backdrop-blur-3xl border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="bg-[#d946ef] p-2 rounded-xl shadow-lg shadow-magenta-500/20">
@@ -134,7 +125,7 @@ export default function LandingPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/login')}
-              className="bg-[#d946ef] text-white px-10 py-3.5 rounded-2xl hover:bg-[#c026d3] transition-all shadow-2xl shadow-magenta-500/20"
+              className="bg-[#d946ef] text-white px-10 py-3.5 rounded-2xl hover:bg-[#c026d3] transition-all shadow-2xl shadow-magenta-500/40"
             >
               Portal Login
             </motion.button>
@@ -159,7 +150,7 @@ export default function LandingPage() {
                 whileHover={{ scale: 1.05, y: -5 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate('/login')}
-                className="bg-white text-[#1e1b4b] px-16 py-7 rounded-3xl font-black text-2xl shadow-[0_30px_100px_rgba(255,255,255,0.1)] transition-all"
+                className="bg-white text-[#1e1b4b] px-16 py-7 rounded-3xl font-black text-2xl shadow-[0_30px_100px_rgba(217,70,239,0.2)] transition-all"
               >
                 ACCESS OS PORTAL
               </motion.button>
@@ -171,7 +162,7 @@ export default function LandingPage() {
               >
                 EXPLORE FEATURES
               </motion.a>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
@@ -298,7 +289,7 @@ export default function LandingPage() {
                   </ul>
                </motion.div>
                <motion.div variants={slideInRight} className="relative group">
-                  <div className="absolute -inset-4 bg-[#d946ef]/10 blur-[100px] opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute -inset-4 bg-[#d946ef]/20 blur-[100px] opacity-0 group-hover:opacity-100 transition-opacity" />
                   <div className="bg-white/5 p-4 rounded-[60px] border border-white/10 shadow-2xl overflow-hidden relative">
                      <img 
                        src="/modern_academic_result_template_1778071423161.png" 
@@ -407,9 +398,9 @@ export default function LandingPage() {
                © 2026 DAR-ARK BYTE SOLUTIONS | HIGH-FIDELITY ARCHITECTURAL DEPLOYMENT
              </p>
              <div className="flex gap-8 text-[9px] font-black uppercase tracking-widest text-slate-500">
-                <a href="#ecosystem" className="hover:text-white">Privacy Protocol</a>
-                <a href="#robotics" className="hover:text-white">Service Infrastructure</a>
-                <a href="#investment" className="hover:text-white">Investment Terms</a>
+                <a href="#" className="hover:text-white">Privacy Protocol</a>
+                <a href="#" className="hover:text-white">Service Infrastructure</a>
+                <a href="#" className="hover:text-white">Investment Terms</a>
              </div>
           </div>
         </div>

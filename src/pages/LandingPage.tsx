@@ -173,7 +173,7 @@ export default function LandingPage() {
           <motion.div variants={fadeInUp} className="text-center mb-32 space-y-4">
              <motion.h2 variants={slideInLeft} className="text-[#d946ef] font-black uppercase tracking-widest text-sm">Operational Ecosystem</motion.h2>
              <motion.h3 variants={slideInRight} className="text-6xl font-black tracking-tighter">The 14 Core OS Pillars</motion.h3>
-             <motion.p variants={zoomIn} className="text-slate-500 text-xl font-medium max-w-3xl mx-auto">Everything you need to run a modern, technology-driven institution in one unified platform.</p>
+             <motion.p variants={zoomIn} className="text-slate-500 text-xl font-medium max-w-3xl mx-auto">Everything you need to run a modern, technology-driven institution in one unified platform.</motion.p>
           </motion.div>
           <motion.div 
             variants={staggerContainer}
@@ -195,7 +195,7 @@ export default function LandingPage() {
                 <p className="text-slate-500 font-medium text-sm leading-relaxed">{s.desc}</p>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 

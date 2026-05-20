@@ -27,6 +27,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (localStorage.getItem('demo_mode') === 'true') {
+      setUser({ uid: 'demo_user', email: 'admin@greenfield.edu.ng' } as User);
+      setUserProfile({
+        uid: 'demo_user',
+        email: 'admin@greenfield.edu.ng',
+        displayName: 'Demo School Admin',
+        role: 'school-admin',
+        schoolId: 'greenfield-demo',
+        metadata: { isDemo: true }
+      });
+      setLoading(false);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
       if (user) {
@@ -106,6 +120,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = async () => {
+    if (localStorage.getItem('demo_mode') === 'true') {
+      localStorage.removeItem('demo_mode');
+      localStorage.removeItem('impersonated_school_id');
+      window.location.href = '/login';
+      return;
+    }
     await signOut(auth);
   };
 

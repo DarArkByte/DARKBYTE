@@ -64,22 +64,11 @@ export default function LoginPage() {
       const result = await seedDemoSchool();
       setDemoStatus(result.message);
 
-      // Step 2: Sign in anonymously so the app has an auth user
+      // Step 2: Bypass Firebase Auth and use local demo state
       setDemoStatus('Authenticating demo session...');
-      const credential = await signInAnonymously(auth);
-      const uid = credential.user.uid;
+      localStorage.setItem('demo_mode', 'true');
 
-      // Step 3: Write a school-admin profile for this anonymous session
-      await setDoc(doc(db, 'users', uid), {
-        uid,
-        email: 'admin@greenfield.edu.ng',
-        displayName: 'Demo School Admin',
-        role: 'school-admin',
-        schoolId: DEMO_SCHOOL_ID,
-        metadata: { isDemo: true },
-      }, { merge: true });
-
-      // Step 4: Set the impersonation flag
+      // Step 3: Set the impersonation flag
       localStorage.setItem('impersonated_school_id', DEMO_SCHOOL_ID);
       setDemoStatus('Launching Greenfield Academy...');
       setTimeout(() => { window.location.href = '/dashboard'; }, 800);

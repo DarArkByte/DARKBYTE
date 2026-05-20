@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSchool } from '../../hooks/useSchool';
 import { db } from '../../lib/firebase';
-import { collection, query, where, getDocs, addDoc, doc, updateDoc } from 'firebase/firestore';
-import { Plus, Users, Layers, Search, ChevronRight, Settings2, Loader2 } from 'lucide-react';
+import { collection, onSnapshot, addDoc } from 'firebase/firestore';
+import { Plus, Users, Layers, Search, ChevronRight, Loader2 } from 'lucide-react';
 import { Class, Section } from '../../types';
 
 export default function ClassesPage() {
@@ -14,41 +14,40 @@ export default function ClassesPage() {
   const [isCreating, setIsCreating] = useState(false);
   const [newClassName, setNewClassName] = useState('');
 
-  const fetchData = async () => {
+  useEffect(() => {
     if (!school?.id) return;
     setLoading(true);
-    try {
-      const q = query(collection(db, 'classes'), where('schoolId', '==', school.id));
-      const querySnapshot = await getDocs(q);
-      const classesData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Class));
-      setClasses(classesData);
 
-      const sQ = query(collection(db, 'sections'), where('schoolId', '==', school.id));
-      const sSnapshot = await getDocs(sQ);
-      const sectionsData = sSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Section));
-      setSections(sectionsData);
-    } catch (err) {
-      console.error('Error fetching classes:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    // Use school subcollections — the correct multi-tenant path
+    const unsubClasses = onSnapshot(
+      collection(db, 'schools', school.id, 'classes'),
+      (snap) => {
+        setClasses(snap.docs.map(d => ({ id: d.id, ...d.data() } as Class)));
+        setLoading(false);
+      },
+      (err) => { console.error(err); setLoading(false); }
+    );
 
-  useEffect(() => {
-    fetchData();
+    const unsubSections = onSnapshot(
+      collection(db, 'schools', school.id, 'sections'),
+      (snap) => setSections(snap.docs.map(d => ({ id: d.id, ...d.data() } as Section)))
+    );
+
+    return () => { unsubClasses(); unsubSections(); };
   }, [school?.id]);
 
   const handleCreateClass = async () => {
     if (!newClassName.trim() || !school?.id) return;
     try {
-      await addDoc(collection(db, 'classes'), {
+      await addDoc(collection(db, 'schools', school.id, 'classes'), {
         name: newClassName,
         schoolId: school.id,
-        formTeacherId: null
+        formTeacherId: null,
+        usePositions: true,
+        assessmentType: 'numerical',
       });
       setNewClassName('');
       setIsCreating(false);
-      fetchData();
     } catch (err) {
       alert('Error creating class');
     }

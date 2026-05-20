@@ -23,7 +23,12 @@ export default function AttendancePage() {
   const fetchStudents = async () => {
     setLoading(true);
     try {
-      const q = query(collection(db, 'students'), where('schoolId', '==', school?.id));
+      // Students are stored in 'users' collection with role='student'
+      const q = query(
+        collection(db, 'users'),
+        where('schoolId', '==', school?.id),
+        where('role', '==', 'student')
+      );
       const snapshot = await getDocs(q);
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setStudents(data);

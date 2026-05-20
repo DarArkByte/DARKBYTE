@@ -1,18 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Database, Plus, Search, HelpCircle, Layers, CheckCircle2, MoreVertical, Edit2, Trash2 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { collection, query, onSnapshot } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
+import { useSchool } from '../../hooks/useSchool';
 import { QuestionBank } from '../../types';
 
 export default function QuestionBankPage() {
+  const { school } = useSchool();
   const [search, setSearch] = useState('');
   const [filterClass, setFilterClass] = useState('All');
+  const [questions, setQuestions] = useState<QuestionBank[]>([]);
 
-  // Dummy data
-  const questions: QuestionBank[] = [
-    { id: '1', schoolId: 's1', subjectId: 'Mathematics', classId: 'JSS 1', questionText: 'What is the square root of 144?', type: 'multiple-choice', difficulty: 'easy', options: [{ id: 'a', text: '12', isCorrect: true }, { id: 'b', text: '14', isCorrect: false }] },
-    { id: '2', schoolId: 's1', subjectId: 'English Language', classId: 'JSS 2', questionText: 'Write a short essay on "The impact of technology on education".', type: 'essay', difficulty: 'hard' },
-    { id: '3', schoolId: 's1', subjectId: 'Physics', classId: 'SSS 1', questionText: 'State Newton\'s first law of motion.', type: 'essay', difficulty: 'medium' },
-  ];
+  useEffect(() => {
+    if (!school?.id) return;
+
+    const q = query(collection(db, 'schools', school.id, 'question_bank'));
+    const unsub = onSnapshot(q, (snapshot) => {
+      setQuestions(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as QuestionBank)));
+    });
+
+    return () => unsub();
+  }, [school?.id]);
 
   const filteredQuestions = questions.filter(q => 
     (filterClass === 'All' || q.classId === filterClass) && 

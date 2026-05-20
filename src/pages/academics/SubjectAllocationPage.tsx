@@ -1,31 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSchool } from '../../hooks/useSchool';
-import { BookOpen, Search, CheckCircle2, AlertTriangle, Plus, Users } from 'lucide-react';
+import { BookOpen, Search, CheckCircle2, AlertTriangle, Plus, Users, Save } from 'lucide-react';
 import { motion } from 'motion/react';
+import { collection, query, onSnapshot, doc, updateDoc } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
+import { Subject, Class } from '../../types';
 
 export default function SubjectAllocationPage() {
   const { school } = useSchool();
-  const [selectedClass, setSelectedClass] = useState('JSS 1');
+  const [selectedClassId, setSelectedClassId] = useState('');
   const [search, setSearch] = useState('');
+  const [allSubjects, setAllSubjects] = useState<Subject[]>([]);
+  const [classes, setClasses] = useState<Class[]>([]);
 
-  // Dummy subjects database
-  const allSubjects = [
-    { id: '1', name: 'Mathematics' },
-    { id: '2', name: 'English Language' },
-    { id: '3', name: 'Basic Science' },
-    { id: '4', name: 'Agricultural Science' },
-    { id: '5', name: 'French' },
-    { id: '6', name: 'Christian Religious Studies' },
-    { id: '7', name: 'Islamic Religious Studies' },
-    { id: '8', name: 'Home Economics' },
-  ];
+  useEffect(() => {
+    if (!school?.id) return;
 
-  // Dummy allocation state for selected class
+    const subjectsQ = query(collection(db, 'schools', school.id, 'subjects'));
+    const unsubSub = onSnapshot(subjectsQ, (snap) => {
+      setAllSubjects(snap.docs.map(d => ({ id: d.id, ...d.data() } as Subject)));
+    });
+
+    const classesQ = query(collection(db, 'schools', school.id, 'classes'));
+    const unsubClass = onSnapshot(classesQ, (snap) => {
+      const cls = snap.docs.map(d => ({ id: d.id, ...d.data() } as Class));
+      setClasses(cls);
+      if (cls.length > 0 && !selectedClassId) {
+        setSelectedClassId(cls[0].id);
+      }
+    });
+
+    return () => { unsubSub(); unsubClass(); };
+  }, [school?.id]);
+
+  // Dummy allocation state for selected class (to be hooked up to class doc later)
   const [allocation, setAllocation] = useState({
-    compulsory: ['1', '2', '3'],
-    optional: ['4', '5', '6', '7', '8'],
+    compulsory: [] as string[],
+    optional: [] as string[],
     minOptionalRequired: 2,
   });
+
+  // Load allocation when class changes
+  useEffect(() => {
+    const selected = classes.find(c => c.id === selectedClassId);
+    if (selected) {
+       setAllocation({
+         compulsory: selected.compulsorySubjects || [],
+         optional: selected.optionalSubjects || [],
+         minOptionalRequired: selected.minOptionalRequired || 2,
+       });
+    }
+  }, [selectedClassId, classes]);
 
   const filteredSubjects = allSubjects.filter(s => s.name.toLowerCase().includes(search.toLowerCase()));
 
@@ -44,6 +69,21 @@ export default function SubjectAllocationPage() {
       
       return { ...prev, compulsory: comp, optional: opt };
     });
+  };
+
+  const handleSave = async () => {
+    if (!school?.id || !selectedClassId) return;
+    try {
+      await updateDoc(doc(db, 'schools', school.id, 'classes', selectedClassId), {
+        compulsorySubjects: allocation.compulsory,
+        optionalSubjects: allocation.optional,
+        minOptionalRequired: allocation.minOptionalRequired,
+      });
+      alert('Subject allocation saved successfully!');
+    } catch (e) {
+      console.error(e);
+      alert('Error saving allocation.');
+    }
   };
 
   return (
@@ -82,13 +122,13 @@ export default function SubjectAllocationPage() {
               <Users className="text-teal-600" /> Target Class
             </h3>
             <select 
-              value={selectedClass}
-              onChange={(e) => setSelectedClass(e.target.value)}
+              value={selectedClassId}
+              onChange={(e) => setSelectedClassId(e.target.value)}
               className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 font-bold text-gray-700 focus:ring-2 focus:ring-teal-500 cursor-pointer mb-6"
             >
-              <option value="JSS 1">JSS 1</option>
-              <option value="JSS 2">JSS 2</option>
-              <option value="SSS 1">SSS 1</option>
+              {classes.map(c => (
+                 <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
             </select>
 
             <div className="pt-6 border-t border-gray-100">
@@ -110,9 +150,15 @@ export default function SubjectAllocationPage() {
           <div className="bg-amber-50 border border-amber-200 rounded-3xl p-6">
             <AlertTriangle className="w-8 h-8 text-amber-500 mb-4" />
             <h3 className="font-bold text-amber-900 mb-2">Important Notice</h3>
-            <p className="text-sm text-amber-800 leading-relaxed">
+            <p className="text-sm text-amber-800 leading-relaxed mb-6">
               Changing compulsory subjects mid-term will immediately update the report card structures for all students in this class. Ensure you Save before exiting.
             </p>
+            <button 
+              onClick={handleSave}
+              className="w-full flex items-center justify-center gap-2 bg-teal-600 text-white font-bold px-4 py-3 rounded-xl hover:bg-teal-700 transition-colors shadow-lg shadow-teal-500/30"
+            >
+              <Save className="w-5 h-5" /> Save Allocation
+            </button>
           </div>
         </div>
 

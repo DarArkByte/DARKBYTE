@@ -1,15 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Mail, Send, Inbox, MessageSquare, Plus, CheckCircle2, User, FileText, Smartphone } from 'lucide-react';
 import { motion } from 'motion/react';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
+import { useSchool } from '../../hooks/useSchool';
 
 export default function MessagesPage() {
+  const { school } = useSchool();
   const [activeTab, setActiveTab] = useState<'inbox' | 'sent' | 'parents' | 'broadcast'>('inbox');
+  const [messages, setMessages] = useState<any[]>([]);
 
-  // Dummy data
-  const messages = [
-    { id: '1', sender: 'Mrs. Smith', subject: 'Math Assignment Update', preview: 'Please note the deadline has been extended...', date: 'Today, 09:41 AM', read: false, type: 'internal' },
-    { id: '2', sender: 'Admin Office', subject: 'Mid-Term Break', preview: 'The school will be closing for mid-term...', date: 'Yesterday', read: true, type: 'internal' },
-  ];
+  useEffect(() => {
+    if (!school?.id) return;
+
+    const q = query(collection(db, 'schools', school.id, 'messages'));
+    const unsub = onSnapshot(q, (snapshot) => {
+      setMessages(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    });
+
+    return () => unsub();
+  }, [school?.id]);
 
   return (
     <div className="space-y-8 pb-12 h-[calc(100vh-8rem)] flex flex-col">
@@ -84,35 +94,41 @@ export default function MessagesPage() {
              </div>
           ) : (
             <div className="flex-1 overflow-y-auto">
-              <div className="divide-y divide-gray-50">
-                {messages.map((msg, idx) => (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.05 }}
-                    key={msg.id} 
-                    className={`p-6 hover:bg-gray-50 transition-colors cursor-pointer flex gap-4 ${!msg.read && activeTab === 'inbox' ? 'bg-indigo-50/30' : ''}`}
-                  >
-                    <div className="w-12 h-12 rounded-full bg-gray-100 shrink-0 flex items-center justify-center text-gray-500">
-                      <User className="w-6 h-6" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <h3 className={`text-sm truncate ${!msg.read && activeTab === 'inbox' ? 'font-black text-gray-900' : 'font-bold text-gray-700'}`}>
-                          {msg.sender}
-                        </h3>
-                        <span className={`text-xs whitespace-nowrap ${!msg.read && activeTab === 'inbox' ? 'font-bold text-indigo-600' : 'font-medium text-gray-400'}`}>
-                          {msg.date}
-                        </span>
+              {messages.length === 0 ? (
+                <div className="p-12 text-center text-gray-400 font-bold">
+                  No messages found in this folder.
+                </div>
+              ) : (
+                <div className="divide-y divide-gray-50">
+                  {messages.map((msg, idx) => (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.05 }}
+                      key={msg.id} 
+                      className={`p-6 hover:bg-gray-50 transition-colors cursor-pointer flex gap-4 ${!msg.read && activeTab === 'inbox' ? 'bg-indigo-50/30' : ''}`}
+                    >
+                      <div className="w-12 h-12 rounded-full bg-gray-100 shrink-0 flex items-center justify-center text-gray-500">
+                        <User className="w-6 h-6" />
                       </div>
-                      <p className={`text-sm mb-1 truncate ${!msg.read && activeTab === 'inbox' ? 'font-bold text-gray-900' : 'font-medium text-gray-900'}`}>
-                        {msg.subject}
-                      </p>
-                      <p className="text-sm text-gray-500 truncate">{msg.preview}</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between mb-1">
+                          <h3 className={`text-sm truncate ${!msg.read && activeTab === 'inbox' ? 'font-black text-gray-900' : 'font-bold text-gray-700'}`}>
+                            {msg.sender || 'Unknown Sender'}
+                          </h3>
+                          <span className={`text-xs whitespace-nowrap ${!msg.read && activeTab === 'inbox' ? 'font-bold text-indigo-600' : 'font-medium text-gray-400'}`}>
+                            {msg.date || new Date(msg.createdAt).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <p className={`text-sm mb-1 truncate ${!msg.read && activeTab === 'inbox' ? 'font-bold text-gray-900' : 'font-medium text-gray-900'}`}>
+                          {msg.subject || 'No Subject'}
+                        </p>
+                        <p className="text-sm text-gray-500 truncate">{msg.preview || msg.content}</p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 

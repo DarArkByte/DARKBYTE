@@ -14,7 +14,7 @@ export default function FeeManager() {
   useEffect(() => {
     if (!school?.id) return;
 
-    const q = query(collection(db, 'schools', school.id, 'finance'));
+    const q = query(collection(db, 'fee_invoices'), where('schoolId', '==', school.id));
     const unsub = onSnapshot(q, (snapshot) => {
       setFinanceData(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
       setLoading(false);
@@ -23,10 +23,15 @@ export default function FeeManager() {
     return () => unsub();
   }, [school?.id]);
 
+  // Aggregate stats
+  const totalExpected = financeData.reduce((acc, curr) => acc + (curr.amount || 0), 0);
+  const totalCollected = financeData.reduce((acc, curr) => acc + (curr.paidAmount || 0), 0);
+  const totalFloat = 4200000; // Placeholder for E-Wallet float
+
   const stats = [
-    { label: 'Expected Revenue', value: '₦45.2M', icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { label: 'Collected', value: '₦' + (financeData.reduce((acc, curr) => acc + (curr.paid || 0), 0) / 1000000).toFixed(1) + 'M', icon: CreditCard, color: 'text-blue-600', bg: 'bg-blue-50' },
-    { label: 'Wallet Float', value: '₦4.2M', icon: Wallet, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+    { label: 'Expected Revenue', value: '₦' + (totalExpected / 1000000).toFixed(2) + 'M', icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Collected', value: '₦' + (totalCollected / 1000000).toFixed(2) + 'M', icon: CreditCard, color: 'text-blue-600', bg: 'bg-blue-50' },
+    { label: 'Wallet Float', value: '₦' + (totalFloat / 1000000).toFixed(2) + 'M', icon: Wallet, color: 'text-indigo-600', bg: 'bg-indigo-50' },
   ];
 
   const sendWhatsAppReminder = (name: string, balance: string) => {
@@ -106,6 +111,7 @@ export default function FeeManager() {
             </thead>
             <tbody className="divide-y divide-gray-50">
               {activeTab === 'e-wallet' ? (
+                // Keeping e-wallet as placeholder since we don't have e-wallet transactions seeded yet
                 [
                   { name: 'Adewale Musa', balance: '₦12,500', last: 'Canteen (₦500)', status: 'active' },
                   { name: 'Chisom Okafor', balance: '₦3,200', last: 'Bookstore (₦1,200)', status: 'low' },
@@ -131,41 +137,43 @@ export default function FeeManager() {
                   </tr>
                 ))
               ) : (
-                [
-                  { name: 'Adewale Musa', total: '₦125,000', paid: '₦125,000', status: 'paid' },
-                  { name: 'Chisom Okafor', total: '₦125,000', paid: '₦40,000', status: 'partial' },
-                  { name: 'Fatima Yusuf', total: '₦125,000', paid: '₦0', status: 'owing' },
-                ].map((row, i) => (
-                  <tr key={i} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="p-4">
-                      <p className="font-bold text-gray-900">{row.name}</p>
-                      <p className="text-xs text-gray-400">JSS 2 Diamond</p>
-                    </td>
-                    <td className="p-4 font-black text-gray-900">{row.total}</td>
-                    <td className="p-4 font-bold text-emerald-600">{row.paid}</td>
-                    <td className="p-4">
-                      <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
-                        row.status === 'paid' ? 'bg-emerald-100 text-emerald-700' :
-                        row.status === 'partial' ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'
-                      }`}>
-                        {row.status}
-                      </span>
-                    </td>
-                    <td className="p-4 flex items-center gap-2">
-                      <button className="p-2 hover:bg-gray-200 rounded-lg transition-colors">
-                        <Receipt className="w-5 h-5 text-gray-400" />
-                      </button>
-                      {(row.status === 'owing' || row.status === 'partial') && (
-                        <button 
-                          onClick={() => sendWhatsAppReminder(row.name, (parseInt(row.total.replace(/\D/g,'')) - parseInt(row.paid.replace(/\D/g,''))).toLocaleString())}
-                          className="p-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors"
-                        >
-                          <MessageCircle className="w-5 h-5" />
-                        </button>
-                      )}
-                    </td>
+                financeData.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="p-8 text-center text-gray-400 font-bold">No invoices found for this school.</td>
                   </tr>
-                ))
+                ) : (
+                  financeData.map((row) => (
+                    <tr key={row.id} className="hover:bg-gray-50/50 transition-colors">
+                      <td className="p-4">
+                        <p className="font-bold text-gray-900">{row.studentId}</p>
+                        <p className="text-xs text-gray-400">Invoice: {row.id.slice(0, 8)}</p>
+                      </td>
+                      <td className="p-4 font-black text-gray-900">₦{row.amount?.toLocaleString()}</td>
+                      <td className="p-4 font-bold text-emerald-600">₦{row.paidAmount?.toLocaleString() || 0}</td>
+                      <td className="p-4">
+                        <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
+                          row.status === 'paid' ? 'bg-emerald-100 text-emerald-700' :
+                          row.status === 'partial' ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'
+                        }`}>
+                          {row.status || 'owing'}
+                        </span>
+                      </td>
+                      <td className="p-4 flex items-center gap-2">
+                        <button className="p-2 hover:bg-gray-200 rounded-lg transition-colors">
+                          <Receipt className="w-5 h-5 text-gray-400" />
+                        </button>
+                        {(row.status === 'owing' || row.status === 'partial') && (
+                          <button 
+                            onClick={() => sendWhatsAppReminder(row.studentId, ((row.amount || 0) - (row.paidAmount || 0)).toLocaleString())}
+                            className="p-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors"
+                          >
+                            <MessageCircle className="w-5 h-5" />
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )
               )}
             </tbody>
           </table>

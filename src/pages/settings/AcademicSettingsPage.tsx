@@ -1,15 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSchool } from '../../hooks/useSchool';
-import { Settings, LayoutTemplate, Calculator, CheckCircle2, Save, Users, AlertCircle } from 'lucide-react';
+import { Settings, LayoutTemplate, Calculator, CheckCircle2, Save, Users, AlertCircle, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
-import { GradeRange } from '../../types';
+import { GradeRange, Class } from '../../types';
 import { db } from '../../lib/firebase';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, onSnapshot, collection } from 'firebase/firestore';
 
 export default function AcademicSettingsPage() {
   const { school } = useSchool();
   const [activeTab, setActiveTab] = useState<'templates' | 'grading' | 'classes'>('templates');
-  const [selectedTheme, setSelectedTheme] = useState('nigerian-standard');
+  const [selectedTheme, setSelectedTheme] = useState(school?.settings?.reportCardTheme || 'nigerian-standard');
+  const [classesConfig, setClassesConfig] = useState<Class[]>([]);
+  const [loadingClasses, setLoadingClasses] = useState(true);
+
+  // Load real classes from firestore
+  useEffect(() => {
+    if (!school?.id) return;
+    const unsub = onSnapshot(collection(db, 'schools', school.id, 'classes'), (snap) => {
+      setClassesConfig(snap.docs.map(d => ({ id: d.id, ...d.data() } as Class)));
+      setLoadingClasses(false);
+    });
+    return () => unsub();
+  }, [school?.id]);
+
+  // Sync theme from school settings when loaded
+  useEffect(() => {
+    if (school?.settings?.reportCardTheme) {
+      setSelectedTheme(school.settings.reportCardTheme);
+    }
+  }, [school?.settings?.reportCardTheme]);
 
   const themes = [
     { id: 'nigerian-standard', name: 'Nigerian Standard', desc: 'Traditional layout with psychomotor & affective domains.' },
@@ -19,17 +38,19 @@ export default function AcademicSettingsPage() {
     { id: 'creche-observational', name: 'Creche / Early Years', desc: 'Specialized layout for observational metrics only.' },
   ];
 
-  const [gradingScale, setGradingScale] = useState<GradeRange[]>([
-    { label: 'A1', min: 75, max: 100, remark: 'Excellent' },
-    { label: 'B2', min: 70, max: 74, remark: 'Very Good' },
-    { label: 'B3', min: 65, max: 69, remark: 'Good' },
-    { label: 'C4', min: 60, max: 64, remark: 'Credit' },
-    { label: 'C5', min: 55, max: 59, remark: 'Credit' },
-    { label: 'C6', min: 50, max: 54, remark: 'Credit' },
-    { label: 'D7', min: 45, max: 49, remark: 'Pass' },
-    { label: 'E8', min: 40, max: 44, remark: 'Pass' },
-    { label: 'F9', min: 0, max: 39, remark: 'Fail' },
-  ]);
+  const [gradingScale, setGradingScale] = useState<GradeRange[]>(
+    school?.settings?.gradingSystem || [
+      { label: 'A1', min: 75, max: 100, remark: 'Excellent' },
+      { label: 'B2', min: 70, max: 74, remark: 'Very Good' },
+      { label: 'B3', min: 65, max: 69, remark: 'Good' },
+      { label: 'C4', min: 60, max: 64, remark: 'Credit' },
+      { label: 'C5', min: 55, max: 59, remark: 'Credit' },
+      { label: 'C6', min: 50, max: 54, remark: 'Credit' },
+      { label: 'D7', min: 45, max: 49, remark: 'Pass' },
+      { label: 'E8', min: 40, max: 44, remark: 'Pass' },
+      { label: 'F9', min: 0, max: 39, remark: 'Fail' },
+    ]
+  );
 
   const [classesConfig, setClassesConfig] = useState([
     { id: '1', name: 'JSS 1', usePositions: false, assessmentType: 'numerical' },
@@ -37,12 +58,18 @@ export default function AcademicSettingsPage() {
     { id: '3', name: 'Creche', usePositions: false, assessmentType: 'observational' },
   ]);
 
-  const toggleClassPosition = (id: string) => {
-    setClassesConfig(classesConfig.map(c => c.id === id ? { ...c, usePositions: !c.usePositions } : c));
+  const toggleClassPosition = async (classId: string, current: boolean) => {
+    if (!school?.id) return;
+    try {
+      await updateDoc(doc(db, 'schools', school.id, 'classes', classId), { usePositions: !current });
+    } catch (e) { console.error(e); }
   };
 
-  const changeAssessmentType = (id: string, type: 'numerical' | 'observational') => {
-    setClassesConfig(classesConfig.map(c => c.id === id ? { ...c, assessmentType: type } : c));
+  const changeAssessmentType = async (classId: string, type: 'numerical' | 'observational') => {
+    if (!school?.id) return;
+    try {
+      await updateDoc(doc(db, 'schools', school.id, 'classes', classId), { assessmentType: type });
+    } catch (e) { console.error(e); }
   };
   const handleSave = async () => {
     if (!school?.id) return;
@@ -196,50 +223,56 @@ export default function AcademicSettingsPage() {
               </div>
 
               <div className="space-y-4">
-                {classesConfig.map(cls => (
-                  <div key={cls.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-6 border border-gray-100 rounded-2xl hover:border-gray-200 transition-all bg-gray-50/30">
-                    <div>
-                      <h3 className="font-bold text-gray-900 text-lg mb-1">{cls.name}</h3>
-                      <div className="flex items-center gap-2 text-sm text-gray-500">
-                        {cls.assessmentType === 'observational' ? (
-                          <span className="flex items-center gap-1 text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md font-bold">
-                            Observational Only
-                          </span>
-                        ) : (
-                          <span className="flex items-center gap-1 text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md font-bold">
-                            Numerical Grading
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-6 mt-4 sm:mt-0">
-                      <div className="flex flex-col items-center">
-                        <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Show Positions</span>
-                        <button 
-                          onClick={() => toggleClassPosition(cls.id)}
-                          className={`w-12 h-6 rounded-full transition-colors relative ${cls.usePositions ? 'bg-indigo-500' : 'bg-gray-200'}`}
-                        >
-                          <span className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${cls.usePositions ? 'left-7' : 'left-1'}`} />
-                        </button>
-                      </div>
-
-                      <div className="w-px h-10 bg-gray-200 hidden sm:block" />
-
+                {loadingClasses ? (
+                  <div className="py-10 text-center"><Loader2 className="w-8 h-8 animate-spin mx-auto text-indigo-600" /></div>
+                ) : classesConfig.length === 0 ? (
+                  <p className="text-gray-400 font-bold text-center py-10">No classes found. Add classes first from the Classes page.</p>
+                ) : (
+                  classesConfig.map(cls => (
+                    <div key={cls.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-6 border border-gray-100 rounded-2xl hover:border-gray-200 transition-all bg-gray-50/30">
                       <div>
-                         <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 block">Assessment</span>
-                         <select 
-                           value={cls.assessmentType}
-                           onChange={(e) => changeAssessmentType(cls.id, e.target.value as any)}
-                           className="text-sm font-bold text-gray-700 bg-white border border-gray-200 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-indigo-500 cursor-pointer"
-                         >
-                           <option value="numerical">Numerical</option>
-                           <option value="observational">Observational</option>
-                         </select>
+                        <h3 className="font-bold text-gray-900 text-lg mb-1">{cls.name}</h3>
+                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                          {cls.assessmentType === 'observational' ? (
+                            <span className="flex items-center gap-1 text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md font-bold">
+                              Observational Only
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-1 text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md font-bold">
+                              Numerical Grading
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-6 mt-4 sm:mt-0">
+                        <div className="flex flex-col items-center">
+                          <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Show Positions</span>
+                          <button 
+                            onClick={() => toggleClassPosition(cls.id, cls.usePositions || false)}
+                            className={`w-12 h-6 rounded-full transition-colors relative ${cls.usePositions ? 'bg-indigo-500' : 'bg-gray-200'}`}
+                          >
+                            <span className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${cls.usePositions ? 'left-7' : 'left-1'}`} />
+                          </button>
+                        </div>
+
+                        <div className="w-px h-10 bg-gray-200 hidden sm:block" />
+
+                        <div>
+                           <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 block">Assessment</span>
+                           <select 
+                             value={cls.assessmentType || 'numerical'}
+                             onChange={(e) => changeAssessmentType(cls.id, e.target.value as any)}
+                             className="text-sm font-bold text-gray-700 bg-white border border-gray-200 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                           >
+                             <option value="numerical">Numerical</option>
+                             <option value="observational">Observational</option>
+                           </select>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
 
               <div className="mt-8 bg-amber-50 border border-amber-200 p-4 rounded-xl flex gap-4 text-amber-800">

@@ -110,8 +110,6 @@ export const DEMO_STAFF: StaffSalary[] = [
   { id: 'sal-02', staffId: 'teacher-02', baseSalary: 150000, allowances: 10000, deductions: 0, netPay: 160000, status: 'pending' }
 ];
 
-];
-
 export const DEMO_ADMISSIONS = [
   { id: 'adm-001', studentName: 'Chidi Okoro', targetClass: 'JSS 1', parentPhone: '08123456789', status: 'exam-scheduled', examDate: new Date().toISOString().split('T')[0], examStatus: 'pending' },
   { id: 'adm-002', studentName: 'Fatima Yusuf', targetClass: 'SSS 1', parentPhone: '09087654321', status: 'accepted', examScore: 88, examStatus: 'completed' },

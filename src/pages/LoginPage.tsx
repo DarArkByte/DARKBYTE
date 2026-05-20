@@ -5,14 +5,21 @@
 
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { GraduationCap, Zap, ShieldAlert } from 'lucide-react';
+import { GraduationCap, Zap, ShieldAlert, FlaskConical, Loader2, School } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { seedDemoSchool, DEMO_SCHOOL_ID } from '../services/seedDemoSchool';
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { signInAnonymously } from 'firebase/auth';
+import { auth } from '../lib/firebase';
 
 export default function LoginPage() {
   const { login, resetPassword, user } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [demoLoading, setDemoLoading] = useState(false);
+  const [demoStatus, setDemoStatus] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showForgot, setShowForgot] = useState(false);
@@ -45,22 +52,87 @@ export default function LoginPage() {
   };
 
   const forceEntry = () => {
-    localStorage.clear(); // Clear any UI state blocks
+    localStorage.clear();
     window.location.href = '/dashboard';
+  };
+
+  const handleDemoLogin = async () => {
+    setDemoLoading(true);
+    setDemoStatus('Preparing demo school...');
+    try {
+      // Step 1: Seed the school data
+      const result = await seedDemoSchool();
+      setDemoStatus(result.message);
+
+      // Step 2: Sign in anonymously so the app has an auth user
+      setDemoStatus('Authenticating demo session...');
+      const credential = await signInAnonymously(auth);
+      const uid = credential.user.uid;
+
+      // Step 3: Write a school-admin profile for this anonymous session
+      await setDoc(doc(db, 'users', uid), {
+        uid,
+        email: 'admin@greenfield.edu.ng',
+        displayName: 'Demo School Admin',
+        role: 'school-admin',
+        schoolId: DEMO_SCHOOL_ID,
+        metadata: { isDemo: true },
+      }, { merge: true });
+
+      // Step 4: Set the impersonation flag
+      localStorage.setItem('impersonated_school_id', DEMO_SCHOOL_ID);
+      setDemoStatus('Launching Greenfield Academy...');
+      setTimeout(() => { window.location.href = '/dashboard'; }, 800);
+    } catch (err: any) {
+      setError('Demo launch failed: ' + (err.message || 'Unknown error'));
+      setDemoLoading(false);
+      setDemoStatus('');
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#1e1b4b] px-4 overflow-hidden relative font-sans">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-[#d946ef]/10 to-transparent blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-indigo-800/20 rounded-full blur-[100px] pointer-events-none" />
       
-      <div className="max-w-[480px] w-full bg-white/5 backdrop-blur-3xl rounded-[48px] shadow-2xl p-10 lg:p-14 border border-white/10 relative z-10">
-        <div className="text-center mb-10">
-          <div className="bg-[#d946ef] p-2 rounded-xl w-16 h-16 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-magenta-500/20">
-             <GraduationCap className="w-10 h-10 text-white" />
+      <div className="max-w-[520px] w-full space-y-6 relative z-10">
+
+        {/* DEMO BANNER */}
+        <div
+          onClick={!demoLoading ? handleDemoLogin : undefined}
+          className={`group relative overflow-hidden rounded-[32px] border-2 border-emerald-400/50 bg-gradient-to-br from-emerald-950/80 to-teal-900/80 backdrop-blur-xl p-8 text-white shadow-2xl shadow-emerald-500/10 ${
+            demoLoading ? 'cursor-wait opacity-80' : 'cursor-pointer hover:border-emerald-300 hover:shadow-emerald-400/20 transition-all duration-300'
+          }`}
+        >
+          <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-400/10 rounded-full blur-3xl -mr-10 -mt-10" />
+          <div className="relative flex items-center gap-5">
+            <div className="bg-emerald-500 w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl flex-shrink-0">
+              {demoLoading ? <Loader2 className="w-7 h-7 text-white animate-spin" /> : <School className="w-7 h-7 text-white" />}
+            </div>
+            <div className="flex-1">
+              <div className="text-[9px] font-black uppercase tracking-[0.3em] text-emerald-300 mb-1">🏫 Live Demo — Click to Launch</div>
+              <h2 className="text-xl font-black tracking-tight">Greenfield International Academy</h2>
+              <p className="text-emerald-200/70 text-[11px] font-bold mt-1">
+                {demoLoading ? demoStatus : 'Full school ERP demo · No account needed · Instant access'}
+              </p>
+            </div>
+            {!demoLoading && (
+              <div className="bg-emerald-500 text-white text-[9px] font-black uppercase tracking-widest px-4 py-2 rounded-xl flex-shrink-0 group-hover:bg-white group-hover:text-emerald-700 transition-all">
+                Try Now
+              </div>
+            )}
           </div>
-          <h1 className="text-3xl font-black text-white tracking-tighter uppercase mb-2">Dar-Ark Bytes</h1>
-          <p className="text-slate-400 font-bold uppercase tracking-[0.2em] text-[10px]">Secure Access Portal</p>
         </div>
+
+        {/* LOGIN CARD */}
+        <div className="bg-white/5 backdrop-blur-3xl rounded-[40px] shadow-2xl p-10 border border-white/10">
+          <div className="text-center mb-10">
+            <div className="bg-[#d946ef] p-2 rounded-xl w-16 h-16 flex items-center justify-center mx-auto mb-6 shadow-xl">
+              <GraduationCap className="w-10 h-10 text-white" />
+            </div>
+            <h1 className="text-3xl font-black text-white tracking-tighter uppercase mb-2">Dar-Ark Bytes</h1>
+            <p className="text-slate-400 font-bold uppercase tracking-[0.2em] text-[10px]">Secure Access Portal</p>
+          </div>
 
         {error && (
           <div className="mb-8 p-6 bg-red-500/10 text-red-400 rounded-3xl text-xs font-black border border-red-500/20 uppercase tracking-widest text-center animate-pulse">
@@ -139,11 +211,12 @@ export default function LoginPage() {
           </div>
         )}
 
-        <div className="mt-12 text-center pt-10 border-t border-white/10">
-          <p className="text-[10px] text-slate-600 font-black uppercase tracking-[0.3em] leading-relaxed">
-            Proprietary Technology of <br /> 
-            <span className="text-slate-400">Dar-Ark Bytes Enterprise</span>
-          </p>
+          <div className="mt-12 text-center pt-10 border-t border-white/10">
+            <p className="text-[10px] text-slate-600 font-black uppercase tracking-[0.3em] leading-relaxed">
+              Proprietary Technology of <br />
+              <span className="text-slate-400">Dar-Ark Bytes Enterprise</span>
+            </p>
+          </div>
         </div>
       </div>
     </div>

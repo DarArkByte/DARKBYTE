@@ -31,9 +31,9 @@ import { db } from '../../lib/firebase';
 import { collection, query, getDocs, addDoc, doc, updateDoc, onSnapshot, where, setDoc, deleteDoc, writeBatch } from 'firebase/firestore';
 
 // Import Assets for reliable serving
-import resultTemplateImg from '../../assets/branding/result_template.png';
-import proposalPreviewImg from '../../assets/branding/portal_proposal.png';
-import financeMockupImg from '../../assets/branding/finance_mockup.png';
+const resultTemplateImg = 'https://placehold.co/600x400?text=Result+Template';
+const proposalPreviewImg = 'https://placehold.co/600x400?text=Portal+Proposal';
+const financeMockupImg = 'https://placehold.co/600x400?text=Finance+Mockup';
 
 interface TenantSchool {
   id: string;
@@ -79,8 +79,11 @@ export default function SuperAdminDashboard() {
           usePositions: true,
           showAverage: true,
           reportCardTheme: 'elite',
-          caWeight: 40,
-          examWeight: 60
+          assessments: [
+            { id: 'ca1', label: 'CA 1', maxScore: 20 },
+            { id: 'ca2', label: 'CA 2', maxScore: 20 },
+            { id: 'exam', label: 'Exam', maxScore: 60 }
+          ],
         },
         createdAt: new Date().toISOString()
       }, { merge: true });
@@ -291,14 +294,48 @@ export default function SuperAdminDashboard() {
 
   const handleOnboard = async () => {
     if (!newSchool.name || !newSchool.domain) return;
+    const schoolId = newSchool.domain.toLowerCase().trim();
     try {
-      await addDoc(collection(db, 'schools'), {
+      await setDoc(doc(db, 'schools', schoolId), {
+        id: schoolId,
         name: newSchool.name,
-        domain: newSchool.domain.toLowerCase(),
+        domain: schoolId,
         isActive: true,
         branding: { 
           primaryColor: newSchool.color,
-          themeName: newSchool.theme 
+          secondaryColor: '#4f46e5',
+          landingPageTheme: 'theme-1',
+          identity: {
+            motto: 'Excellence and Virtue',
+            phone: '',
+            email: `info@${schoolId}.com`,
+            address: '',
+            website: `www.${schoolId}.com`,
+            socials: { facebook: '', instagram: '', twitter: '' }
+          }
+        },
+        settings: {
+          usePositions: true,
+          showAverage: true,
+          reportCardTheme: 'standard',
+          gradingSystem: [
+            { label: 'A1', min: 75, max: 100, remark: 'Excellent' },
+            { label: 'B2', min: 70, max: 74, remark: 'Very Good' },
+            { label: 'B3', min: 65, max: 69, remark: 'Good' },
+            { label: 'C4', min: 60, max: 64, remark: 'Credit' },
+            { label: 'C5', min: 55, max: 59, remark: 'Credit' },
+            { label: 'C6', min: 50, max: 54, remark: 'Credit' },
+            { label: 'D7', min: 45, max: 49, remark: 'Pass' },
+            { label: 'E8', min: 40, max: 44, remark: 'Pass' },
+            { label: 'F9', min: 0, max: 39, remark: 'Fail' }
+          ],
+          assessments: [
+            { id: 'ca1', label: 'CA 1', maxScore: 20 },
+            { id: 'ca2', label: 'CA 2', maxScore: 20 },
+            { id: 'exam', label: 'Exam', maxScore: 60 }
+          ],
+          reportCardColors: { primary: newSchool.color, secondary: '#4f46e5' },
+          reportCardFont: 'Inter'
         },
         features: newSchool.features,
         createdAt: new Date().toISOString()
@@ -314,6 +351,7 @@ export default function SuperAdminDashboard() {
       });
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
+      console.error(err);
       alert('Hosting failed');
     }
   };

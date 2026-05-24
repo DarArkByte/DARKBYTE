@@ -98,7 +98,7 @@ export async function seedDemoSchool(): Promise<{ success: boolean; message: str
       settings: {
         usePositions: true,
         showAverage: true,
-        reportCardTheme: 'nigerian-standard',
+        reportCardTheme: 'standard',
         gradingSystem: [
           { label: 'A1', min: 75, max: 100, remark: 'Excellent' },
           { label: 'B2', min: 70, max: 74, remark: 'Very Good' },
@@ -110,8 +110,11 @@ export async function seedDemoSchool(): Promise<{ success: boolean; message: str
           { label: 'E8', min: 40, max: 44, remark: 'Pass' },
           { label: 'F9', min: 0, max: 39, remark: 'Fail' },
         ],
-        caWeight: 40,
-        examWeight: 60,
+        assessments: [
+          { id: 'ca1', label: 'CA 1', maxScore: 20 },
+          { id: 'ca2', label: 'CA 2', maxScore: 20 },
+          { id: 'exam', label: 'Exam', maxScore: 60 }
+        ],
       },
       createdAt: new Date().toISOString(),
     }, { merge: true });

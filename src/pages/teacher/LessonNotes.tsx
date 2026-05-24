@@ -4,7 +4,7 @@ import { db } from '../../lib/firebase';
 import { useAuth } from '../../hooks/useAuth';
 import { useSchool } from '../../hooks/useSchool';
 import { Class, Subject } from '../../types';
-import { BookOpen, Upload, FileText, Plus, X, Search, CheckCircle2, Clock } from 'lucide-react';
+import { BookOpen, Upload, FileText, Plus, X, Search, CheckCircle2, Clock, Zap } from 'lucide-react';
 
 interface LessonNote {
   id: string;

@@ -16,6 +16,8 @@ import SchoolAdminDashboard from './pages/school-admin/Dashboard';
 import TeacherDashboard from './pages/teacher/Dashboard';
 import SuperAdminDashboard from './pages/super-admin/Dashboard';
 import ParentDashboard from './pages/parent/Dashboard';
+import ParentResultsPage from './pages/parent/ParentResultsPage';
+import StudentDashboard from './pages/students/StudentDashboard';
 import ClassesPage from './pages/classes/ClassesPage';
 import StudentManagement from './pages/students/StudentManagement';
 import ProposalEditor from './pages/super-admin/ProposalEditor';
@@ -49,7 +51,10 @@ const ObservationalEntryPage = React.lazy(() => import('./pages/results/Observat
 const ResultAnalysisPage = React.lazy(() => import('./pages/results/ResultAnalysisPage'));
 const LessonNotes = React.lazy(() => import('./pages/teacher/LessonNotes'));
 const Assignments = React.lazy(() => import('./pages/teacher/Assignments'));
-
+const LibraryManagement = React.lazy(() => import('./pages/library/LibraryManagement'));
+const HostelManagement = React.lazy(() => import('./pages/hostel/HostelManagement'));
+const ReportsEngine = React.lazy(() => import('./pages/reports/ReportsEngine'));
+const IDCardGenerator = React.lazy(() => import('./pages/id-cards/IDCardGenerator'));
 
 // STABLE DASHBOARD SWITCHER
 function DashboardHome() {
@@ -78,6 +83,7 @@ function DashboardHome() {
   if (userProfile.role === 'school-admin' || (userProfile.role === 'super-admin' && isImpersonating)) return <SchoolAdminDashboard />;
   if (userProfile.role === 'teacher') return <TeacherDashboard />;
   if (userProfile.role === 'parent') return <ParentDashboard />;
+  if (userProfile.role === 'student') return <StudentDashboard />;
   
   return <SuperAdminDashboard />; // MASTER FALLBACK
 }
@@ -139,10 +145,15 @@ function AppContent() {
             <Route path="/results/observation" element={<ObservationalEntryPage />} />
             <Route path="/results/analysis" element={<ResultAnalysisPage />} />
             <Route path="/results/view/:studentId" element={<ResultView />} />
+            <Route path="/parent/results" element={<ParentResultsPage />} />
             <Route path="/academics/attendance" element={<AttendancePage />} />
             <Route path="/library/digital" element={<DigitalLibrary />} />
             <Route path="/communication/newsletter" element={<NewsletterCenter />} />
             <Route path="/settings/branding" element={<BrandingSettings />} />
+            <Route path="/library" element={<LibraryManagement />} />
+            <Route path="/hostels" element={<HostelManagement />} />
+            <Route path="/reports" element={<ReportsEngine />} />
+            <Route path="/id-cards" element={<IDCardGenerator />} />
             
             {/* TEACHER PRODUCTIVITY ROUTES */}
             <Route path="/teacher/lesson-notes" element={<LessonNotes />} />

@@ -4,7 +4,7 @@ import { db } from '../../lib/firebase';
 import { useAuth } from '../../hooks/useAuth';
 import { useSchool } from '../../hooks/useSchool';
 import { Class, Subject } from '../../types';
-import { ClipboardList, Plus, X, Clock, Calendar, CheckCircle2, AlertCircle, Send } from 'lucide-react';
+import { ClipboardList, Plus, X, Clock, Calendar, CheckCircle2, AlertCircle, Send, Users } from 'lucide-react';
 
 interface Assignment {
   id: string;

@@ -30,7 +30,11 @@ import {
   Shield,
   Bus,
   Palette,
-  BarChart3
+  BarChart3,
+  BookMarked,
+  Building,
+  Printer,
+  FileBarChart
 } from 'lucide-react';
 
 export default function DashboardLayout() {
@@ -56,12 +60,17 @@ export default function DashboardLayout() {
     { name: 'Exam Hub', href: '/cbt/questions', icon: FileText, roles: ['school-admin', 'teacher'] },
     { name: 'Exam Schedule', href: '/exams/schedule', icon: Calendar, roles: ['school-admin', 'teacher', 'student'] },
     { name: 'Results', href: '/results/entry', icon: FileSpreadsheet, roles: ['school-admin', 'teacher'] },
+    { name: 'Report Cards', href: '/parent/results', icon: FileSpreadsheet, roles: ['parent'] },
     { name: 'Result Analysis', href: '/results/analysis', icon: BarChart3, roles: ['school-admin'] },
     { name: 'Promotion', href: '/exams/promotion', icon: TrendingUp, roles: ['school-admin'] },
     { name: 'Transcripts', href: '/students/transcript', icon: FileText, roles: ['school-admin'] },
     { name: 'Finance', href: '/finance', icon: Wallet, roles: ['school-admin', 'parent'] },
     { name: 'Inventory', href: '/inventory', icon: Package, roles: ['school-admin'] },
     { name: 'Staff', href: '/staff', icon: UserCheck, roles: ['school-admin'] },
+    { name: 'Library', href: '/library', icon: BookOpen, roles: ['school-admin', 'teacher', 'student'] },
+    { name: 'Hostels', href: '/hostels', icon: Building, roles: ['school-admin'] },
+    { name: 'Reports', href: '/reports', icon: FileBarChart, roles: ['school-admin'] },
+    { name: 'ID Cards', href: '/id-cards', icon: Printer, roles: ['school-admin'] },
     { name: 'Communication', href: '/messages', icon: MessageSquare, roles: ['school-admin', 'teacher', 'parent'] },
     { name: 'Gate System', href: '/security', icon: Shield, roles: ['school-admin', 'security-officer'] },
     { name: 'Transport', href: '/security', icon: Bus, roles: ['school-admin', 'transport-manager'] },

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { GraduationCap, Zap, ShieldAlert, FlaskConical, Loader2, School } from 'lucide-react';

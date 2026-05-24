@@ -45,14 +45,14 @@ export default function SchoolAdminDashboard() {
       color: 'bg-indigo-600'
     },
     { 
-      id: 'elite', 
+      id: 'standard', 
       name: 'Academic Elite', 
       icon: Trophy, 
       desc: 'Traditional grid layout with prestigious serif typography.',
       color: 'bg-gray-900'
     },
     { 
-      id: 'dynamic', 
+      id: 'minimalist', 
       name: 'Dynamic Data', 
       icon: Layout, 
       desc: 'Visual-heavy with progress bars and technical indicators.',

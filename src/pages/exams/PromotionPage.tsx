@@ -22,7 +22,7 @@ export default function PromotionPage() {
     { id: '3', name: 'Charlie Davis', currentClass: 'JSS 1', averageScore: 65.2, status: 'pending' },
   ]);
 
-  const handleStatusChange = (id: string, newStatus: 'promoted' | 'repeated') => {
+  const handleStatusChange = (id: string, newStatus: 'promoted' | 'repeated' | 'pending') => {
     setStudents(students.map(s => s.id === id ? { ...s, status: newStatus } : s));
   };
 

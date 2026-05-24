@@ -8,7 +8,7 @@ import { LandingThemeSelector } from '../../components/portal/LandingThemes';
 export default function SchoolPortalLogin() {
   const { schoolDomain } = useParams();
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, userProfile } = useAuth();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

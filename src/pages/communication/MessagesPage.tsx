@@ -65,7 +65,7 @@ export default function MessagesPage() {
             onClick={() => setActiveTab('parents')}
             className={`flex items-center justify-between px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'parents' ? 'bg-emerald-50 text-emerald-700' : 'text-gray-500 hover:bg-gray-50'}`}
           >
-            <div className="flex items-center gap-3"><Users className="w-5 h-5" /> Parent Chats</div>
+            <div className="flex items-center gap-3"><User className="w-5 h-5" /> Parent Chats</div>
           </button>
 
           <div className="h-px bg-gray-100 my-2" />

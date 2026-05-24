@@ -3,6 +3,7 @@ import { useSchool } from '../../hooks/useSchool';
 import { db } from '../../lib/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { BarChart3, TrendingUp, Users, BookOpen, ChevronRight, Download, Filter, Loader2, PieChart, Activity } from 'lucide-react';
+import { calculateGrade } from '../../utils/grading';
 
 export default function ResultAnalysisPage() {
   const { school } = useSchool();
@@ -40,17 +41,26 @@ export default function ResultAnalysisPage() {
       const resData = resSnapshot.docs.map(doc => doc.data());
       setResults(resData);
 
-      // Calculate Stats
+      // Calculate Stats with dynamic grading
       if (resData.length > 0) {
-        const total = resData.reduce((acc, curr) => acc + curr.total, 0);
+        const gradingSystem = school?.settings?.gradingSystem || [];
+        const total = resData.reduce((acc: number, curr: any) => acc + (curr.total || 0), 0);
         const avg = total / resData.length;
-        const passes = resData.filter(r => r.total >= 40).length;
+
+        // Dynamic pass rate: any grade that doesn't match the lowest/fail band
+        const failLabels = gradingSystem.length > 0
+          ? gradingSystem.filter(g => g.remark?.toLowerCase() === 'fail').map(g => g.label)
+          : ['F'];
+        const passes = resData.filter((r: any) => {
+          const gradeData = calculateGrade(r.total || 0, gradingSystem);
+          return !failLabels.includes(gradeData.grade) && gradeData.grade !== '-';
+        }).length;
         const rate = (passes / resData.length) * 100;
 
         setStats({
           averageScore: Math.round(avg),
           passRate: Math.round(rate),
-          topStudent: 'Fetching...', // Simplified
+          topStudent: 'Fetching...',
           totalEntries: resData.length
         });
       }
@@ -123,30 +133,39 @@ export default function ResultAnalysisPage() {
            {loading ? (
              <div className="h-64 flex items-center justify-center"><Loader2 className="animate-spin w-10 h-10 text-indigo-600" /></div>
            ) : results.length > 0 ? (
-             <div className="space-y-6">
-                {/* Simulated Chart Bars */}
-                {['A', 'B', 'C', 'D', 'F'].map(grade => {
-                  const count = results.filter(r => r.grade === grade).length;
-                  const pct = (count / results.length) * 100;
-                  return (
-                    <div key={grade} className="space-y-2">
-                       <div className="flex justify-between text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                          <span>Grade {grade}</span>
-                          <span>{count} Students ({Math.round(pct)}%)</span>
+              <div className="space-y-6">
+                 {/* Dynamic Grade Bars from school settings */}
+                 {(() => {
+                   const gradingSystem = school?.settings?.gradingSystem || [
+                     { label: 'A', min: 70, max: 100, remark: 'Excellent' },
+                     { label: 'B', min: 60, max: 69, remark: 'Very Good' },
+                     { label: 'C', min: 50, max: 59, remark: 'Good' },
+                     { label: 'D', min: 40, max: 49, remark: 'Pass' },
+                     { label: 'F', min: 0, max: 39, remark: 'Fail' },
+                   ];
+                   const barColors = ['bg-emerald-500', 'bg-blue-500', 'bg-indigo-500', 'bg-amber-500', 'bg-orange-500', 'bg-rose-500', 'bg-slate-400', 'bg-violet-500', 'bg-cyan-500'];
+                   return gradingSystem.map((band, idx) => {
+                     const count = results.filter((r: any) => {
+                       const g = calculateGrade(r.total || 0, gradingSystem);
+                       return g.grade === band.label;
+                     }).length;
+                     const pct = results.length > 0 ? (count / results.length) * 100 : 0;
+                     return (
+                       <div key={band.label} className="space-y-2">
+                          <div className="flex justify-between text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                             <span>Grade {band.label} ({band.min}-{band.max})</span>
+                             <span>{count} Students ({Math.round(pct)}%)</span>
+                          </div>
+                          <div className="h-4 bg-slate-50 rounded-full overflow-hidden">
+                             <div 
+                               className={`h-full rounded-full transition-all duration-1000 ${barColors[idx % barColors.length]}`}
+                               style={{ width: `${pct}%` }}
+                             />
+                          </div>
                        </div>
-                       <div className="h-4 bg-slate-50 rounded-full overflow-hidden">
-                          <div 
-                            className={`h-full rounded-full transition-all duration-1000 ${
-                              grade === 'A' ? 'bg-emerald-500' : 
-                              grade === 'B' ? 'bg-blue-500' : 
-                              grade === 'C' ? 'bg-amber-500' : 'bg-slate-300'
-                            }`}
-                            style={{ width: `${pct}%` }}
-                          />
-                       </div>
-                    </div>
-                  );
-                })}
+                     );
+                   });
+                 })()}
              </div>
            ) : (
              <div className="h-64 flex flex-col items-center justify-center text-slate-300">

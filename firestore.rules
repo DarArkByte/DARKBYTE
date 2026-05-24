@@ -56,5 +56,20 @@ service cloud.firestore {
       allow read: if isSignedIn();
       allow write: if isSuperAdmin();
     }
+
+    match /results/{resultId} {
+      allow read: if isSuperAdmin() || 
+                     isSchoolAdmin(resource.data.schoolId) || 
+                     hasRole('teacher', resource.data.schoolId) ||
+                     (hasRole('parent', resource.data.schoolId) && resource.data.status == 'published') ||
+                     (hasRole('student', resource.data.schoolId) && resource.data.status == 'published');
+      allow create: if isSuperAdmin() || 
+                       isSchoolAdmin(incoming().schoolId) || 
+                       hasRole('teacher', incoming().schoolId);
+      allow update: if isSuperAdmin() || 
+                       isSchoolAdmin(resource.data.schoolId) || 
+                       (hasRole('teacher', resource.data.schoolId) && existing().status in ['draft', 'reviewed'] && incoming().status in ['draft', 'reviewed']);
+      allow delete: if isSuperAdmin() || isSchoolAdmin(resource.data.schoolId);
+    }
   }
 }

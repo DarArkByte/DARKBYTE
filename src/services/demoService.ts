@@ -26,12 +26,17 @@ export const setupDemoData = async (userProfile: UserProfile) => {
     branding: {
       primaryColor: '#059669',
       secondaryColor: '#10b981',
+      landingPageTheme: 'theme-1',
     },
     settings: {
       usePositions: true,
-      caWeight: 40,
-      examWeight: 60,
-      reportCardTheme: 'modern',
+      showAverage: true,
+      assessments: [
+        { id: 'ca1', label: 'CA 1', maxScore: 20 },
+        { id: 'ca2', label: 'CA 2', maxScore: 20 },
+        { id: 'exam', label: 'Exam', maxScore: 60 }
+      ],
+      reportCardTheme: 'standard',
       gradingSystem: [
         { label: 'A', min: 75, max: 100, remark: 'Excellent' },
         { label: 'B', min: 65, max: 74, remark: 'Very Good' },
@@ -39,7 +44,8 @@ export const setupDemoData = async (userProfile: UserProfile) => {
         { label: 'D', min: 40, max: 49, remark: 'Pass' },
         { label: 'F', min: 0, max: 39, remark: 'Fail' }
       ]
-    }
+    },
+    isActive: true
   };
   batch.set(schoolRef, demoSchool);
 

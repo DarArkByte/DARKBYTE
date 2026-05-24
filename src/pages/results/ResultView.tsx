@@ -99,6 +99,41 @@ export default function ResultView() {
     </div>
   );
 
+  const handleDownloadPDF = async () => {
+    const element = document.getElementById('report-card-printable');
+    if (!element) return;
+
+    try {
+      // Dynamically import html2canvas and jspdf
+      const html2canvas = (await import('html2canvas')).default;
+      const { jsPDF } = await import('jspdf');
+
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+      });
+
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`${student?.displayName || 'student'}_report_card.pdf`);
+    } catch (err) {
+      console.error('PDF generation failed:', err);
+      // Fallback to browser print
+      window.print();
+    }
+  };
+
   return (
     <div className="max-w-5xl mx-auto py-12 px-6">
       <div className="flex justify-between items-center mb-8 bg-white p-4 rounded-2xl border border-gray-100 no-print">
@@ -113,7 +148,10 @@ export default function ResultView() {
            >
              <Printer className="w-4 h-4" /> Print
            </button>
-           <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 rounded-xl text-sm font-bold text-white hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all">
+           <button 
+             onClick={handleDownloadPDF}
+             className="flex items-center gap-2 px-4 py-2 bg-indigo-600 rounded-xl text-sm font-bold text-white hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all"
+           >
              <Download className="w-4 h-4" /> Download PDF
            </button>
            <button className="p-2 border border-gray-200 rounded-xl text-gray-400 hover:text-gray-600">
@@ -141,8 +179,9 @@ export default function ResultView() {
       <style dangerouslySetInnerHTML={{ __html: `
         @media print {
           .no-print { display: none !important; }
-          body { background: white !important; }
+          body { background: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; color-adjust: exact; }
           .max-w-5xl { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
+          * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
       `}} />
     </div>

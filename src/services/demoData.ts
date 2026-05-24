@@ -25,14 +25,17 @@ export const DEMO_SCHOOLS: School[] = [
     settings: {
       usePositions: true,
       showAverage: true,
-      reportCardTheme: 'elite',
+      reportCardTheme: 'standard',
       gradingSystem: [
         { label: 'A', min: 75, max: 100, remark: 'Distinction' },
         { label: 'B', min: 65, max: 74, remark: 'Very Good' },
         { label: 'C', min: 50, max: 64, remark: 'Credit' }
       ],
-      caWeight: 40,
-      examWeight: 60
+      assessments: [
+        { id: 'ca1', label: 'CA 1', maxScore: 20 },
+        { id: 'ca2', label: 'CA 2', maxScore: 20 },
+        { id: 'exam', label: 'Exam', maxScore: 60 }
+      ]
     }
   },
   {
@@ -50,8 +53,10 @@ export const DEMO_SCHOOLS: School[] = [
       showAverage: true,
       reportCardTheme: 'modern',
       gradingSystem: [],
-      caWeight: 30,
-      examWeight: 70
+      assessments: [
+        { id: 'ca1', label: 'CA 1', maxScore: 30 },
+        { id: 'exam', label: 'Exam', maxScore: 70 }
+      ]
     }
   },
   {
@@ -67,10 +72,13 @@ export const DEMO_SCHOOLS: School[] = [
     settings: {
       usePositions: false,
       showAverage: true,
-      reportCardTheme: 'dynamic',
+      reportCardTheme: 'minimalist',
       gradingSystem: [],
-      caWeight: 40,
-      examWeight: 60
+      assessments: [
+        { id: 'ca1', label: 'CA 1', maxScore: 20 },
+        { id: 'ca2', label: 'CA 2', maxScore: 20 },
+        { id: 'exam', label: 'Exam', maxScore: 60 }
+      ]
     }
   }
 ];

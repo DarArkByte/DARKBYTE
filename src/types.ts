@@ -50,15 +50,22 @@ export interface GradeRange {
   remark: string;
 }
 
-export type ReportCardTheme = 'nigerian-standard' | 'international-modern' | 'elite-private' | 'minimalist' | 'creche-observational';
+export interface AssessmentColumn {
+  id: string; // e.g., 'ca1', 'ca2', 'project', 'exam'
+  label: string; // e.g., 'First CA', 'Project Work', 'Final Exam'
+  maxScore: number;
+}
+
+export type ReportCardTheme = 'standard' | 'modern' | 'minimalist';
 
 export interface SchoolSettings {
   usePositions: boolean;
   showAverage: boolean;
   gradingSystem: GradeRange[];
-  caWeight: number; // e.g. 40
-  examWeight: number; // e.g. 60
+  assessments: AssessmentColumn[];
   reportCardTheme: ReportCardTheme;
+  reportCardColors?: { primary: string; secondary: string };
+  reportCardFont?: string;
 }
 
 export interface School {
@@ -374,4 +381,58 @@ export interface EntranceExamQuestion {
   question: string;
   options: string[];
   correctAnswer: number;
+}
+
+// --- LIBRARY MODULE TYPES ---
+
+export interface LibraryBook {
+  id: string;
+  schoolId: string;
+  title: string;
+  author: string;
+  isbn: string;
+  status: 'available' | 'borrowed' | 'lost';
+  location: string;
+  category: string;
+}
+
+export interface LibraryTransaction {
+  id: string;
+  schoolId: string;
+  bookId: string;
+  studentId: string;
+  issueDate: string;
+  dueDate: string;
+  returnDate?: string;
+  fineAmount: number;
+  status: 'active' | 'returned' | 'overdue';
+}
+
+// --- HOSTEL MODULE TYPES ---
+
+export interface HostelBlock {
+  id: string;
+  schoolId: string;
+  name: string;
+  gender: 'male' | 'female' | 'mixed';
+  capacity: number;
+}
+
+export interface HostelRoom {
+  id: string;
+  schoolId: string;
+  blockId: string;
+  roomNumber: string;
+  capacity: number;
+  currentOccupancy: number;
+}
+
+export interface HostelAllocation {
+  id: string;
+  schoolId: string;
+  roomId: string;
+  studentId: string;
+  termId: string;
+  sessionId: string;
+  assignedAt: string;
 }

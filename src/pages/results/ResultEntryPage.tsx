@@ -3,13 +3,12 @@ import { useSchool } from '../../hooks/useSchool';
 import { db } from '../../lib/firebase';
 import { collection, query, where, getDocs, setDoc, doc } from 'firebase/firestore';
 import { ClipboardList, Upload, Download, Save, Users, FileSpreadsheet, CheckCircle, Loader2 } from 'lucide-react';
+import { calculateGrade } from '../../utils/grading';
 
 interface ResultEntry {
   id: string;
   studentName: string;
-  ca1: string;
-  ca2: string;
-  exam: string;
+  scores: Record<string, string>;
 }
 
 export default function ResultEntryPage() {
@@ -20,6 +19,15 @@ export default function ResultEntryPage() {
   const [entries, setEntries] = useState<ResultEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+
+  // Dynamic assessments from settings, default to CA1, CA2, Exam if not set
+  const assessments = school?.settings?.assessments || [
+    { id: 'ca1', label: 'CA 1', maxScore: 20 },
+    { id: 'ca2', label: 'CA 2', maxScore: 20 },
+    { id: 'exam', label: 'Exam', maxScore: 60 }
+  ];
+
+  const gradingSystem = school?.settings?.gradingSystem || [];
 
   useEffect(() => {
     const fetchClasses = async () => {
@@ -50,12 +58,14 @@ export default function ResultEntryPage() {
 
         const newEntries = students.map(s => {
           const m = marksMap.get(s.id) || {};
+          const scores: Record<string, string> = {};
+          assessments.forEach(a => {
+            scores[a.id] = m[a.id] || '';
+          });
           return {
             id: s.id,
             studentName: s.name,
-            ca1: m.ca1 || '',
-            ca2: m.ca2 || '',
-            exam: m.exam || ''
+            scores
           };
         });
         setEntries(newEntries);
@@ -66,11 +76,25 @@ export default function ResultEntryPage() {
       }
     };
     fetchStudentsAndMarks();
-  }, [school?.id, selectedClass, selectedSubject]);
+  }, [school?.id, selectedClass, selectedSubject, assessments]);
 
-  const handleInputChange = (id: string, field: keyof ResultEntry, value: string) => {
+  const handleScoreChange = (studentId: string, assessmentId: string, value: string) => {
     if (value !== '' && isNaN(Number(value))) return;
-    setEntries(entries.map(e => e.id === id ? { ...e, [field]: value } : e));
+    setEntries(entries.map(e => {
+      if (e.id !== studentId) return e;
+      return {
+        ...e,
+        scores: { ...e.scores, [assessmentId]: value }
+      };
+    }));
+  };
+
+  const calculateTotal = (entry: ResultEntry) => {
+    let total = 0;
+    assessments.forEach(a => {
+      total += Number(entry.scores[a.id] || 0);
+    });
+    return total;
   };
 
   const handleSave = async () => {
@@ -79,18 +103,26 @@ export default function ResultEntryPage() {
     try {
       for (const entry of entries) {
         const resultId = `${entry.id}_${selectedSubject}_term1`; // Term-based ID
-        await setDoc(doc(db, 'results', resultId), {
+        const total = calculateTotal(entry);
+        const gradeData = calculateGrade(total, gradingSystem);
+
+        const dataToSave: any = {
           studentId: entry.id,
           schoolId: school.id,
           class: selectedClass,
           subject: selectedSubject,
-          ca1: entry.ca1,
-          ca2: entry.ca2,
-          exam: entry.exam,
-          total: Number(entry.ca1 || 0) + Number(entry.ca2 || 0) + Number(entry.exam || 0),
+          total: total,
+          grade: gradeData.grade,
           status: 'ready',
           updatedAt: new Date().toISOString()
-        }, { merge: true });
+        };
+
+        // Flatten dynamic scores into the document
+        assessments.forEach(a => {
+          dataToSave[a.id] = entry.scores[a.id];
+        });
+
+        await setDoc(doc(db, 'results', resultId), dataToSave, { merge: true });
       }
       alert('Results Synchronized Successfully!');
     } catch (err) {
@@ -98,16 +130,6 @@ export default function ResultEntryPage() {
     } finally {
       setSaving(false);
     }
-  };
-
-  const calculateTotal = (entry: ResultEntry) => Number(entry.ca1 || 0) + Number(entry.ca2 || 0) + Number(entry.exam || 0);
-
-  const getGrade = (total: number) => {
-    if (total >= 70) return { grade: 'A', color: 'text-emerald-600' };
-    if (total >= 60) return { grade: 'B', color: 'text-blue-600' };
-    if (total >= 50) return { grade: 'C', color: 'text-amber-600' };
-    if (total >= 40) return { grade: 'D', color: 'text-orange-600' };
-    return { grade: 'F', color: 'text-rose-600' };
   };
 
   return (
@@ -183,9 +205,9 @@ export default function ResultEntryPage() {
               <thead>
                 <tr className="bg-slate-50/50 text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] border-b border-slate-50">
                   <th className="p-8 pl-10">Student Identity</th>
-                  <th className="p-8 text-center">CA 1 (20)</th>
-                  <th className="p-8 text-center">CA 2 (20)</th>
-                  <th className="p-8 text-center border-r border-slate-50">Exam (60)</th>
+                  {assessments.map(a => (
+                    <th key={a.id} className="p-8 text-center">{a.label} ({a.maxScore})</th>
+                  ))}
                   <th className="p-8 text-center bg-indigo-50/30">Composite</th>
                   <th className="p-8 pr-10 text-center bg-indigo-50/30">Grade</th>
                 </tr>
@@ -193,41 +215,31 @@ export default function ResultEntryPage() {
               <tbody className="divide-y divide-slate-50">
                 {entries.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="p-20 text-center text-slate-400 font-bold">No students found in this class node.</td>
+                    <td colSpan={assessments.length + 3} className="p-20 text-center text-slate-400 font-bold">No students found in this class node.</td>
                   </tr>
                 ) : (
                   entries.map((entry) => {
                     const total = calculateTotal(entry);
-                    const { grade, color } = getGrade(total);
+                    const { grade, color } = calculateGrade(total, gradingSystem);
                     return (
                       <tr key={entry.id} className="hover:bg-slate-50/50 transition-all group">
                         <td className="p-8 pl-10">
                           <p className="text-lg font-black text-slate-900 group-hover:text-indigo-600 transition-colors">{entry.studentName}</p>
                         </td>
-                        <td className="p-8">
-                          <input 
-                            type="text" 
-                            value={entry.ca1}
-                            onChange={(e) => handleInputChange(entry.id, 'ca1', e.target.value)}
-                            className="w-full text-center bg-slate-50 border border-slate-100 rounded-2xl py-4 font-black text-slate-900 focus:ring-4 focus:ring-indigo-100 focus:bg-white transition-all"
-                          />
-                        </td>
-                        <td className="p-8">
-                          <input 
-                            type="text" 
-                            value={entry.ca2}
-                            onChange={(e) => handleInputChange(entry.id, 'ca2', e.target.value)}
-                            className="w-full text-center bg-slate-50 border border-slate-100 rounded-2xl py-4 font-black text-slate-900 focus:ring-4 focus:ring-indigo-100 focus:bg-white transition-all"
-                          />
-                        </td>
-                        <td className="p-8 border-r border-slate-50">
-                          <input 
-                            type="text" 
-                            value={entry.exam}
-                            onChange={(e) => handleInputChange(entry.id, 'exam', e.target.value)}
-                            className="w-full text-center bg-indigo-50/50 border border-indigo-100 rounded-2xl py-4 font-black text-indigo-900 focus:ring-4 focus:ring-indigo-200 focus:bg-white transition-all"
-                          />
-                        </td>
+                        {assessments.map((a, idx) => (
+                          <td key={a.id} className={`p-8 ${idx === assessments.length - 1 ? 'border-r border-slate-50' : ''}`}>
+                            <input 
+                              type="text" 
+                              value={entry.scores[a.id]}
+                              onChange={(e) => handleScoreChange(entry.id, a.id, e.target.value)}
+                              className={`w-full text-center bg-slate-50 border border-slate-100 rounded-2xl py-4 font-black focus:ring-4 focus:bg-white transition-all ${
+                                idx === assessments.length - 1 
+                                ? 'text-indigo-900 bg-indigo-50/50 border-indigo-100 focus:ring-indigo-200' 
+                                : 'text-slate-900 focus:ring-indigo-100'
+                              }`}
+                            />
+                          </td>
+                        ))}
                         <td className="p-8 bg-slate-50/30 text-center">
                           <span className="text-2xl font-black text-slate-900">{total}</span>
                         </td>

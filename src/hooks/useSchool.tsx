@@ -21,6 +21,7 @@ const SchoolContext = createContext<SchoolContextType | undefined>(undefined);
 
 const DEFAULT_SCHOOL_SETTINGS: SchoolSettings = {
   usePositions: true,
+  showAverage: true,
   gradingSystem: [
     { label: 'A', min: 75, max: 100, remark: 'Excellent' },
     { label: 'B', min: 65, max: 74, remark: 'Very Good' },
@@ -29,9 +30,12 @@ const DEFAULT_SCHOOL_SETTINGS: SchoolSettings = {
     { label: 'E', min: 40, max: 44, remark: 'Poor' },
     { label: 'F', min: 0, max: 39, remark: 'Fail' }
   ],
-  caWeight: 40,
-  examWeight: 60,
-  reportCardTheme: 'nigerian-standard'
+  assessments: [
+    { id: 'ca1', label: 'CA 1', maxScore: 20 },
+    { id: 'ca2', label: 'CA 2', maxScore: 20 },
+    { id: 'exam', label: 'Exam', maxScore: 60 }
+  ],
+  reportCardTheme: 'standard'
 };
 
 export function SchoolProvider({ children }: { children: React.ReactNode }) {
